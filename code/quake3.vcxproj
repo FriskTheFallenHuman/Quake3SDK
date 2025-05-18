@@ -1059,16 +1059,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cgame\cg_public.h" />
     <ClInclude Include="cgame\tr_types.h" />
     <ClInclude Include="client\client.h" />
     <ClInclude Include="client\keys.h" />
     <ClInclude Include="client\snd_local.h" />
     <ClInclude Include="client\snd_public.h" />
-    <ClInclude Include="game\bg_public.h" />
-    <ClInclude Include="game\g_public.h" />
-    <ClInclude Include="game\q_shared.h" />
-    <ClInclude Include="game\surfaceflags.h" />
     <ClInclude Include="qcommon\cm_local.h" />
     <ClInclude Include="qcommon\cm_patch.h" />
     <ClInclude Include="qcommon\cm_polylib.h" />
@@ -1086,9 +1081,6 @@
     <ClInclude Include="win32\win_local.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Construct" />
-    <None Include="unix\ChangeLog" />
-    <None Include="unix\Conscript-pk3" />
     <None Include="win32\cursor2.cur" />
     <None Include="win32\cursor3.cur" />
     <None Include="win32\qe3.ico" />
@@ -1105,18 +1097,9 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\q3map\q3map.vcxproj">
-      <Project>{b347d665-9dab-4109-b2d0-4f41c13208ea}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\q3radiant\Radiant.vcxproj">
-      <Project>{649e9736-3eac-43ee-b027-88d1563c345a}</Project>
-    </ProjectReference>
     <ProjectReference Include="botlib\botlib.vcxproj">
       <Project>{a410161f-ae9f-485d-a01f-5294891430a6}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="bspc\bspc.vcxproj">
-      <Project>{126219bd-ab56-40e0-a431-566547739186}</Project>
     </ProjectReference>
     <ProjectReference Include="cgame\cgame.vcxproj">
       <Project>{c878e295-cb82-4b40-8ecf-5ce5525466fa}</Project>
