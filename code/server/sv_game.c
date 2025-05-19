@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "server.h"
 
-#include "../game/botlib.h"
+#include "../botlib/botlib.h"
 
 gameExport_t* game;
 static intptr_t dllHandle;

@@ -128,12 +128,6 @@
     <ClCompile Include="qcommon\unzip.c">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="game\q_shared.c">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="game\q_math.c">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="qcommon\net_chan.c">
       <Filter>Common</Filter>
     </ClCompile>
@@ -172,6 +166,12 @@
     </ClCompile>
     <ClCompile Include="qcommon\cm_trace.c">
       <Filter>CM</Filter>
+    </ClCompile>
+    <ClCompile Include="qcommon\q_math.c">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="qcommon\q_shared.c">
+      <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -235,14 +235,11 @@
     <ClInclude Include="renderer\tr_public.h">
       <Filter>Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="qcommon\q_shared.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="win32\cursor2.cur">
-      <Filter>Sys\Res</Filter>
-    </None>
-    <None Include="win32\cursor3.cur">
-      <Filter>Sys\Res</Filter>
-    </None>
     <None Include="win32\qe3.ico">
       <Filter>Sys\Res</Filter>
     </None>
