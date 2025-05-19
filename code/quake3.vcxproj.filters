@@ -110,21 +110,6 @@
     <ClCompile Include="server\sv_snapshot.c">
       <Filter>Server</Filter>
     </ClCompile>
-    <ClCompile Include="client\snd_wavelet.c">
-      <Filter>Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="client\snd_adpcm.c">
-      <Filter>Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="client\snd_dma.c">
-      <Filter>Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="client\snd_mem.c">
-      <Filter>Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="client\snd_mix.c">
-      <Filter>Sound</Filter>
-    </ClCompile>
     <ClCompile Include="qcommon\unzip.c">
       <Filter>Common</Filter>
     </ClCompile>
@@ -152,26 +137,41 @@
     <ClCompile Include="qcommon\cmd.c">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="qcommon\cm_load.c">
-      <Filter>CM</Filter>
-    </ClCompile>
-    <ClCompile Include="qcommon\cm_patch.c">
-      <Filter>CM</Filter>
-    </ClCompile>
-    <ClCompile Include="qcommon\cm_polylib.c">
-      <Filter>CM</Filter>
-    </ClCompile>
-    <ClCompile Include="qcommon\cm_test.c">
-      <Filter>CM</Filter>
-    </ClCompile>
-    <ClCompile Include="qcommon\cm_trace.c">
-      <Filter>CM</Filter>
-    </ClCompile>
     <ClCompile Include="qcommon\q_math.c">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="qcommon\q_shared.c">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="sound\snd_adpcm.c">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="sound\snd_dma.c">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="sound\snd_mem.c">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="sound\snd_mix.c">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="sound\snd_wavelet.c">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="cm\cm_load.c">
+      <Filter>CM</Filter>
+    </ClCompile>
+    <ClCompile Include="cm\cm_patch.c">
+      <Filter>CM</Filter>
+    </ClCompile>
+    <ClCompile Include="cm\cm_polylib.c">
+      <Filter>CM</Filter>
+    </ClCompile>
+    <ClCompile Include="cm\cm_test.c">
+      <Filter>CM</Filter>
+    </ClCompile>
+    <ClCompile Include="cm\cm_trace.c">
+      <Filter>CM</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -189,24 +189,6 @@
     </ClInclude>
     <ClInclude Include="qcommon\qfiles.h">
       <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="client\snd_public.h">
-      <Filter>Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="client\snd_local.h">
-      <Filter>Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="qcommon\cm_local.h">
-      <Filter>CM</Filter>
-    </ClInclude>
-    <ClInclude Include="qcommon\cm_patch.h">
-      <Filter>CM</Filter>
-    </ClInclude>
-    <ClInclude Include="qcommon\cm_polylib.h">
-      <Filter>CM</Filter>
-    </ClInclude>
-    <ClInclude Include="qcommon\cm_public.h">
-      <Filter>CM</Filter>
     </ClInclude>
     <ClInclude Include="client\client.h">
       <Filter>Client</Filter>
@@ -237,6 +219,24 @@
     </ClInclude>
     <ClInclude Include="qcommon\q_shared.h">
       <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="sound\snd_local.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="sound\snd_public.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="cm\cm_local.h">
+      <Filter>CM</Filter>
+    </ClInclude>
+    <ClInclude Include="cm\cm_patch.h">
+      <Filter>CM</Filter>
+    </ClInclude>
+    <ClInclude Include="cm\cm_polylib.h">
+      <Filter>CM</Filter>
+    </ClInclude>
+    <ClInclude Include="cm\cm_public.h">
+      <Filter>CM</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
