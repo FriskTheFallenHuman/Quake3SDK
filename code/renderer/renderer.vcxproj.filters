@@ -28,9 +28,6 @@
     <ClCompile Include="tr_world.c">
       <Filter>Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="tr_animation.c">
-      <Filter>Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="tr_backend.c">
       <Filter>Renderer</Filter>
     </ClCompile>
