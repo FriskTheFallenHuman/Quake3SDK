@@ -126,6 +126,23 @@ short   ShortSwap (short l);
 int		LongSwap (int l);
 float	FloatSwap (const float *f);
 
+//======================= GLOBAL DEFINES =================================
+
+// buildstring will be incorporated into the version string
+#ifdef _DEBUG
+#define BUILD_DEBUG "-debug"
+#else
+#define BUILD_DEBUG ""
+#endif
+
+// bk001205 - try
+#ifdef Q3_STATIC
+#define	GAME_HARD_LINKED
+#define	CGAME_HARD_LINKED
+#define	UI_HARD_LINKED
+#define	BOTLIB_HARD_LINKED
+#endif
+
 //======================= WIN32 DEFINES =================================
 
 #ifdef WIN32
@@ -135,20 +152,33 @@ float	FloatSwap (const float *f);
 #undef QDECL
 #define	QDECL	__cdecl
 
-// buildstring will be incorporated into the version string
-#ifdef NDEBUG
-#ifdef _M_IX86
-#define	CPUSTRING	"win-x86"
-#elif defined _M_ALPHA
-#define	CPUSTRING	"win-AXP"
-#endif
+// Setting _ARCH for VisualC++ from CMake doesn't work when using VS integrated CMake
+// so set it in code instead
+#ifdef _MSC_VER
+#ifdef _ARCH
+  #undef _ARCH
+#endif // _ARCH
+
+#ifdef _M_X64
+  // this matches AMD64 and ARM64EC (but not regular ARM64), but they're supposed to be binary-compatible somehow, so whatever
+  #define _ARCH "x86_64"
+#elif defined(_M_ARM64)
+  #define _ARCH "arm64"
+#elif defined(_M_ARM)
+  #define _ARCH "arm"
+#elif defined(_M_IX86)
+  #define _ARCH "x86"
 #else
-#ifdef _M_IX86
-#define	CPUSTRING	"win-x86-debug"
-#elif defined _M_ALPHA
-#define	CPUSTRING	"win-AXP-debug"
-#endif
-#endif
+  #error "Unknown CPU architecture!"
+#endif // _M_X64 etc
+
+#define	CPUSTRING	OSTYPE "-" _ARCH BUILD_DEBUG
+
+#else
+
+#define	CPUSTRING	OSTYPE "-" CPU_STRING BUILD_DEBUG
+
+#endif // _MSC_VER
 
 #define ID_INLINE __inline 
 
@@ -173,13 +203,7 @@ static ID_INLINE float BigFloat(const float *l) { FloatSwap(l); }
 #define stricmp strcasecmp
 #define ID_INLINE inline 
 
-#ifdef __ppc__
-#define CPUSTRING	"MacOSX-ppc"
-#elif defined __i386__
-#define CPUSTRING	"MacOSX-i386"
-#else
-#define CPUSTRING	"MacOSX-other"
-#endif
+#define	CPUSTRING	OSTYPE "-" CPU_STRING BUILD_DEBUG
 
 #define	PATH_SEP	'/'
 
@@ -225,7 +249,7 @@ static inline float LittleFloat (const float l) { return FloatSwap(&l); }
 #define	MAC_STATIC
 #define ID_INLINE inline 
 
-#define	CPUSTRING	"MacOS-PPC"
+#define	CPUSTRING	OSTYPE "-" CPU_STRING BUILD_DEBUG
 
 #define	PATH_SEP ':'
 
@@ -252,23 +276,9 @@ static inline float LittleFloat (const float l) { return FloatSwap(&l); }
 #define	MAC_STATIC // bk: FIXME
 #define ID_INLINE inline 
 
-#ifdef __i386__
-#define	CPUSTRING	"linux-i386"
-#elif defined __axp__
-#define	CPUSTRING	"linux-alpha"
-#else
-#define	CPUSTRING	"linux-other"
-#endif
+#define	CPUSTRING	OSTYPE "-" CPU_STRING BUILD_DEBUG
 
 #define	PATH_SEP '/'
-
-// bk001205 - try
-#ifdef Q3_STATIC
-#define	GAME_HARD_LINKED
-#define	CGAME_HARD_LINKED
-#define	UI_HARD_LINKED
-#define	BOTLIB_HARD_LINKED
-#endif
 
 #if !idppc
 inline static short BigShort( short l) { return ShortSwap(l); }
@@ -296,17 +306,9 @@ inline static float LittleFloat (const float *l) { return FloatSwap(l); }
 #define MAC_STATIC
 #define ID_INLINE inline 
 
-#ifdef __i386__
-#define CPUSTRING       "freebsd-i386"
-#elif defined __axp__
-#define CPUSTRING       "freebsd-alpha"
-#else
-#define CPUSTRING       "freebsd-other"
-#endif
+#define	CPUSTRING	OSTYPE "-" CPU_STRING BUILD_DEBUG
 
 #define	PATH_SEP '/'
-
-// bk010116 - omitted Q3STATIC (see Linux above), broken target
 
 #if !idppc
 static short BigShort( short l) { return ShortSwap(l); }
