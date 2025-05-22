@@ -362,7 +362,6 @@ add_subdirectory(botlib)
 add_subdirectory(cgame)
 add_subdirectory(game)
 add_subdirectory(ui)
-add_subdirectory(splines)
 
 # Client
 file(GLOB CLIENT_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/client/*.c)
