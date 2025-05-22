@@ -19,7 +19,7 @@ endif()
 include(CheckCXXCompilerFlag)
 include(GNUInstallDirs OPTIONAL RESULT_VARIABLE GNUINSTALLDIRS)
 
-option(MISSIONPACK	"Build the team arena expansion pack" ON)
+option(MISSIONPACK	"Build the team arena expansion pack" OFF)
 option(DEDICATED	"Build the dedicated server" OFF)
 option(ONATIVE		"Optimize for the host CPU" OFF)
 option(HARDLINK_GAME "Compile gamecode into executable (no game DLLs)" OFF)
@@ -135,6 +135,10 @@ endif()
 
 if(HARDLINK_GAME)
 	add_definitions(-DQ3_STATIC)
+endif()
+
+if(MISSIONPACK)
+	add_definitions(-DMISSIONPACK)
 endif()
 
 set(OUTPUT_FOLDER ${CMAKE_SOURCE_DIR}/../build/${os})
