@@ -154,8 +154,6 @@ struct gentity_s {
 
 	int			count;
 
-	vec3_t		dl_color;
-
 	gentity_t	*chain;
 	gentity_t	*enemy;
 	gentity_t	*activator;

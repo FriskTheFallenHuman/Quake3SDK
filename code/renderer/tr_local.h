@@ -55,15 +55,7 @@ long myftol( float f );
 #define MAX_STATE_NAME 32
 
 // can't be increased without changing bit packing for drawsurfs
-typedef struct corona_s {
-	vec3_t origin;
-	vec3_t color;               // range from 0.0 to 1.0, should be color normalized
-	vec3_t transformed;         // origin in local coordinate system
-	float scale;                // uses r_flaresize as the baseline (1.0)
-	int id;
-	int flags;                  // '1' is 'visible'
-	// still send the corona request, even if not visible, for proper fading
-} corona_t;
+
 
 typedef struct dlight_s {
 	vec3_t	origin;
@@ -458,9 +450,6 @@ typedef struct {
 
 	int			num_dlights;
 	struct dlight_s	*dlights;
-
-	int			num_coronas;
-	struct corona_s* coronas;
 
 	int			numPolys;
 	struct srfPoly_s	*polys;
@@ -1421,9 +1410,7 @@ SCENE GENERATION
 */
 
 void R_ToggleSmpFrame( void );
-//----(SA)
-void RE_AddCoronaToScene(const vec3_t org, float r, float g, float b, float scale, int id, int flags);
-//----(SA)
+
 void RE_ClearScene( void );
 void RE_AddRefEntityToScene( const refEntity_t *ent );
 void RE_AddPolyToScene( qhandle_t hShader , int numVerts, const polyVert_t *verts, int num );
@@ -1565,7 +1552,6 @@ typedef enum {
 typedef struct {
 	drawSurf_t	drawSurfs[MAX_DRAWSURFS];
 	dlight_t	dlights[MAX_DLIGHTS];
-	corona_t coronas[MAX_CORONAS];          //----(SA)
 	trRefEntity_t	entities[MAX_ENTITIES];
 	srfPoly_t	*polys;//[MAX_POLYS];
 	polyVert_t	*polyVerts;//[MAX_POLYVERTS];

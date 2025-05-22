@@ -116,8 +116,7 @@ field_t fields[] = {
 	{"angle", FOFS(s.angles), F_ANGLEHACK},
 	{"targetShaderName", FOFS(targetShaderName), F_LSTRING},
 	{"targetShaderNewName", FOFS(targetShaderNewName), F_LSTRING},
-	{"_color",       FOFS(dl_color),     F_VECTOR},      // color of the light	(the underscore is inserted by the color picker in QER)
-	{"color",        FOFS(dl_color),     F_VECTOR},      // color of the light
+
 	{NULL}
 };
 
@@ -194,8 +193,6 @@ void SP_team_neutralobelisk( gentity_t *ent );
 #endif
 void SP_item_botroam( gentity_t *ent ) {};
 
-void SP_corona(gentity_t* ent);
-
 spawn_t	spawns[] = {
 	// info entities don't do anything at all, but provide positional
 	// information for things controlled by other processes
@@ -261,8 +258,6 @@ spawn_t	spawns[] = {
 
 	{"team_CTF_redspawn", SP_team_CTF_redspawn},
 	{"team_CTF_bluespawn", SP_team_CTF_bluespawn},
-
-	{"corona",       SP_corona},
 
 #ifdef MISSIONPACK
 	{"team_redobelisk", SP_team_redobelisk},
