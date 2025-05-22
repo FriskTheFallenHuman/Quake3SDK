@@ -1,4 +1,5 @@
 Quake 3 SDK
+   * Removed botlib code so anybody can implement their own.
    * The depot includes the GPL source code(modified, vm code is removed Quake 3 DLL's are now loaded by default and have proper function pointers).
    * All SDK related files are included(map source that was included in the original point release for the 3 maps in the demo).
    * The Quake 3 DEMO files are in the baseq3.

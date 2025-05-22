@@ -95,7 +95,6 @@ int serverStatusCount;
 	void hA3Dg_ExportRenderGeom (refexport_t *incoming_re);
 #endif
 
-extern void SV_BotFrame( int time );
 void CL_CheckForResend( void );
 void CL_ShowIP_f(void);
 void CL_ServerStatus_f(void);
@@ -213,7 +212,6 @@ void CL_StopRecord_f( void ) {
 	FS_FCloseFile (clc.demofile);
 	clc.demofile = 0;
 	clc.demorecording = qfalse;
-	clc.spDemoRecording = qfalse;
 	Com_Printf ("Stopped demo.\n");
 }
 
@@ -268,9 +266,7 @@ void CL_Record_f( void ) {
 	}
 
 	if ( clc.demorecording ) {
-		if (!clc.spDemoRecording) {
-			Com_Printf ("Already recording.\n");
-		}
+		Com_Printf ("Already recording.\n");
 		return;
 	}
 
@@ -312,12 +308,6 @@ void CL_Record_f( void ) {
 		return;
 	}
 	clc.demorecording = qtrue;
-	if (Cvar_VariableValue("ui_recordSPDemo")) {
-	  clc.spDemoRecording = qtrue;
-	} else {
-	  clc.spDemoRecording = qfalse;
-	}
-
 
 	Q_strncpyz( clc.demoName, demoName, sizeof( clc.demoName ) );
 
@@ -996,7 +986,6 @@ CL_Disconnect_f
 */
 void CL_Disconnect_f( void ) {
 	SCR_StopCinematic();
-	Cvar_Set("ui_singlePlayerActive", "0");
 	if ( cls.state != CA_DISCONNECTED && cls.state != CA_CINEMATIC ) {
 		Com_Error (ERR_DISCONNECT, "Disconnected from server");
 	}
@@ -1014,7 +1003,6 @@ void CL_Reconnect_f( void ) {
 		Com_Printf( "Can't reconnect to localhost.\n" );
 		return;
 	}
-	Cvar_Set("ui_singlePlayerActive", "0");
 	Cbuf_AddText( va("connect %s\n", cls.servername ) );
 }
 
@@ -1031,8 +1019,6 @@ void CL_Connect_f( void ) {
 		Com_Printf( "usage: connect [server]\n");
 		return;	
 	}
-
-	Cvar_Set("ui_singlePlayerActive", "0");
 
 	// fire a message off to the motd server
 	CL_RequestMotd();

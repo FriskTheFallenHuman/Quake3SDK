@@ -368,7 +368,7 @@ void SVC_Info( netadr_t from ) {
 	char	infostring[MAX_INFO_STRING];
 
 	// ignore if we are in single player
-	if ( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER || Cvar_VariableValue("ui_singlePlayerActive")) {
+	if ( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER ) {
 		return;
 	}
 
@@ -626,10 +626,6 @@ void SV_CalcPings( void ) {
 			cl->ping = 999;
 			continue;
 		}
-		if ( cl->gentity->r.svFlags & SVF_BOT ) {
-			cl->ping = 0;
-			continue;
-		}
 
 		total = 0;
 		count = 0;
@@ -722,7 +718,7 @@ qboolean SV_CheckPaused( void ) {
 	// only pause if there is just a single client connected
 	count = 0;
 	for (i=0,cl=svs.clients ; i < sv_maxclients->integer ; i++,cl++) {
-		if ( cl->state >= CS_CONNECTED && cl->netchan.remoteAddress.type != NA_BOT ) {
+		if ( cl->state >= CS_CONNECTED ) {
 			count++;
 		}
 	}
@@ -775,8 +771,6 @@ void SV_Frame( int msec ) {
 
 	sv.timeResidual += msec;
 
-	if (!com_dedicated->integer) SV_BotFrame( svs.time + sv.timeResidual );
-
 	if ( com_dedicated->integer && sv.timeResidual < frameMsec ) {
 		// NET_Sleep will give the OS time slices until either get a packet
 		// or time enough for a server frame has gone by
@@ -824,8 +818,6 @@ void SV_Frame( int msec ) {
 
 	// update ping based on the all received frames
 	SV_CalcPings();
-
-	if (com_dedicated->integer) SV_BotFrame( svs.time );
 
 	// run the game simulation in chunks
 	while ( sv.timeResidual >= frameMsec ) {

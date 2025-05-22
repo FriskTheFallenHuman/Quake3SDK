@@ -32,14 +32,13 @@ MAIN MENU
 #include "ui_local.h"
 
 
-#define ID_SINGLEPLAYER			10
-#define ID_MULTIPLAYER			11
-#define ID_SETUP				12
-#define ID_DEMOS				13
-#define ID_CINEMATICS			14
-#define ID_TEAMARENA		15
-#define ID_MODS					16
-#define ID_EXIT					17
+#define ID_MULTIPLAYER			10
+#define ID_SETUP				11
+#define ID_DEMOS				12
+#define ID_CINEMATICS			13
+#define ID_TEAMARENA			14
+#define ID_MODS					15
+#define ID_EXIT					16
 
 #define MAIN_BANNER_MODEL				"models/mapobjects/banner/banner5.md3"
 #define MAIN_MENU_VERTICAL_SPACING		34
@@ -48,7 +47,6 @@ MAIN MENU
 typedef struct {
 	menuframework_s	menu;
 
-	menutext_s		singleplayer;
 	menutext_s		multiplayer;
 	menutext_s		setup;
 	menutext_s		demos;
@@ -96,10 +94,6 @@ void Main_MenuEvent (void* ptr, int event) {
 	}
 
 	switch( ((menucommon_s*)ptr)->id ) {
-	case ID_SINGLEPLAYER:
-		UI_SPLevelMenu();
-		break;
-
 	case ID_MULTIPLAYER:
 		UI_ArenaServersMenu();
 		break;
@@ -311,17 +305,6 @@ void UI_MainMenu( void ) {
 	s_main.menu.showlogo = qtrue;
 
 	y = 134;
-	s_main.singleplayer.generic.type		= MTYPE_PTEXT;
-	s_main.singleplayer.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
-	s_main.singleplayer.generic.x			= 320;
-	s_main.singleplayer.generic.y			= y;
-	s_main.singleplayer.generic.id			= ID_SINGLEPLAYER;
-	s_main.singleplayer.generic.callback	= Main_MenuEvent; 
-	s_main.singleplayer.string				= "SINGLE PLAYER";
-	s_main.singleplayer.color				= color_red;
-	s_main.singleplayer.style				= style;
-
-	y += MAIN_MENU_VERTICAL_SPACING;
 	s_main.multiplayer.generic.type			= MTYPE_PTEXT;
 	s_main.multiplayer.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
 	s_main.multiplayer.generic.x			= 320;
@@ -401,7 +384,6 @@ void UI_MainMenu( void ) {
 	s_main.exit.color						= color_red;
 	s_main.exit.style						= style;
 
-	Menu_AddItem( &s_main.menu,	&s_main.singleplayer );
 	Menu_AddItem( &s_main.menu,	&s_main.multiplayer );
 	Menu_AddItem( &s_main.menu,	&s_main.setup );
 	Menu_AddItem( &s_main.menu,	&s_main.demos );

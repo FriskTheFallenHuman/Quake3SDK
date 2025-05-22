@@ -69,7 +69,7 @@ functions imported from the main executable
 ==================================================================
 */
 
-#define	CGAME_IMPORT_API_VERSION	1001
+#define	CGAME_IMPORT_API_VERSION	8
 
 typedef struct {
     void (*Print)(const char* fmt);
@@ -143,11 +143,6 @@ typedef struct {
     int (*Key_GetCatcher)(void);
     void (*Key_SetCatcher)(int catcher);
     int (*Key_GetKey)(const char* binding);
-    int (*PC_AddGlobalDefine)(char* define);
-    int (*PC_LoadSource)(const char* filename);
-    int (*PC_FreeSource)(int handle);
-    int (*PC_ReadToken)(int handle, pc_token_t* pc_token);
-    int (*PC_SourceFileAndLine)(int handle, char* filename, int* line);
     void (*S_StopBackgroundTrack)(void);
     int (*RealTime)(qtime_t* qtime);
     int (*CIN_PlayCinematic)(const char* arg0, int xpos, int ypos, int width, int height, int bits);

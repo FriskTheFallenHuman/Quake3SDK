@@ -358,7 +358,6 @@ endif()
 
 set(ENGINE_DEPENDENCIES)
 
-add_subdirectory(botlib)
 add_subdirectory(cgame)
 add_subdirectory(game)
 add_subdirectory(ui)
@@ -377,10 +376,26 @@ source_group( "CM" FILES ${CM_HEADERS} )
 
 # QCommon (Engine)
 file(GLOB QCOMMON_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/*.c)
-list(REMOVE_ITEM QCOMMON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_math.c ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.c )
+list(REMOVE_ITEM QCOMMON_SOURCES
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_math.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_crc.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_libvar.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_memory.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_precomp.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_script.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_struct.c)
 source_group( "Common" FILES ${QCOMMON_SOURCES} )
 file(GLOB QCOMMON_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/*.h)
-list(REMOVE_ITEM QCOMMON_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.h )
+list(REMOVE_ITEM QCOMMON_HEADERS
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_crc.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_libvar.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_memory.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_precomp.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_script.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_struct.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_utils.h)
 source_group( "Common" FILES ${QCOMMON_HEADERS} )
 
 # Renderer
@@ -424,9 +439,25 @@ elseif(APPLE)
 endif()
 
 # Qcommon (Library)
-set(QCOMMON_LIB_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_math.c ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.c)
+set(QCOMMON_LIB_SOURCES
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_math.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_crc.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_libvar.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_memory.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_precomp.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_script.c
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_struct.c)
 source_group( "Common" FILES ${QCOMMON_LIB_SOURCES} )
-set(QCOMMON_LIB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.h)
+set(QCOMMON_LIB_HEADERS
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_crc.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_libvar.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_memory.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_precomp.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_script.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_struct.h
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_utils.h)
 source_group( "Common" FILES ${QCOMMON_LIB_HEADERS} )
 add_library(qcommon STATIC ${QCOMMON_LIB_SOURCES} ${QCOMMON_LIB_HEADERS})
 
@@ -448,11 +479,11 @@ set(ENGINE_SOURCES
 
 add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${ENGINE_SOURCES})
 if(HARDLINK_GAME)
-	add_dependencies(${PROJECT_NAME} qcommon botlib cgame game ui splines)
-	target_link_libraries(${PROJECT_NAME} PRIVATE ${SYS_LIBS} qcommon botlib cgame game ui splines)
+	add_dependencies(${PROJECT_NAME} qcommon cgame game ui splines)
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${SYS_LIBS} qcommon cgame game ui splines)
 else()
-	add_dependencies(${PROJECT_NAME} qcommon botlib)
-	target_link_libraries(${PROJECT_NAME} PRIVATE ${SYS_LIBS} qcommon botlib)
+	add_dependencies(${PROJECT_NAME} qcommon)
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${SYS_LIBS} qcommon)
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
 if(MSVC)

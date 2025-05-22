@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // q_shared.h -- included first by ALL program modules.
 // A user mod should never modify this file
 
-#define	Q3_VERSION		"Q3 1.33"
+#define	Q3_VERSION		"Q3 SDK 1.34"
 // 1.33 - wip 
 // 1.32 released 7-10-2002
 
@@ -190,6 +190,7 @@ static ID_INLINE float BigFloat(const float *l) { FloatSwap(l); }
 #define LittleFloat
 
 #define	PATH_SEP '\\'
+#define	PATH_SEP_STR "\\"
 
 #endif
 
@@ -206,6 +207,7 @@ static ID_INLINE float BigFloat(const float *l) { FloatSwap(l); }
 #define	CPUSTRING	OSTYPE "-" CPU_STRING BUILD_DEBUG
 
 #define	PATH_SEP	'/'
+#define	PATH_SEP_STR "/"
 
 #define __rlwimi(out, in, shift, maskBegin, maskEnd) asm("rlwimi %0,%1,%2,%3,%4" : "=r" (out) : "r" (in), "i" (shift), "i" (maskBegin), "i" (maskEnd))
 #define __dcbt(addr, offset) asm("dcbt %0,%1" : : "b" (addr), "r" (offset))
@@ -252,6 +254,7 @@ static inline float LittleFloat (const float l) { return FloatSwap(&l); }
 #define	CPUSTRING	OSTYPE "-" CPU_STRING BUILD_DEBUG
 
 #define	PATH_SEP ':'
+#define	PATH_SEP_STR ":"
 
 void Sys_PumpEvents( void );
 
@@ -279,6 +282,7 @@ static inline float LittleFloat (const float l) { return FloatSwap(&l); }
 #define	CPUSTRING	OSTYPE "-" CPU_STRING BUILD_DEBUG
 
 #define	PATH_SEP '/'
+#define	PATH_SEP_STR "/"
 
 #if !idppc
 inline static short BigShort( short l) { return ShortSwap(l); }
@@ -309,6 +313,7 @@ inline static float LittleFloat (const float *l) { return FloatSwap(l); }
 #define	CPUSTRING	OSTYPE "-" CPU_STRING BUILD_DEBUG
 
 #define	PATH_SEP '/'
+#define	PATH_SEP_STR "/"
 
 #if !idppc
 static short BigShort( short l) { return ShortSwap(l); }

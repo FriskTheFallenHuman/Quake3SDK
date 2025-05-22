@@ -138,7 +138,7 @@ Restart the server on a different map
 static void SV_Map_f( void ) {
 	char		*cmd;
 	char		*map;
-	qboolean	killBots, cheat;
+	qboolean	cheat;
 	char		expanded[MAX_QPATH];
 	char		mapname[MAX_QPATH];
 
@@ -159,26 +159,13 @@ static void SV_Map_f( void ) {
 	Cvar_Get ("g_gametype", "0", CVAR_SERVERINFO | CVAR_USERINFO | CVAR_LATCH );
 
 	cmd = Cmd_Argv(0);
-	if( Q_stricmpn( cmd, "sp", 2 ) == 0 ) {
-		Cvar_SetValue( "g_gametype", GT_SINGLE_PLAYER );
-		Cvar_SetValue( "g_doWarmup", 0 );
-		// may not set sv_maxclients directly, always set latched
-		Cvar_SetLatched( "sv_maxclients", "8" );
-		cmd += 2;
+	if ( !Q_stricmp( cmd, "devmap" ) ) {
+		cheat = qtrue;
+	} else {
 		cheat = qfalse;
-		killBots = qtrue;
 	}
-	else {
-		if ( !Q_stricmp( cmd, "devmap" ) || !Q_stricmp( cmd, "spdevmap" ) ) {
-			cheat = qtrue;
-			killBots = qtrue;
-		} else {
-			cheat = qfalse;
-			killBots = qfalse;
-		}
-		if( sv_gametype->integer == GT_SINGLE_PLAYER ) {
-			Cvar_SetValue( "g_gametype", GT_FFA );
-		}
+	if( sv_gametype->integer == GT_SINGLE_PLAYER ) {
+		Cvar_SetValue( "g_gametype", GT_FFA );
 	}
 
 	// save the map name here cause on a map restart we reload the q3config.cfg
@@ -186,7 +173,7 @@ static void SV_Map_f( void ) {
 	Q_strncpyz(mapname, map, sizeof(mapname));
 
 	// start up the map
-	SV_SpawnServer( mapname, killBots );
+	SV_SpawnServer( mapname );
 
 	// set the cheat value
 	// if the level was started with "map <levelname>", then
@@ -211,7 +198,6 @@ static void SV_MapRestart_f( void ) {
 	int			i;
 	client_t	*client;
 	char		*denied;
-	qboolean	isBot;
 	int			delay;
 
 	// make sure we aren't restarting twice in the same frame
@@ -250,7 +236,7 @@ static void SV_MapRestart_f( void ) {
 		// restart the map the slow way
 		Q_strncpyz( mapname, Cvar_VariableString( "mapname" ), sizeof( mapname ) );
 
-		SV_SpawnServer( mapname, qfalse );
+		SV_SpawnServer( mapname );
 		return;
 	}
 
@@ -289,17 +275,11 @@ static void SV_MapRestart_f( void ) {
 			continue;
 		}
 
-		if ( client->netchan.remoteAddress.type == NA_BOT ) {
-			isBot = qtrue;
-		} else {
-			isBot = qfalse;
-		}
-
 		// add the map_restart command
 		SV_AddServerCommand( client, "map_restart\n" );
 
 		// connect the client again, without the firstTime flag
-		denied = game->ClientConnect(i, qfalse, isBot); 
+		denied = game->ClientConnect(i, qfalse); 
 		if ( denied ) {
 			// this generally shouldn't happen, because the client
 			// was connected before the level change
@@ -338,7 +318,7 @@ static void SV_Kick_f( void ) {
 	}
 
 	if ( Cmd_Argc() != 2 ) {
-		Com_Printf ("Usage: kick <player name>\nkick all = kick everyone\nkick allbots = kick all bots\n");
+		Com_Printf ("Usage: kick <player name>\nkick all = kick everyone\n");
 		return;
 	}
 
@@ -350,18 +330,6 @@ static void SV_Kick_f( void ) {
 					continue;
 				}
 				if( cl->netchan.remoteAddress.type == NA_LOOPBACK ) {
-					continue;
-				}
-				SV_DropClient( cl, "was kicked" );
-				cl->lastPacketTime = svs.time;	// in case there is a funny zombie
-			}
-		}
-		else if ( !Q_stricmp(Cmd_Argv(1), "allbots") ) {
-			for ( i=0, cl=svs.clients ; i < sv_maxclients->integer ; i++,cl++ ) {
-				if ( !cl->state ) {
-					continue;
-				}
-				if( cl->netchan.remoteAddress.type != NA_BOT ) {
 					continue;
 				}
 				SV_DropClient( cl, "was kicked" );
@@ -729,8 +697,6 @@ void SV_AddOperatorCommands( void ) {
 	Cmd_AddCommand ("map", SV_Map_f);
 #ifndef PRE_RELEASE_DEMO
 	Cmd_AddCommand ("devmap", SV_Map_f);
-	Cmd_AddCommand ("spmap", SV_Map_f);
-	Cmd_AddCommand ("spdevmap", SV_Map_f);
 #endif
 	Cmd_AddCommand ("killserver", SV_KillServer_f);
 	if( com_dedicated->integer ) {

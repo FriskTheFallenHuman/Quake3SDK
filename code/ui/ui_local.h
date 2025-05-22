@@ -27,9 +27,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../renderer/tr_types.h"
 //NOTE: include the ui_public.h from the new UI
 #include "../ui/ui_public.h" // bk001205 - yes, do have to use this
-//redefine to old API version
-#undef UI_API_VERSION
-#define UI_API_VERSION	4
 #include "keycodes.h"
 #include "../game/bg_public.h"
 
@@ -50,17 +47,6 @@ extern vmCvar_t	ui_ctf_timelimit;
 extern vmCvar_t	ui_ctf_friendly;
 
 extern vmCvar_t	ui_arenasFile;
-extern vmCvar_t	ui_botsFile;
-extern vmCvar_t	ui_spScores1;
-extern vmCvar_t	ui_spScores2;
-extern vmCvar_t	ui_spScores3;
-extern vmCvar_t	ui_spScores4;
-extern vmCvar_t	ui_spScores5;
-extern vmCvar_t	ui_spAwards;
-extern vmCvar_t	ui_spVideos;
-extern vmCvar_t	ui_spSkill;
-
-extern vmCvar_t	ui_spSelection;
 
 extern vmCvar_t	ui_browserMaster;
 extern vmCvar_t	ui_browserGameType;
@@ -430,8 +416,6 @@ extern void ArenaServers_Cache( void );
 extern void UI_StartServerMenu( qboolean multiplayer );
 extern void StartServer_Cache( void );
 extern void ServerOptions_Cache( void );
-extern void UI_BotSelectMenu( char *bot );
-extern void UI_BotSelectMenu_Cache( void );
 
 //
 // ui_serverinfo.c
@@ -590,31 +574,6 @@ extern qboolean		m_entersound;
 extern uiStatic_t	uis;
 
 //
-// ui_spLevel.c
-//
-void UI_SPLevelMenu_Cache( void );
-void UI_SPLevelMenu( void );
-void UI_SPLevelMenu_f( void );
-void UI_SPLevelMenu_ReInit( void );
-
-//
-// ui_spArena.c
-//
-void UI_SPArena_Start( const char *arenaInfo );
-
-//
-// ui_spPostgame.c
-//
-void UI_SPPostgameMenu_Cache( void );
-void UI_SPPostgameMenu_f( void );
-
-//
-// ui_spSkill.c
-//
-void UI_SPSkillMenu( const char *arenaInfo );
-void UI_SPSkillMenu_Cache( void );
-
-//
 // ui_syscalls.c
 //
 void			trap_Print( const char *string );
@@ -682,18 +641,6 @@ qboolean               trap_VerifyCDKey( const char *key, const char *chksum); /
 void			trap_SetPbClStatus( int status );
 
 //
-// ui_addbots.c
-//
-void UI_AddBots_Cache( void );
-void UI_AddBotsMenu( void );
-
-//
-// ui_removebots.c
-//
-void UI_RemoveBots_Cache( void );
-void UI_RemoveBotsMenu( void );
-
-//
 // ui_teamorders.c
 //
 extern void UI_TeamOrdersMenu( void );
@@ -746,25 +693,6 @@ const char *UI_GetArenaInfoByNumber( int num );
 const char *UI_GetArenaInfoByMap( const char *map );
 const char *UI_GetSpecialArenaInfo( const char *tag );
 int UI_GetNumArenas( void );
-int UI_GetNumSPArenas( void );
-int UI_GetNumSPTiers( void );
-
-char *UI_GetBotInfoByNumber( int num );
-char *UI_GetBotInfoByName( const char *name );
-int UI_GetNumBots( void );
-
-void UI_GetBestScore( int level, int *score, int *skill );
-void UI_SetBestScore( int level, int score );
-int UI_TierCompleted( int levelWon );
-qboolean UI_ShowTierVideo( int tier );
-qboolean UI_CanShowTierVideo( int tier );
-int  UI_GetCurrentGame( void );
-void UI_NewGame( void );
-void UI_LogAwardData( int award, int data );
-int UI_GetAwardLevel( int award );
-
-void UI_SPUnlock_f( void );
-void UI_SPUnlockMedals_f( void );
 
 void UI_InitGameinfo( void );
 

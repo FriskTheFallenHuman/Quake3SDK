@@ -23,11 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "server.h"
 
-#include "../botlib/botlib.h"
-
 gameExport_t* game;
-static intptr_t dllHandle;
-botlib_export_t	*botlib_export;
+static uintptr_t dllHandle;
 
 void SV_GameError( const char *string ) {
 	Com_Error( ERR_DROP, "%s", string );
@@ -304,7 +301,7 @@ void SV_ShutdownGameProgs( void ) {
 	game->G_ShutdownGame(qfalse);
     Sys_UnloadDll(dllHandle);
     game = NULL;
-    dllHandle = NULL;
+    dllHandle = 0;
 }
 
 /*
@@ -375,9 +372,6 @@ Called on a normal map change, not on a map_restart
 ===============
 */
 void SV_InitGameProgs( void ) {
-	cvar_t	*var;
-	//FIXME these are temp while I make bots run in vm
-	extern int	bot_enable;
 	static gameImport_t gameExports;
 
 	gameExports.Print = Com_Printf;
@@ -416,159 +410,9 @@ void SV_InitGameProgs( void ) {
 	gameExports.UnlinkEntity = SV_UnlinkEntity;
 	gameExports.EntitiesInBox = SV_AreaEntities;
 	gameExports.EntityContact = SV_EntityContact;
-	gameExports.BotAllocateClient = SV_BotAllocateClient;
-	gameExports.BotFreeClient = SV_BotFreeClient;
 	gameExports.GetUsercmd = SV_GetUsercmd;
 	gameExports.GetEntityToken = SV_GetEntityToken;
-	gameExports.DebugPolygonCreate = BotImport_DebugPolygonCreate;
-	gameExports.DebugPolygonDelete = BotImport_DebugPolygonDelete;
 	gameExports.RealTime = Com_RealTime;
-	gameExports.BotLibSetup = SV_BotLibSetup;
-	gameExports.BotLibShutdown = SV_BotLibShutdown;
-	gameExports.BotLibVarSet = botlib_export->BotLibVarSet;
-	gameExports.BotLibVarGet = botlib_export->BotLibVarGet;
-	gameExports.BotLibDefine = botlib_export->PC_AddGlobalDefine;
-	gameExports.BotLibStartFrame = botlib_export->BotLibStartFrame;
-	gameExports.BotLibLoadMap = botlib_export->BotLibLoadMap;
-	gameExports.BotLibUpdateEntity = botlib_export->BotLibUpdateEntity;
-	gameExports.BotLibTest = botlib_export->Test;
-	gameExports.BotGetSnapshotEntity = SV_BotGetSnapshotEntity;
-	gameExports.BotGetServerCommand = SV_BotGetConsoleMessage;
-	gameExports.BotUserCommand = SV_ClientNumThink;
-	gameExports.AAS_EntityInfo = botlib_export->aas.AAS_EntityInfo;
-	gameExports.AAS_Initialized = botlib_export->aas.AAS_Initialized;
-	gameExports.AAS_PresenceTypeBoundingBox = botlib_export->aas.AAS_PresenceTypeBoundingBox;
-	gameExports.AAS_Time = botlib_export->aas.AAS_Time;
-	gameExports.AAS_PointAreaNum = botlib_export->aas.AAS_PointAreaNum;
-	gameExports.AAS_PointReachabilityAreaIndex = botlib_export->aas.AAS_PointReachabilityAreaIndex;
-	gameExports.AAS_TraceAreas = botlib_export->aas.AAS_TraceAreas;
-	gameExports.AAS_BBoxAreas = botlib_export->aas.AAS_BBoxAreas;
-	gameExports.AAS_AreaInfo = botlib_export->aas.AAS_AreaInfo;
-	gameExports.AAS_PointContents = botlib_export->aas.AAS_PointContents;
-	gameExports.AAS_NextBSPEntity = botlib_export->aas.AAS_NextBSPEntity;
-	gameExports.AAS_ValueForBSPEpairKey = botlib_export->aas.AAS_ValueForBSPEpairKey;
-	gameExports.AAS_VectorForBSPEpairKey = botlib_export->aas.AAS_VectorForBSPEpairKey;
-	gameExports.AAS_FloatForBSPEpairKey = botlib_export->aas.AAS_FloatForBSPEpairKey;
-	gameExports.AAS_IntForBSPEpairKey = botlib_export->aas.AAS_IntForBSPEpairKey;
-	gameExports.AAS_AreaReachability = botlib_export->aas.AAS_AreaReachability;
-	gameExports.AAS_AreaTravelTimeToGoalArea = botlib_export->aas.AAS_AreaTravelTimeToGoalArea;
-	gameExports.AAS_EnableRoutingArea = botlib_export->aas.AAS_EnableRoutingArea;
-	gameExports.AAS_PredictRoute = botlib_export->aas.AAS_PredictRoute;
-	gameExports.AAS_AlternativeRouteGoals = botlib_export->aas.AAS_AlternativeRouteGoals;
-	gameExports.AAS_Swimming = botlib_export->aas.AAS_Swimming;
-	gameExports.AAS_PredictClientMovement = botlib_export->aas.AAS_PredictClientMovement;
-	gameExports.EA_Say = botlib_export->ea.EA_Say;
-	gameExports.EA_SayTeam = botlib_export->ea.EA_SayTeam;
-	gameExports.EA_Command = botlib_export->ea.EA_Command;
-	gameExports.EA_Action = botlib_export->ea.EA_Action;
-	gameExports.EA_Gesture = botlib_export->ea.EA_Gesture;
-	gameExports.EA_Talk = botlib_export->ea.EA_Talk;
-	gameExports.EA_Attack = botlib_export->ea.EA_Attack;
-	gameExports.EA_Use = botlib_export->ea.EA_Use;
-	gameExports.EA_Respawn = botlib_export->ea.EA_Respawn;
-	gameExports.EA_Crouch = botlib_export->ea.EA_Crouch;
-	gameExports.EA_MoveUp = botlib_export->ea.EA_MoveUp;
-	gameExports.EA_MoveDown = botlib_export->ea.EA_MoveDown;
-	gameExports.EA_MoveForward = botlib_export->ea.EA_MoveForward;
-	gameExports.EA_MoveBack = botlib_export->ea.EA_MoveBack;
-	gameExports.EA_MoveLeft = botlib_export->ea.EA_MoveLeft;
-	gameExports.EA_MoveRight = botlib_export->ea.EA_MoveRight;
-	gameExports.EA_SelectWeapon = botlib_export->ea.EA_SelectWeapon;
-	gameExports.EA_Jump = botlib_export->ea.EA_Jump;
-	gameExports.EA_DelayedJump = botlib_export->ea.EA_DelayedJump;
-	gameExports.EA_Move = botlib_export->ea.EA_Move;
-	gameExports.EA_View = botlib_export->ea.EA_View;
-	gameExports.EA_EndRegular = botlib_export->ea.EA_EndRegular;
-	gameExports.EA_GetInput = botlib_export->ea.EA_GetInput;
-	gameExports.EA_ResetInput = botlib_export->ea.EA_ResetInput;
-	gameExports.BotLoadCharacter = botlib_export->ai.BotLoadCharacter;
-	gameExports.BotFreeCharacter = botlib_export->ai.BotFreeCharacter;
-	gameExports.Characteristic_Float = botlib_export->ai.Characteristic_Float;
-	gameExports.Characteristic_BFloat = botlib_export->ai.Characteristic_BFloat;
-	gameExports.Characteristic_Integer = botlib_export->ai.Characteristic_Integer;
-	gameExports.Characteristic_BInteger = botlib_export->ai.Characteristic_BInteger;
-	gameExports.Characteristic_String = botlib_export->ai.Characteristic_String;
-	gameExports.BotAllocChatState = botlib_export->ai.BotAllocChatState;
-	gameExports.BotFreeChatState = botlib_export->ai.BotFreeChatState;
-	gameExports.BotQueueConsoleMessage = botlib_export->ai.BotQueueConsoleMessage;
-	gameExports.BotRemoveConsoleMessage = botlib_export->ai.BotRemoveConsoleMessage;
-	gameExports.BotNextConsoleMessage = botlib_export->ai.BotNextConsoleMessage;
-	gameExports.BotNumConsoleMessages = botlib_export->ai.BotNumConsoleMessages;
-	gameExports.BotInitialChat = botlib_export->ai.BotInitialChat;
-	gameExports.BotNumInitialChats = botlib_export->ai.BotNumInitialChats;
-	gameExports.BotReplyChat = botlib_export->ai.BotReplyChat;
-	gameExports.BotChatLength = botlib_export->ai.BotChatLength;
-	gameExports.BotEnterChat = botlib_export->ai.BotEnterChat;
-	gameExports.BotGetChatMessage = botlib_export->ai.BotGetChatMessage;
-	gameExports.StringContains = botlib_export->ai.StringContains;
-	gameExports.BotFindMatch = botlib_export->ai.BotFindMatch;
-	gameExports.BotMatchVariable = botlib_export->ai.BotMatchVariable;
-	gameExports.UnifyWhiteSpaces = botlib_export->ai.UnifyWhiteSpaces;
-	gameExports.BotReplaceSynonyms = botlib_export->ai.BotReplaceSynonyms;
-	gameExports.BotLoadChatFile = botlib_export->ai.BotLoadChatFile;
-	gameExports.BotSetChatGender = botlib_export->ai.BotSetChatGender;
-	gameExports.BotSetChatName = botlib_export->ai.BotSetChatName;
-	gameExports.BotResetGoalState = botlib_export->ai.BotResetGoalState;
-	gameExports.BotResetAvoidGoals = botlib_export->ai.BotResetAvoidGoals;
-	gameExports.BotRemoveFromAvoidGoals = botlib_export->ai.BotRemoveFromAvoidGoals;
-	gameExports.BotPushGoal = botlib_export->ai.BotPushGoal;
-	gameExports.BotPopGoal = botlib_export->ai.BotPopGoal;
-	gameExports.BotEmptyGoalStack = botlib_export->ai.BotEmptyGoalStack;
-	gameExports.BotDumpAvoidGoals = botlib_export->ai.BotDumpAvoidGoals;
-	gameExports.BotDumpGoalStack = botlib_export->ai.BotDumpGoalStack;
-	gameExports.BotGoalName = botlib_export->ai.BotGoalName;
-	gameExports.BotGetTopGoal = botlib_export->ai.BotGetTopGoal;
-	gameExports.BotGetSecondGoal = botlib_export->ai.BotGetSecondGoal;
-	gameExports.BotChooseLTGItem = botlib_export->ai.BotChooseLTGItem;
-	gameExports.BotChooseNBGItem = botlib_export->ai.BotChooseNBGItem;
-	gameExports.BotTouchingGoal = botlib_export->ai.BotTouchingGoal;
-	gameExports.BotItemGoalInVisButNotVisible = botlib_export->ai.BotItemGoalInVisButNotVisible;
-	gameExports.BotGetLevelItemGoal = botlib_export->ai.BotGetLevelItemGoal;
-	gameExports.BotGetNextCampSpotGoal = botlib_export->ai.BotGetNextCampSpotGoal;
-	gameExports.BotGetMapLocationGoal = botlib_export->ai.BotGetMapLocationGoal;
-	gameExports.BotAvoidGoalTime = botlib_export->ai.BotAvoidGoalTime;
-	gameExports.BotSetAvoidGoalTime = botlib_export->ai.BotSetAvoidGoalTime;
-	gameExports.BotInitLevelItems = botlib_export->ai.BotInitLevelItems;
-	gameExports.BotUpdateEntityItems = botlib_export->ai.BotUpdateEntityItems;
-	gameExports.BotLoadItemWeights = botlib_export->ai.BotLoadItemWeights;
-	gameExports.BotFreeItemWeights = botlib_export->ai.BotFreeItemWeights;
-	gameExports.BotInterbreedGoalFuzzyLogic = botlib_export->ai.BotInterbreedGoalFuzzyLogic;
-	gameExports.BotSaveGoalFuzzyLogic = botlib_export->ai.BotSaveGoalFuzzyLogic;
-	gameExports.BotMutateGoalFuzzyLogic = botlib_export->ai.BotMutateGoalFuzzyLogic;
-	gameExports.BotAllocGoalState = botlib_export->ai.BotAllocGoalState;
-	gameExports.BotFreeGoalState = botlib_export->ai.BotFreeGoalState;
-	gameExports.BotResetMoveState = botlib_export->ai.BotResetMoveState;
-	gameExports.BotAddAvoidSpot = botlib_export->ai.BotAddAvoidSpot;
-	gameExports.BotMoveToGoal = botlib_export->ai.BotMoveToGoal;
-	gameExports.BotMoveInDirection = botlib_export->ai.BotMoveInDirection;
-	gameExports.BotResetAvoidReach = botlib_export->ai.BotResetAvoidReach;
-	gameExports.BotResetLastAvoidReach = botlib_export->ai.BotResetLastAvoidReach;
-	gameExports.BotReachabilityArea = botlib_export->ai.BotReachabilityArea;
-	gameExports.BotMovementViewTarget = botlib_export->ai.BotMovementViewTarget;
-	gameExports.BotPredictVisiblePosition = botlib_export->ai.BotPredictVisiblePosition;
-	gameExports.BotAllocMoveState = botlib_export->ai.BotAllocMoveState;
-	gameExports.BotFreeMoveState = botlib_export->ai.BotFreeMoveState;
-	gameExports.BotInitMoveState = botlib_export->ai.BotInitMoveState;
-	gameExports.BotChooseBestFightWeapon = botlib_export->ai.BotChooseBestFightWeapon;
-	gameExports.BotGetWeaponInfo = botlib_export->ai.BotGetWeaponInfo;
-	gameExports.BotLoadWeaponWeights = botlib_export->ai.BotLoadWeaponWeights;
-	gameExports.BotAllocWeaponState = botlib_export->ai.BotAllocWeaponState;
-	gameExports.BotFreeWeaponState = botlib_export->ai.BotFreeWeaponState;
-	gameExports.BotResetWeaponState = botlib_export->ai.BotResetWeaponState;
-	gameExports.GeneticParentsAndChildSelection = botlib_export->ai.GeneticParentsAndChildSelection;
-	gameExports.PC_LoadSource = botlib_export->PC_LoadSourceHandle;
-	gameExports.PC_FreeSource = botlib_export->PC_FreeSourceHandle;
-	gameExports.PC_ReadToken = botlib_export->PC_ReadTokenHandle;
-	gameExports.PC_SourceFileAndLine = botlib_export->PC_SourceFileAndLine;
-
-
-	var = Cvar_Get( "bot_enable", "1", CVAR_LATCH );
-	if ( var ) {
-		bot_enable = var->integer;
-	}
-	else {
-		bot_enable = 0;
-	}
 
     // load the dll
     dllHandle = Sys_DLL_Load("qagame");

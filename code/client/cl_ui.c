@@ -22,12 +22,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "client.h"
 
-#include "../botlib/botlib.h"
-
-extern	botlib_export_t	*botlib_export;
-
 uiExport_t* ui;
-static intptr_t dllHandle = NULL;
+static uintptr_t dllHandle;
 
 /*
 ====================
@@ -758,7 +754,7 @@ void CL_ShutdownUI( void ) {
 	}
 	Sys_UnloadDll(dllHandle);
 	ui = NULL;
-	dllHandle = NULL;
+	dllHandle = 0;
 }
 
 /*
@@ -769,7 +765,6 @@ CL_InitUI
 #define UI_OLD_API_VERSION	4
 
 void CL_InitUI( void ) {
-	int		v;
 	static uiImport_t			uiExport;
 
 	uiExport.Com_Error = Com_Error;
@@ -852,12 +847,6 @@ void CL_InitUI( void ) {
 	uiExport.CIN_SetExtents = CIN_SetExtents;
 	uiExport.re_RemapShader = re.RemapShader;
 	uiExport.CL_CDKeyValidate = CL_CDKeyValidate;
-	uiExport.botlib_export_PC_AddGlobalDefine = botlib_export->PC_AddGlobalDefine;
-	uiExport.botlib_export_PC_LoadSourceHandle = botlib_export->PC_LoadSourceHandle;
-	uiExport.botlib_export_PC_FreeSourceHandle = botlib_export->PC_FreeSourceHandle;
-	uiExport.botlib_export_PC_ReadTokenHandle = botlib_export->PC_ReadTokenHandle;
-	uiExport.botlib_export_PC_SourceFileAndLine = botlib_export->PC_SourceFileAndLine;
-
 
 	// load the dll
 	dllHandle = Sys_DLL_Load("ui");

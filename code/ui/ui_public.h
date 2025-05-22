@@ -23,7 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __UI_PUBLIC_H__
 #define __UI_PUBLIC_H__
 
-#define UI_API_VERSION	6
+#define UI_API_VERSION	8
 
 typedef struct {
 	connstate_t		connState;
@@ -115,11 +115,6 @@ typedef struct {
 	void (*CIN_SetExtents)(int handle, int x, int y, int w, int h);
 	void (*re_RemapShader)(const char* oldShader, const char* newShader, const char* timeOffset);
 	qboolean(*CL_CDKeyValidate)(const char* key, const char* chksum);
-	int (*botlib_export_PC_AddGlobalDefine)(char* define);
-	int (*botlib_export_PC_LoadSourceHandle)(const char* filename);
-	int (*botlib_export_PC_FreeSourceHandle)(int handle);
-	int (*botlib_export_PC_ReadTokenHandle)(int handle, pc_token_t* pc_token);
-	int (*botlib_export_PC_SourceFileAndLine)(int handle, char* filename, int* line);
 } uiImport_t;
 
 typedef enum {

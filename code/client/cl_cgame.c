@@ -23,12 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "client.h"
 
-#include "../botlib/botlib.h"
-
 cgameExport_t* cgame;
-static intptr_t dllHandle = NULL;
-
-extern	botlib_export_t	*botlib_export;
+static uintptr_t dllHandle;
 
 extern qboolean loadCamera(const char *name);
 extern void startCamera(int time);
@@ -397,7 +393,7 @@ void CL_ShutdownCGame( void ) {
 	}
 	Sys_UnloadDll(dllHandle);
 	cgame = NULL;
-	dllHandle = NULL;
+	dllHandle = 0;
 }
 
 /*
@@ -484,11 +480,6 @@ void CL_InitCGame( void ) {
 	cgExports.Key_GetCatcher = Key_GetCatcher;
 	cgExports.Key_SetCatcher = Key_SetCatcher;
 	cgExports.Key_GetKey = Key_GetKey;
-	cgExports.PC_AddGlobalDefine = botlib_export->PC_AddGlobalDefine;
-	cgExports.PC_LoadSource = botlib_export->PC_LoadSourceHandle;
-	cgExports.PC_FreeSource = botlib_export->PC_FreeSourceHandle;
-	cgExports.PC_ReadToken = botlib_export->PC_ReadTokenHandle;
-	cgExports.PC_SourceFileAndLine = botlib_export->PC_SourceFileAndLine;
 	cgExports.S_StopBackgroundTrack = S_StopBackgroundTrack;
 	cgExports.RealTime = Com_RealTime;
 	cgExports.CIN_PlayCinematic = CIN_PlayCinematic;

@@ -125,7 +125,6 @@ NET
 #define	MAX_RELIABLE_COMMANDS	64			// max string commands buffered for restransmit
 
 typedef enum {
-	NA_BOT,
 	NA_BAD,					// an address lookup failed
 	NA_LOOPBACK,
 	NA_BROADCAST,
@@ -697,7 +696,7 @@ extern	fileHandle_t	com_journalDataFile;
 typedef enum {
 	TAG_FREE,
 	TAG_GENERAL,
-	TAG_BOTLIB,
+	TAG_UTILS,
 	TAG_RENDERER,
 	TAG_SMALL,
 	TAG_STATIC
@@ -897,10 +896,6 @@ void	*Sys_GetCGameAPI( void );
 
 void	Sys_UnloadUI( void );
 void	*Sys_GetUIAPI( void );
-
-//bot libraries
-void	Sys_UnloadBotLib( void );
-void	*Sys_GetBotLibAPI( void *parms );
 
 char	*Sys_GetCurrentUser( void );
 

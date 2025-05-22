@@ -36,9 +36,8 @@ TEAM ORDERS MENU
 #define ART_BACK0		"menu/art/back_0"
 #define ART_BACK1		"menu/art/back_1"	
 
-#define ID_LIST_BOTS		10
-#define ID_LIST_CTF_ORDERS	11
-#define ID_LIST_TEAM_ORDERS	12
+#define ID_LIST_CTF_ORDERS	10
+#define ID_LIST_TEAM_ORDERS	11
 
 
 typedef struct {
@@ -124,12 +123,6 @@ UI_TeamOrdersMenu_SetList
 static void UI_TeamOrdersMenu_SetList( int id ) {
 	switch( id ) {
 	default:
-	case ID_LIST_BOTS:
-		teamOrdersMenuInfo.list.generic.id = id;
-		teamOrdersMenuInfo.list.numitems = teamOrdersMenuInfo.numBots;
-		teamOrdersMenuInfo.list.itemnames = (const char **)teamOrdersMenuInfo.bots;
-		 break;
-
 	case ID_LIST_CTF_ORDERS:
 		teamOrdersMenuInfo.list.generic.id = id;
 		teamOrdersMenuInfo.list.numitems = NUM_CTF_ORDERS;
@@ -262,17 +255,6 @@ static void UI_TeamOrdersMenu_ListEvent( void *ptr, int event ) {
 	id = ((menulist_s *)ptr)->generic.id;
 	selection = ((menulist_s *)ptr)->curvalue;
 
-	if( id == ID_LIST_BOTS ) {
-		teamOrdersMenuInfo.selectedBot = selection;
-		if( teamOrdersMenuInfo.gametype == GT_CTF ) {
-			UI_TeamOrdersMenu_SetList( ID_LIST_CTF_ORDERS );
-		}
-		else {
-			UI_TeamOrdersMenu_SetList( ID_LIST_TEAM_ORDERS );
-		}
-		return;
-	}
-
 	if( id == ID_LIST_CTF_ORDERS ) {
 		Com_sprintf( message, sizeof(message), ctfMessages[selection], teamOrdersMenuInfo.botNames[teamOrdersMenuInfo.selectedBot] );
 	}
@@ -393,7 +375,7 @@ static void UI_TeamOrdersMenu_Init( void ) {
 	teamOrdersMenuInfo.list.generic.left = 220;
 	teamOrdersMenuInfo.list.generic.top = teamOrdersMenuInfo.list.generic.y;
 	teamOrdersMenuInfo.list.generic.right = 420;
-	UI_TeamOrdersMenu_SetList( ID_LIST_BOTS );
+	UI_TeamOrdersMenu_SetList( ID_LIST_CTF_ORDERS );
 }
 
 

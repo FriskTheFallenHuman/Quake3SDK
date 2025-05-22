@@ -346,26 +346,6 @@ int trap_Key_GetKey(const char* binding) {
     return cgSyscall->Key_GetKey(binding);
 }
 
-int trap_PC_AddGlobalDefine(char* define) {
-    return cgSyscall->PC_AddGlobalDefine(define);
-}
-
-int trap_PC_LoadSource(const char* filename) {
-    return cgSyscall->PC_LoadSource(filename);
-}
-
-int trap_PC_FreeSource(int handle) {
-    return cgSyscall->PC_FreeSource(handle);
-}
-
-int trap_PC_ReadToken(int handle, pc_token_t* pc_token) {
-    return cgSyscall->PC_ReadToken(handle, pc_token);
-}
-
-int trap_PC_SourceFileAndLine(int handle, char* filename, int* line) {
-    return cgSyscall->PC_SourceFileAndLine(handle, filename, line);
-}
-
 void trap_S_StopBackgroundTrack(void) {
     cgSyscall->S_StopBackgroundTrack();
 }

@@ -221,10 +221,6 @@ void ClientImpacts( gentity_t *ent, pmove_t *pm ) {
 		}
 		other = &g_entities[ pm->touchents[i] ];
 
-		if ( ( ent->r.svFlags & SVF_BOT ) && ( ent->touch ) ) {
-			ent->touch( ent, other, &trace );
-		}
-
 		if ( !other->touch ) {
 			continue;
 		}
@@ -304,10 +300,6 @@ void	G_TouchTriggers( gentity_t *ent ) {
 
 		if ( hit->touch ) {
 			hit->touch (hit, ent, &trace);
-		}
-
-		if ( ( ent->r.svFlags & SVF_BOT ) && ( ent->touch ) ) {
-			ent->touch( ent, hit, &trace );
 		}
 	}
 
@@ -705,8 +697,6 @@ static int StuckInOtherClient(gentity_t *ent) {
 }
 #endif
 
-void BotTestSolid(vec3_t origin);
-
 /*
 ==============
 SendPendingPredictableEvents
@@ -907,9 +897,6 @@ void ClientThink_real( gentity_t *ent ) {
 	if ( pm.ps->pm_type == PM_DEAD ) {
 		pm.tracemask = MASK_PLAYERSOLID & ~CONTENTS_BODY;
 	}
-	else if ( ent->r.svFlags & SVF_BOT ) {
-		pm.tracemask = MASK_PLAYERSOLID | CONTENTS_BOTCLIP;
-	}
 	else {
 		pm.tracemask = MASK_PLAYERSOLID;
 	}
@@ -978,9 +965,6 @@ void ClientThink_real( gentity_t *ent ) {
 	// NOTE: now copy the exact origin over otherwise clients can be snapped into solid
 	VectorCopy( ent->client->ps.origin, ent->r.currentOrigin );
 
-	//test for solid areas in the AAS file
-	BotTestAAS(ent->r.currentOrigin);
-
 	// touch other objects
 	ClientImpacts( ent, &pm );
 
@@ -1034,14 +1018,14 @@ void ClientThink( int clientNum ) {
 	// phone jack if they don't get any for a while
 	ent->client->lastCmdTime = level.time;
 
-	if ( !(ent->r.svFlags & SVF_BOT) && !g_synchronousClients.integer ) {
+	if ( !g_synchronousClients.integer ) {
 		ClientThink_real( ent );
 	}
 }
 
 
 void G_RunClient( gentity_t *ent ) {
-	if ( !(ent->r.svFlags & SVF_BOT) && !g_synchronousClients.integer ) {
+	if ( !g_synchronousClients.integer ) {
 		return;
 	}
 	ent->client->pers.cmd.serverTime = level.time;

@@ -50,7 +50,7 @@ void SV_GetChallenge( netadr_t from ) {
 	challenge_t	*challenge;
 
 	// ignore if we are in single player
-	if ( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER || Cvar_VariableValue("ui_singlePlayerActive")) {
+	if ( Cvar_VariableValue( "g_gametype" ) == GT_SINGLE_PLAYER ) {
 		return;
 	}
 
@@ -370,29 +370,9 @@ void SV_DirectConnect( netadr_t from ) {
 	}
 
 	if ( !newcl ) {
-		if ( NET_IsLocalAddress( from ) ) {
-			count = 0;
-			for ( i = startIndex; i < sv_maxclients->integer ; i++ ) {
-				cl = &svs.clients[i];
-				if (cl->netchan.remoteAddress.type == NA_BOT) {
-					count++;
-				}
-			}
-			// if they're all bots
-			if (count >= sv_maxclients->integer - startIndex) {
-				SV_DropClient(&svs.clients[sv_maxclients->integer - 1], "only bots on server");
-				newcl = &svs.clients[sv_maxclients->integer - 1];
-			}
-			else {
-				Com_Error( ERR_FATAL, "server is full on local connect\n" );
-				return;
-			}
-		}
-		else {
-			NET_OutOfBandPrint( NS_SERVER, from, "print\nServer is full.\n" );
-			Com_DPrintf ("Rejected a connection.\n");
-			return;
-		}
+		NET_OutOfBandPrint( NS_SERVER, from, "print\nServer is full.\n" );
+		Com_DPrintf ("Rejected a connection.\n");
+		return;
 	}
 
 	// we got a newcl, so reset the reliableSequence and reliableAcknowledge
@@ -420,7 +400,7 @@ gotnewcl:
 	Q_strncpyz( newcl->userinfo, userinfo, sizeof(newcl->userinfo) );
 
 	// get the game a chance to reject this connection or modify the userinfo
-	denied = (char*)game->ClientConnect(clientNum, qtrue, qfalse);
+	denied = (char*)game->ClientConnect(clientNum, qtrue);
 	if ( denied ) {
 		NET_OutOfBandPrint( NS_SERVER, from, "print\n%s\n", denied );
 		Com_DPrintf ("Game rejected a connection: %s.\n", denied);
@@ -475,7 +455,7 @@ void SV_DropClient( client_t *drop, const char *reason ) {
 		return;		// already dropped
 	}
 
-	if ( !drop->gentity || !(drop->gentity->r.svFlags & SVF_BOT) ) {
+	if ( !drop->gentity ) {
 		// see if we already have a challenge for this ip
 		challenge = &svs.challenges[0];
 
@@ -507,10 +487,6 @@ void SV_DropClient( client_t *drop, const char *reason ) {
 
 	// add the disconnect command
 	SV_SendServerCommand( drop, "disconnect \"%s\"", reason);
-
-	if ( drop->netchan.remoteAddress.type == NA_BOT ) {
-		SV_BotFreeClient( drop - svs.clients );
-	}
 
 	// nuke user info
 	SV_SetUserinfo( drop - svs.clients, "" );
@@ -1209,8 +1185,6 @@ static ucmd_t ucmds[] = {
 /*
 ==================
 SV_ExecuteClientCommand
-
-Also called by bot code
 ==================
 */
 void SV_ExecuteClientCommand( client_t *cl, const char *s, qboolean clientOK ) {
@@ -1300,8 +1274,6 @@ static qboolean SV_ClientCommand( client_t *cl, msg_t *msg ) {
 /*
 ==================
 SV_ClientThink
-
-Also called by bot code
 ==================
 */
 void SV_ClientThink (client_t *cl, usercmd_t *cmd) {
@@ -1317,8 +1289,6 @@ void SV_ClientThink (client_t *cl, usercmd_t *cmd) {
 /*
 ==================
 SV_ClientNumThink
-
-Also called by bot code
 ==================
 */
 void SV_ClientNumThink(int clientNum, usercmd_t* cmd) {

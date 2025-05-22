@@ -344,10 +344,9 @@ clients along with it.
 This is NOT called for map_restart
 ================
 */
-void SV_SpawnServer( char *server, qboolean killBots ) {
+void SV_SpawnServer( char *server ) {
 	int			i;
 	int			checksum;
-	qboolean	isBot;
 	char		systemInfo[16384];
 	const char	*p;
 
@@ -440,7 +439,6 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 	// run a few frames to allow everything to settle
 	for ( i = 0 ;i < 3 ; i++ ) {
 		game->G_RunFrame(svs.time);
-		SV_BotFrame( svs.time );
 		svs.time += 100;
 	}
 
@@ -452,51 +450,22 @@ void SV_SpawnServer( char *server, qboolean killBots ) {
 		if (svs.clients[i].state >= CS_CONNECTED) {
 			char	*denied;
 
-			if ( svs.clients[i].netchan.remoteAddress.type == NA_BOT ) {
-				if ( killBots ) {
-					SV_DropClient( &svs.clients[i], "" );
-					continue;
-				}
-				isBot = qtrue;
-			}
-			else {
-				isBot = qfalse;
-			}
-
 			// connect the client again
-			denied = game->ClientConnect(i, qfalse, isBot); 
+			denied = game->ClientConnect(i, qfalse); 
 			if ( denied ) {
 				// this generally shouldn't happen, because the client
 				// was connected before the level change
 				SV_DropClient( &svs.clients[i], denied );
 			} else {
-				if( !isBot ) {
-					// when we get the next packet from a connected client,
-					// the new gamestate will be sent
-					svs.clients[i].state = CS_CONNECTED;
-				}
-				else {
-					client_t		*client;
-					sharedEntity_t	*ent;
-
-					client = &svs.clients[i];
-					client->state = CS_ACTIVE;
-					ent = SV_GentityNum( i );
-					ent->s.number = i;
-					client->gentity = ent;
-
-					client->deltaMessage = -1;
-					client->nextSnapshotTime = svs.time;	// generate a snapshot immediately
-
-					game->ClientBegin(i);
-				}
+				// when we get the next packet from a connected client,
+				// the new gamestate will be sent
+				svs.clients[i].state = CS_CONNECTED;
 			}
 		}
 	}	
 
 	// run another frame to allow things to look at all the players
 	game->G_RunFrame(svs.time);
-	SV_BotFrame( svs.time );
 	svs.time += 100;
 
 	if ( sv_pure->integer ) {
@@ -555,8 +524,6 @@ SV_Init
 Only called at main exe startup, not for each game
 ===============
 */
-void SV_BotInitBotLib(void);
-
 void SV_Init (void) {
 	SV_AddOperatorCommands ();
 
@@ -608,12 +575,6 @@ void SV_Init (void) {
 	sv_mapChecksum = Cvar_Get ("sv_mapChecksum", "", CVAR_ROM);
 	sv_lanForceRate = Cvar_Get ("sv_lanForceRate", "1", CVAR_ARCHIVE );
 	sv_strictAuth = Cvar_Get ("sv_strictAuth", "1", CVAR_ARCHIVE );
-
-	// initialize bot cvars so they are listed and can be set before loading the botlib
-	SV_BotInitCvars();
-
-	// init the botlib here because we need the pre-compiler in the UI
-	SV_BotInitBotLib();
 }
 
 
@@ -682,7 +643,6 @@ void SV_Shutdown( char *finalmsg ) {
 	Com_Memset( &svs, 0, sizeof( svs ) );
 
 	Cvar_Set( "sv_running", "0" );
-	Cvar_Set("ui_singlePlayerActive", "0");
 
 	Com_Printf( "---------------------------\n" );
 
