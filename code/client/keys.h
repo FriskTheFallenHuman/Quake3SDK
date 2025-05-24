@@ -19,7 +19,11 @@ along with Foobar; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
-#include "../ui/keycodes.h"
+
+#ifndef __KEYS_H__
+#define __KEYS_H__
+
+#include "keycodes.h"
 
 #define	MAX_KEYS		256
 
@@ -43,7 +47,7 @@ extern	field_t	historyEditLines[COMMAND_HISTORY];
 
 extern	field_t	g_consoleField;
 extern	field_t	chatField;
-extern	qboolean	anykeydown;
+extern	int	anykeydown;
 extern	qboolean	chat_team;
 extern	int			chat_playerNum;
 
@@ -55,3 +59,5 @@ qboolean Key_GetOverstrikeMode( void );
 void Key_SetOverstrikeMode( qboolean state );
 void Key_ClearStates( void );
 int Key_GetKey(const char *binding);
+
+#endif /* !__KEYS_H__ */

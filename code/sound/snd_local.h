@@ -21,6 +21,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 // snd_local.h -- private sound definations
 
+#ifndef SND_LOCAL_H
+#define SND_LOCAL_H
 
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
@@ -38,14 +40,14 @@ typedef struct {
 } portable_samplepair_t;
 
 typedef struct adpcm_state {
-    short	sample;		/* Previous output value */
-    char	index;		/* Index into stepsize table */
+	short	sample;		/* Previous output value */
+	char	index;		/* Index into stepsize table */
 } adpcm_state_t;
 
 typedef	struct sndBuffer_s {
 	short					sndChunk[SND_CHUNK_SIZE];
 	struct sndBuffer_s		*next;
-    int						size;
+	int						size;
 	adpcm_state_t			adpcm;
 } sndBuffer;
 
@@ -202,3 +204,4 @@ extern short *sfxScratchBuffer;
 extern sfx_t *sfxScratchPointer;
 extern int	   sfxScratchIndex;
 
+#endif /* !SND_LOCAL_H */

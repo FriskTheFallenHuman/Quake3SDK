@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
-project(Quake3 C CXX)
+project(Quake3 CXX)
 
 option(LINUX_RELEASE_BINS "Set RPATH to \$ORIGIN/libs/ for Linux binary releases" OFF)
 
@@ -339,8 +339,10 @@ if(WIN32)
 	set(SYS_LIBS ${SYS_LIBS}
 		winmm
 		wsock32
+		dsound
 		odbc32
-		odbccp32)
+		odbccp32
+		opengl32)
 endif()
 
 include_directories(${CMAKE_SOURCE_DIR})
@@ -367,28 +369,28 @@ add_subdirectory(game)
 add_subdirectory(ui)
 
 # Client
-file(GLOB CLIENT_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/client/*.c)
+file(GLOB CLIENT_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/client/*.cpp)
 source_group( "Client" FILES ${CLIENT_SOURCES} )
 file(GLOB CLIENT_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/client/*.h)
 source_group( "Client" FILES ${CLIENT_HEADERS} )
 
 # CM
-file(GLOB CM_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/cm/*.c)
+file(GLOB CM_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/cm/*.cpp)
 source_group( "CM" FILES ${CM_SOURCES} )
 file(GLOB CM_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/cm/*.h)
 source_group( "CM" FILES ${CM_HEADERS} )
 
 # QCommon (Engine)
-file(GLOB QCOMMON_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/*.c)
+file(GLOB QCOMMON_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/*.cpp)
 list(REMOVE_ITEM QCOMMON_SOURCES
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_math.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_crc.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_libvar.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_memory.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_precomp.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_script.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_struct.c)
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_math.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_crc.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_libvar.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_memory.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_precomp.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_script.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_struct.cpp)
 source_group( "Common" FILES ${QCOMMON_SOURCES} )
 file(GLOB QCOMMON_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/*.h)
 list(REMOVE_ITEM QCOMMON_HEADERS
@@ -403,20 +405,26 @@ list(REMOVE_ITEM QCOMMON_HEADERS
 source_group( "Common" FILES ${QCOMMON_HEADERS} )
 
 # Renderer
-file(GLOB RENDERER_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/renderer/*.c)
+file(GLOB RENDERER_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/renderer/*.cpp)
 source_group( "Renderer" FILES ${RENDERER_SOURCES} )
+file(GLOB RENDERER_GLEW_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/renderer/glew-2.2.0/include/GL/*.h)
+source_group( "Renderer//Glew" FILES ${RENDERER_GLEW_HEADERS} )
+file(GLOB RENDERER_STB_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/renderer/stb/*.h)
+source_group( "Renderer//Stb" FILES ${RENDERER_STB_HEADERS} )
+file(GLOB RENDERER_TINYJPEG_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/renderer/tinyjpeg/*.h)
+source_group( "Renderer//TinyJPEG" FILES ${RENDERER_TINYJPEG_HEADERS} )
 file(GLOB RENDERER_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/renderer/*.h)
 source_group( "Renderer" FILES ${RENDERER_HEADERS} )
 
 # Server
-file(GLOB SERVER_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/server/*.c)
-list(REMOVE_ITEM SERVER_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/server/sv_rankings.c )
+file(GLOB SERVER_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/server/*.cpp)
+list(REMOVE_ITEM SERVER_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/server/sv_rankings.cpp )
 source_group( "Server" FILES ${SERVER_SOURCES} )
 file(GLOB SERVER_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/server/*.h)
 source_group( "Server" FILES ${SERVER_HEADERS} )
 
 # Sound
-file(GLOB SOUND_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/sound/*.c)
+file(GLOB SOUND_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/sound/*.cpp)
 source_group( "Sound" FILES ${SOUND_SOURCES} )
 file(GLOB SOUND_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/sound/*.h)
 source_group( "Sound" FILES ${SOUND_HEADERS} )
@@ -424,19 +432,19 @@ source_group( "Sound" FILES ${SOUND_HEADERS} )
 # Sys
 if(WIN32)
 	file(GLOB SYS_SOURCES
-		${CMAKE_CURRENT_SOURCE_DIR}/win32/*.c
+		${CMAKE_CURRENT_SOURCE_DIR}/win32/*.cpp
 		${CMAKE_CURRENT_SOURCE_DIR}/win32/*.rc
 		${CMAKE_CURRENT_SOURCE_DIR}/win32/*.ico)
 	source_group( "Win32" FILES ${SYS_SOURCES} )
 	file(GLOB SYS_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/win32/*.h)
 	source_group( "Win32" FILES ${SYS_HEADERS} )
 elseif(UNIX)
-	file(GLOB SYS_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/unix/*.c)
+	file(GLOB SYS_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/unix/*.cpp)
 	source_group( "Unix" FILES ${SYS_SOURCES} )
 	file(GLOB SYS_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/unix/*.h)
 	source_group( "Unix" FILES ${SYS_HEADERS} )
 elseif(APPLE)
-	file(GLOB SYS_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/unix/*.c)
+	file(GLOB SYS_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/unix/*.cpp)
 	source_group( "MacOSX" FILES ${SYS_SOURCES} )
 	file(GLOB SYS_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/unix/*.h)
 	source_group( "MacOSX" FILES ${SYS_HEADERS} )
@@ -444,14 +452,14 @@ endif()
 
 # Qcommon (Library)
 set(QCOMMON_LIB_SOURCES
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_math.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_crc.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_libvar.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_memory.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_precomp.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_script.c
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_struct.c)
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_math.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_crc.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_libvar.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_memory.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_precomp.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_script.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_struct.cpp)
 source_group( "Common" FILES ${QCOMMON_LIB_SOURCES} )
 set(QCOMMON_LIB_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.h
@@ -473,6 +481,9 @@ set(ENGINE_SOURCES
 	${QCOMMON_SOURCES}
 	${QCOMMON_HEADERS}
 	${RENDERER_SOURCES}
+	${RENDERER_GLEW_HEADERS}
+	${RENDERER_STB_HEADERS}
+	${RENDERER_TINYJPEG_HEADERS}
 	${RENDERER_HEADERS}
 	${SERVER_SOURCES}
 	${SERVER_HEADERS}
@@ -482,18 +493,20 @@ set(ENGINE_SOURCES
 	${SYS_HEADERS})
 
 add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${ENGINE_SOURCES})
+target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC)
+target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/renderer/glew-2.2.0/lib/Win32)
 if(HARDLINK_GAME)
-	add_dependencies(${PROJECT_NAME} qcommon cgame game ui splines)
-	target_link_libraries(${PROJECT_NAME} PRIVATE ${SYS_LIBS} qcommon cgame game ui splines)
+	add_dependencies(${PROJECT_NAME} qcommon cgame game ui)
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${SYS_LIBS} glew32 qcommon cgame game ui)
 else()
 	add_dependencies(${PROJECT_NAME} qcommon)
-	target_link_libraries(${PROJECT_NAME} PRIVATE ${SYS_LIBS} qcommon)
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${SYS_LIBS} glew32 qcommon )
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
 if(MSVC)
 	# set MSVC default debug directory on executable
 	set_target_properties(${PROJECT_NAME} PROPERTIES VS_STARTUP_PROJECT ${PROJECT_NAME})
 	set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_COMMAND "${OUTPUT_FOLDER}/${PROJECT_NAME}.exe")
-	set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${PROJECT_NAME}")
+	set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${OUTPUT_FOLDER}")
 	set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "+set r_fullscreen 0 +set developer 1")
 endif()

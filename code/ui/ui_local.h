@@ -27,7 +27,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../renderer/tr_types.h"
 //NOTE: include the ui_public.h from the new UI
 #include "../ui/ui_public.h" // bk001205 - yes, do have to use this
-#include "keycodes.h"
+#include "../client/keycodes.h"
 #include "../game/bg_public.h"
 
 typedef void (*voidfunc_f)(void);
@@ -496,7 +496,7 @@ typedef struct {
 	qboolean		chat;
 	qboolean		newModel;
 
-	qboolean		barrelSpinning;
+	bool			barrelSpinning;
 	float			barrelAngle;
 	int				barrelTime;
 
@@ -615,8 +615,8 @@ void			trap_Key_KeynumToStringBuf( int keynum, char *buf, int buflen );
 void			trap_Key_GetBindingBuf( int keynum, char *buf, int buflen );
 void			trap_Key_SetBinding( int keynum, const char *binding );
 qboolean		trap_Key_IsDown( int keynum );
-qboolean		trap_Key_GetOverstrikeMode( void );
-void			trap_Key_SetOverstrikeMode( qboolean state );
+bool			trap_Key_GetOverstrikeMode( void );
+void			trap_Key_SetOverstrikeMode( bool state );
 void			trap_Key_ClearStates( void );
 int				trap_Key_GetCatcher( void );
 void			trap_Key_SetCatcher( int catcher );
@@ -628,7 +628,7 @@ int				trap_LAN_GetServerCount( int source );
 void			trap_LAN_GetServerAddressString( int source, int n, char *buf, int buflen );
 void			trap_LAN_GetServerInfo( int source, int n, char *buf, int buflen );
 int				trap_LAN_GetPingQueueCount( void );
-int				trap_LAN_ServerStatus( const char *serverAddress, char *serverStatus, int maxLen );
+int				trap_LAN_ServerStatus( char *serverAddress, char *serverStatus, int maxLen );
 void			trap_LAN_ClearPing( int n );
 void			trap_LAN_GetPing( int n, char *buf, int buflen, int *pingtime );
 void			trap_LAN_GetPingInfo( int n, char *buf, int buflen );

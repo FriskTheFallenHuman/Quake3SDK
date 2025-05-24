@@ -1,8 +1,8 @@
-project(game C)
+project(game CXX)
 
 # GAME
-file(GLOB GAME_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/*.c ${CMAKE_CURRENT_SOURCE_DIR}/*.def)
-list(REMOVE_ITEM GAME_SOURCES ${CMAKE_SOURCE_DIR}/game/bg_lib.c ${CMAKE_SOURCE_DIR}/game/g_rankings.c)
+file(GLOB GAME_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/*.def)
+list(REMOVE_ITEM GAME_SOURCES ${CMAKE_SOURCE_DIR}/game/bg_lib.cpp ${CMAKE_SOURCE_DIR}/game/g_rankings.cpp)
 source_group( "Game" FILES ${GAME_SOURCES} )
 file(GLOB GAME_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 list(REMOVE_ITEM GAME_HEADERS ${CMAKE_SOURCE_DIR}/game/bg_lib.h)

@@ -1040,7 +1040,7 @@ typedef struct cplane_s {
 // a trace is returned when a box is swept through the world
 typedef struct {
 	qboolean	allsolid;	// if true, plane is not valid
-	qboolean	startsolid;	// if true, the initial point was in a solid area
+	bool		startsolid;	// if true, the initial point was in a solid area
 	float		fraction;	// time completed, 1.0 = didn't hit anything
 	vec3_t		endpos;		// final position
 	cplane_t	plane;		// surface normal at impact, transformed to world space
@@ -1448,6 +1448,5 @@ typedef enum _flag_status {
 
 #define CDKEY_LEN 16
 #define CDCHKSUM_LEN 2
-
 
 #endif	// __Q_SHARED_H

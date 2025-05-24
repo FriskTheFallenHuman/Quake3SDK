@@ -649,7 +649,7 @@ void 		QDECL Com_Error( int code, const char *fmt, ... );
 void 		Com_Quit_f( void );
 int			Com_EventLoop( void );
 int			Com_Milliseconds( void );	// will be journaled properly
-unsigned	Com_BlockChecksum( const void *buffer, int length );
+unsigned	Com_BlockChecksum(void *buffer, int length);
 unsigned	Com_BlockChecksumKey (void *buffer, int length, int key);
 int			Com_HashKey(char *string, int maxlen);
 int			Com_Filter(char *filter, char *name, int casesensitive);
@@ -884,7 +884,7 @@ sysEvent_t	Sys_GetEvent( void );
 void	Sys_Init (void);
 
 intptr_t Sys_DLL_Load(const char* dllName);
-void Sys_UnloadDll(intptr_t dllHandle);
+void Sys_DLL_Unload( int dllHandle );
 void* Sys_DLL_CallEntry(intptr_t dllHandle, void* engineAPI);
 void* Sys_DLL_GetProcAddress(intptr_t dllHandle, const char* procName);
 

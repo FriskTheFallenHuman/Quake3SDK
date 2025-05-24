@@ -1,15 +1,15 @@
-project(ui C)
+project(ui CXX)
 
 # UI
-file(GLOB UI_SOURCES ${CMAKE_SOURCE_DIR}/game/bg_misc.c ${CMAKE_CURRENT_SOURCE_DIR}/*.c ${CMAKE_CURRENT_SOURCE_DIR}/*.def)
+file(GLOB UI_SOURCES ${CMAKE_SOURCE_DIR}/game/bg_misc.cpp ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/*.def)
 list(REMOVE_ITEM UI_SOURCES
-	${CMAKE_SOURCE_DIR}/ui/ui_util.c
-	${CMAKE_SOURCE_DIR}/ui/ui_specifyleague.c
-	${CMAKE_SOURCE_DIR}/ui/ui_signup.c
-	${CMAKE_SOURCE_DIR}/ui/ui_login.c
-	${CMAKE_SOURCE_DIR}/ui/ui_shared.c
-	${CMAKE_SOURCE_DIR}/ui/ui_rankings.c
-	${CMAKE_SOURCE_DIR}/ui/ui_rankstatus.c)
+	${CMAKE_SOURCE_DIR}/ui/ui_util.cpp
+	${CMAKE_SOURCE_DIR}/ui/ui_specifyleague.cpp
+	${CMAKE_SOURCE_DIR}/ui/ui_signup.cpp
+	${CMAKE_SOURCE_DIR}/ui/ui_login.cpp
+	${CMAKE_SOURCE_DIR}/ui/ui_shared.cpp
+	${CMAKE_SOURCE_DIR}/ui/ui_rankings.cpp
+	${CMAKE_SOURCE_DIR}/ui/ui_rankstatus.cpp)
 source_group( "UI" FILES ${UI_SOURCES} )
 file(GLOB UI_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 list(REMOVE_ITEM UI_HEADERS ${CMAKE_SOURCE_DIR}/ui/ui_shared.h)

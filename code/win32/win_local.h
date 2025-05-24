@@ -30,11 +30,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #pragma warning( pop )
 #endif
 
-#define	DIRECTSOUND_VERSION	0x0300
 #define	DIRECTINPUT_VERSION	0x0300
 
 #include <dinput.h>
-#include <dsound.h>
 #include <winsock.h>
 #include <wsipx.h>
 
@@ -65,10 +63,10 @@ void	IN_Frame (void);
 
 // window procedure
 LONG WINAPI MainWndProc (
-    HWND    hWnd,
-    UINT    uMsg,
-    WPARAM  wParam,
-    LPARAM  lParam);
+	HWND    hWnd,
+	UINT    uMsg,
+	WPARAM  wParam,
+	LPARAM  lParam);
 
 void Conbuf_AppendText( const char *msg );
 
@@ -92,4 +90,4 @@ typedef struct
 	unsigned		sysMsgTime;
 } WinVars_t;
 
-extern WinVars_t	g_wv;
+extern WinVars_t g_wv;

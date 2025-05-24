@@ -1,8 +1,8 @@
-project(cgame C)
+project(cgame CXX)
 
 # CGAME
-file(GLOB CGAME_SOURCES ${CMAKE_SOURCE_DIR}/game/bg_misc.c ${CMAKE_SOURCE_DIR}/game/bg_pmove.c ${CMAKE_SOURCE_DIR}/game/bg_slidemove.c ${CMAKE_CURRENT_SOURCE_DIR}/*.c ${CMAKE_CURRENT_SOURCE_DIR}/*.def)
-list(REMOVE_ITEM CGAME_SOURCES ${CMAKE_SOURCE_DIR}/cgame/cg_particles.c)
+file(GLOB CGAME_SOURCES ${CMAKE_SOURCE_DIR}/game/bg_misc.cpp ${CMAKE_SOURCE_DIR}/game/bg_pmove.cpp ${CMAKE_SOURCE_DIR}/game/bg_slidemove.cpp ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/*.def)
+list(REMOVE_ITEM CGAME_SOURCES ${CMAKE_SOURCE_DIR}/cgame/cg_particles.cpp)
 source_group( "CGame" FILES ${CGAME_SOURCES} )
 file(GLOB CGAME_HEADERS ${CMAKE_SOURCE_DIR}/game/bg_public.h ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
 source_group( "CGame" FILES ${CGAME_HEADERS} )

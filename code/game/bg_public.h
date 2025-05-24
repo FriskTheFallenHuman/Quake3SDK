@@ -25,6 +25,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // because games can change separately from the main system version, we need a
 // second version that must match between game and cgame
 
+#ifndef __BG_PUBLIC_H__
+#define __BG_PUBLIC_H__
+
 #define	GAME_VERSION		"baseq3-1"
 
 #define	DEFAULT_GRAVITY		800
@@ -186,7 +189,7 @@ typedef struct {
 
 	// callbacks to test the world
 	// these will be different functions during game and cgame
-	void		(*trace)( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask );
+	void		(*trace)( trace_t *results, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask );
 	int			(*pointcontents)( const vec3_t point, int passEntityNum );
 } pmove_t;
 
@@ -704,7 +707,6 @@ void	BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s
 
 qboolean	BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int atTime );
 
-
 #define MAX_ARENAS			1024
 #define	MAX_ARENAS_TEXT		8192
 
@@ -730,3 +732,4 @@ qboolean	BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int atTim
 #define KAMI_BOOMSPHERE_MAXRADIUS		720
 #define KAMI_SHOCKWAVE2_MAXRADIUS		704
 
+#endif /* !__BG_PUBLIC_H__ */

@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 // server.h
 
+#ifndef SERVER_H
+#define SERVER_H
+
 #include "../qcommon/q_shared.h"
 #include "../qcommon/qcommon.h"
 #include "../game/g_public.h"
@@ -135,8 +138,8 @@ typedef struct client_s {
 	// downloading
 	char			downloadName[MAX_QPATH]; // if not empty string, we are downloading
 	fileHandle_t	download;			// file being downloaded
- 	int				downloadSize;		// total bytes (can't use EOF because of paks)
- 	int				downloadCount;		// bytes sent
+	int				downloadSize;		// total bytes (can't use EOF because of paks)
+	int				downloadCount;		// bytes sent
 	int				downloadClientBlock;	// last block we sent to the client, awaiting ack
 	int				downloadCurrentBlock;	// current block number
 	int				downloadXmitBlock;	// last block we xmited
@@ -385,3 +388,4 @@ void SV_Netchan_Transmit( client_t *client, msg_t *msg);
 void SV_Netchan_TransmitNextFragment( client_t *client );
 qboolean SV_Netchan_Process( client_t *client, msg_t *msg );
 
+#endif /* !SERVER_H */

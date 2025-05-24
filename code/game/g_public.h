@@ -21,6 +21,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 //
 
+#ifndef __G_PUBLIC_H__
+#define __G_PUBLIC_H__
+
 // g_public.h -- game module information visible to server
 
 #define	GAME_API_VERSION	8
@@ -104,24 +107,24 @@ typedef struct {
 // system traps provided by the main engine
 //
 typedef struct {
-    void (*Print)(const char* fmt);
-	void (*Error)(int errorLevel, const char* fmt);
+    void (*Print)(const char*, ...);
+	void (*Error)(int, const char*, ...);
 	int (*Milliseconds)(void);
-	void (*Cvar_Register)(void* vmCvar, const char* varName, const char* defaultValue, int flags);
-	void (*Cvar_Update)(void* vmCvar);
-	void (*Cvar_Set)(const char* var_name, const char* value);
+	void (*Cvar_Register)(vmCvar_t*, const char*, const char*, int);
+	void (*Cvar_Update)(vmCvar_t*);
+	void (*Cvar_Set)(const char*, const char*);
 	int (*Cvar_VariableIntegerValue)(const char* var_name);
 	void (*Cvar_VariableStringBuffer)(const char* var_name, char* buffer, int bufsize);
 	int (*Argc)(void);
 	void (*Argv)(int n, char* buffer, int bufferLength);
 	void (*SendConsoleCommand)(int exec_when, const char* text);
 	int (*FS_FOpenFile)(const char* qpath, fileHandle_t* f, fsMode_t mode);
-	void (*FS_Read)(void* buffer, int len, int f);
-	void (*FS_Write)(const void* buffer, int len, int f);
+	int (*FS_Read)(void*, int, int);
+	int (*FS_Write)(const void*, int, int);
 	void (*FS_FCloseFile)(int f);
 	int (*FS_GetFileList)(const char* path, const char* extension, char* listbuf, int bufsize);
 	int (*FS_Seek)(int f, long offset, int origin);
-	void (*LocateGameData)(void* gEnts, int numGEntities, int sizeofGEntity_t, void* clients, int sizeofGClient);
+	void (*LocateGameData)(sharedEntity_t *, int, int sizeofGEntity_t, playerState_t *, int);
 	void (*DropClient)(int clientNum, const char* reason);
 	void (*SendServerCommand)(int clientNum, const char* text);
 	void (*SetConfigstring)(int num, const char* string);
@@ -129,20 +132,20 @@ typedef struct {
 	void (*SetUserinfo)(int num, const char* buffer);
 	void (*GetUserinfo)(int num, char* buffer, int bufferSize);
 	void (*GetServerinfo)(char* buffer, int bufferSize);
-	void (*SetBrushModel)(void* ent, const char* name);
-	void (*Trace)(trace_t* results, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask, int capsule);
-	int (*PointContents)(const void* point, int passEntityNum);
-	qboolean (*inPVS)(const void* p1, const void* p2);
-	qboolean (*inPVSIgnorePortals)(const void* p1, const void* p2);
-	void (*AdjustAreaPortalState)(sharedEntity_t* ent, qboolean open);
-	qboolean (*AreasConnected)(int area1, int area2);
-	void (*LinkEntity)(void* ent);
-	void (*UnlinkEntity)(void* ent);
-	int (*EntitiesInBox)(const void* mins, const void* maxs, int* list, int maxcount);
-	qboolean (*EntityContact)(vec3_t mins, vec3_t maxs, const sharedEntity_t* gEnt, int capsule);
-	void (*GetUsercmd)(int clientNum, void* cmd);
-	int (*GetEntityToken)(char* buffer, int bufferSize);
-	int (*RealTime)(void* qtime);
+	void (*SetBrushModel)(sharedEntity_t*, const char*);
+	void (*Trace)(trace_t*, const vec3_t, vec3_t, vec3_t, const vec3_t, int, int, int);
+	int (*PointContents)(const vec3_t, int);
+	qboolean (*inPVS)(const vec3_t, const vec3_t);
+	qboolean (*inPVSIgnorePortals)(const vec3_t, const vec3_t);
+	void (*AdjustAreaPortalState)(sharedEntity_t*, qboolean);
+	qboolean (*AreasConnected)(int, int);
+	void (*LinkEntity)(sharedEntity_t*);
+	void (*UnlinkEntity)(sharedEntity_t*);
+	int (*EntitiesInBox)(const vec3_t, const vec3_t, int *, int);
+	qboolean (*EntityContact)(vec3_t, vec3_t, const sharedEntity_t*, int);
+	void (*GetUsercmd)(int, usercmd_t*);
+	int (*GetEntityToken)(char*, int);
+	int (*RealTime)(qtime_t*);
 } gameImport_t;
 
 
@@ -164,3 +167,4 @@ typedef struct {
 
 extern gameExport_t* game;
 
+#endif /*!__G_PUBLIC_H__ */

@@ -35,7 +35,7 @@ typedef struct {
 } uiClientState_t;
 
 typedef struct {
-    void (*Com_Error)(int code, const char* fmt, ...);
+	void (*Com_Error)(int code, const char* fmt, ...);
 	void (*Com_Printf)(const char* fmt, ...);
 	int (*Sys_Milliseconds)(void);
 	void (*Cvar_Register)(vmCvar_t* cvar, const char* varName, const char* defaultValue, int flags);
@@ -51,8 +51,8 @@ typedef struct {
 	void (*Cmd_ArgvBuffer)(int n, char* buffer, int bufferLength);
 	void (*Cbuf_ExecuteText)(int exec_when, const char* text);
 	int (*FS_FOpenFileByMode)(const char* qpath, fileHandle_t* f, fsMode_t mode);
-	void (*FS_Read2)(void* buffer, int len, fileHandle_t f);
-	void (*FS_Write)(const void* buffer, int len, fileHandle_t f);
+	int (*FS_Read2)(void*, int, fileHandle_t);
+	int (*FS_Write)(const void*, int, fileHandle_t);
 	void (*FS_FCloseFile)(fileHandle_t f);
 	int (*FS_GetFileList)(const char* path, const char* extension, char* listbuf, int bufsize);
 	int (*FS_Seek)(fileHandle_t f, long offset, int origin);
