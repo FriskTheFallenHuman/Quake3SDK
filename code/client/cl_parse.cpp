@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -23,21 +23,21 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "client.h"
 
-char *svc_strings[256] = {
+char * svc_strings[256] = {
 	"svc_bad",
 
 	"svc_nop",
 	"svc_gamestate",
 	"svc_configstring",
-	"svc_baseline",	
+	"svc_baseline",
 	"svc_serverCommand",
 	"svc_download",
 	"svc_snapshot"
 };
 
-void SHOWNET( msg_t *msg, char *s) {
-	if ( cl_shownet->integer >= 2) {
-		Com_Printf ("%3i:%s\n", msg->readcount-1, s);
+void SHOWNET( msg_t *msg, char * s ) {
+	if ( cl_shownet->integer >= 2 ) {
+		Com_Printf( "%3i:%s\n", msg->readcount - 1, s );
 	}
 }
 
@@ -58,13 +58,13 @@ Parses deltas from the given base and adds the resulting entity
 to the current frame
 ==================
 */
-void CL_DeltaEntity (msg_t *msg, clSnapshot_t *frame, int newnum, entityState_t *old, 
-					 qboolean unchanged) {
-	entityState_t	*state;
+void CL_DeltaEntity( msg_t *msg, clSnapshot_t * frame, int newnum, entityState_t * old,
+					 qboolean unchanged ) {
+	entityState_t	* state;
 
 	// save the parsed entity state into the big circular buffer so
 	// it can be used as the source for a later delta
-	state = &cl.parseEntities[cl.parseEntitiesNum & (MAX_PARSE_ENTITIES-1)];
+	state = &cl.parseEntities[cl.parseEntitiesNum & ( MAX_PARSE_ENTITIES - 1 )];
 
 	if ( unchanged ) {
 		*state = *old;
@@ -72,7 +72,7 @@ void CL_DeltaEntity (msg_t *msg, clSnapshot_t *frame, int newnum, entityState_t 
 		MSG_ReadDeltaEntity( msg, old, state, newnum );
 	}
 
-	if ( state->number == (MAX_GENTITIES-1) ) {
+	if ( state->number == ( MAX_GENTITIES - 1 ) ) {
 		return;		// entity was delta removed
 	}
 	cl.parseEntitiesNum++;
@@ -85,9 +85,9 @@ CL_ParsePacketEntities
 
 ==================
 */
-void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *newframe) {
+void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t * oldframe, clSnapshot_t * newframe ) {
 	int			newnum;
-	entityState_t	*oldstate;
+	entityState_t	* oldstate;
 	int			oldindex, oldnum;
 
 	newframe->parseEntitiesNum = cl.parseEntitiesNum;
@@ -96,14 +96,14 @@ void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *n
 	// delta from the entities present in oldframe
 	oldindex = 0;
 	oldstate = NULL;
-	if (!oldframe) {
+	if ( !oldframe ) {
 		oldnum = 99999;
 	} else {
 		if ( oldindex >= oldframe->numEntities ) {
 			oldnum = 99999;
 		} else {
 			oldstate = &cl.parseEntities[
-				(oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES-1)];
+						   ( oldframe->parseEntitiesNum + oldindex ) & ( MAX_PARSE_ENTITIES - 1 )];
 			oldnum = oldstate->number;
 		}
 	}
@@ -112,35 +112,35 @@ void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *n
 		// read the entity index number
 		newnum = MSG_ReadBits( msg, GENTITYNUM_BITS );
 
-		if ( newnum == (MAX_GENTITIES-1) ) {
+		if ( newnum == ( MAX_GENTITIES - 1 ) ) {
 			break;
 		}
 
 		if ( msg->readcount > msg->cursize ) {
-			Com_Error (ERR_DROP,"CL_ParsePacketEntities: end of message");
+			Com_Error( ERR_DROP, "CL_ParsePacketEntities: end of message" );
 		}
 
 		while ( oldnum < newnum ) {
 			// one or more entities from the old packet are unchanged
 			if ( cl_shownet->integer == 3 ) {
-				Com_Printf ("%3i:  unchanged: %i\n", msg->readcount, oldnum);
+				Com_Printf( "%3i:  unchanged: %i\n", msg->readcount, oldnum );
 			}
 			CL_DeltaEntity( msg, newframe, oldnum, oldstate, qtrue );
-			
+
 			oldindex++;
 
 			if ( oldindex >= oldframe->numEntities ) {
 				oldnum = 99999;
 			} else {
 				oldstate = &cl.parseEntities[
-					(oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES-1)];
+							   ( oldframe->parseEntitiesNum + oldindex ) & ( MAX_PARSE_ENTITIES - 1 )];
 				oldnum = oldstate->number;
 			}
 		}
-		if (oldnum == newnum) {
+		if ( oldnum == newnum ) {
 			// delta from previous state
 			if ( cl_shownet->integer == 3 ) {
-				Com_Printf ("%3i:  delta: %i\n", msg->readcount, newnum);
+				Com_Printf( "%3i:  delta: %i\n", msg->readcount, newnum );
 			}
 			CL_DeltaEntity( msg, newframe, newnum, oldstate, qfalse );
 
@@ -150,7 +150,7 @@ void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *n
 				oldnum = 99999;
 			} else {
 				oldstate = &cl.parseEntities[
-					(oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES-1)];
+							   ( oldframe->parseEntitiesNum + oldindex ) & ( MAX_PARSE_ENTITIES - 1 )];
 				oldnum = oldstate->number;
 			}
 			continue;
@@ -159,7 +159,7 @@ void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *n
 		if ( oldnum > newnum ) {
 			// delta from baseline
 			if ( cl_shownet->integer == 3 ) {
-				Com_Printf ("%3i:  baseline: %i\n", msg->readcount, newnum);
+				Com_Printf( "%3i:  baseline: %i\n", msg->readcount, newnum );
 			}
 			CL_DeltaEntity( msg, newframe, newnum, &cl.entityBaselines[newnum], qfalse );
 			continue;
@@ -171,17 +171,17 @@ void CL_ParsePacketEntities( msg_t *msg, clSnapshot_t *oldframe, clSnapshot_t *n
 	while ( oldnum != 99999 ) {
 		// one or more entities from the old packet are unchanged
 		if ( cl_shownet->integer == 3 ) {
-			Com_Printf ("%3i:  unchanged: %i\n", msg->readcount, oldnum);
+			Com_Printf( "%3i:  unchanged: %i\n", msg->readcount, oldnum );
 		}
 		CL_DeltaEntity( msg, newframe, oldnum, oldstate, qtrue );
-		
+
 		oldindex++;
 
 		if ( oldindex >= oldframe->numEntities ) {
 			oldnum = 99999;
 		} else {
 			oldstate = &cl.parseEntities[
-				(oldframe->parseEntitiesNum + oldindex) & (MAX_PARSE_ENTITIES-1)];
+						   ( oldframe->parseEntitiesNum + oldindex ) & ( MAX_PARSE_ENTITIES - 1 )];
 			oldnum = oldstate->number;
 		}
 	}
@@ -199,7 +199,7 @@ for any reason, no changes to the state will be made at all.
 */
 void CL_ParseSnapshot( msg_t *msg ) {
 	int			len;
-	clSnapshot_t	*old;
+	clSnapshot_t	* old;
 	clSnapshot_t	newSnap;
 	int			deltaNum;
 	int			oldMessageNum;
@@ -211,7 +211,7 @@ void CL_ParseSnapshot( msg_t *msg ) {
 
 	// read in the new snapshot to a temporary buffer
 	// we will only copy to cl.snap if it is valid
-	Com_Memset (&newSnap, 0, sizeof(newSnap));
+	Com_Memset( &newSnap, 0, sizeof( newSnap ) );
 
 	// we will have read any new server commands in this
 	// message before we got to svc_snapshot
@@ -232,7 +232,7 @@ void CL_ParseSnapshot( msg_t *msg ) {
 	// If the frame is delta compressed from data that we
 	// no longer have available, we must suck up the rest of
 	// the frame, but not use it, then ask for a non-compressed
-	// message 
+	// message
 	if ( newSnap.deltaNum <= 0 ) {
 		newSnap.valid = qtrue;		// uncompressed frame
 		old = NULL;
@@ -241,13 +241,13 @@ void CL_ParseSnapshot( msg_t *msg ) {
 		old = &cl.snapshots[newSnap.deltaNum & PACKET_MASK];
 		if ( !old->valid ) {
 			// should never happen
-			Com_Printf ("Delta from invalid frame (not supposed to happen!).\n");
+			Com_Printf( "Delta from invalid frame (not supposed to happen!).\n" );
 		} else if ( old->messageNum != newSnap.deltaNum ) {
 			// The frame that the server did the delta from
 			// is too old, so we can't reconstruct it properly.
-			Com_Printf ("Delta frame too old.\n");
-		} else if ( cl.parseEntitiesNum - old->parseEntitiesNum > MAX_PARSE_ENTITIES-128 ) {
-			Com_Printf ("Delta parseEntitiesNum too old.\n");
+			Com_Printf( "Delta frame too old.\n" );
+		} else if ( cl.parseEntitiesNum - old->parseEntitiesNum > MAX_PARSE_ENTITIES - 128 ) {
+			Com_Printf( "Delta parseEntitiesNum too old.\n" );
 		} else {
 			newSnap.valid = qtrue;	// valid delta parse
 		}
@@ -255,7 +255,7 @@ void CL_ParseSnapshot( msg_t *msg ) {
 
 	// read areamask
 	len = MSG_ReadByte( msg );
-	MSG_ReadData( msg, &newSnap.areamask, len);
+	MSG_ReadData( msg, &newSnap.areamask, len );
 
 	// read playerinfo
 	SHOWNET( msg, "playerstate" );
@@ -302,9 +302,9 @@ void CL_ParseSnapshot( msg_t *msg ) {
 	// save the frame off in the backup array for later delta comparisons
 	cl.snapshots[cl.snap.messageNum & PACKET_MASK] = cl.snap;
 
-	if (cl_shownet->integer == 3) {
+	if ( cl_shownet->integer == 3 ) {
 		Com_Printf( "   snapshot:%i  delta:%i  ping:%i\n", cl.snap.messageNum,
-		cl.snap.deltaNum, cl.snap.ping );
+					cl.snap.deltaNum, cl.snap.ping );
 	}
 
 	cl.newSnapshots = qtrue;
@@ -325,8 +325,8 @@ gamestate, and possibly during gameplay.
 ==================
 */
 void CL_SystemInfoChanged( void ) {
-	char			*systemInfo;
-	const char		*s, *t;
+	char		*	systemInfo;
+	const char	*	s, * t;
 	char			key[BIG_INFO_KEY];
 	char			value[BIG_INFO_VALUE];
 	qboolean		gameSet;
@@ -344,7 +344,7 @@ void CL_SystemInfoChanged( void ) {
 	}
 
 	s = Info_ValueForKey( systemInfo, "sv_cheats" );
-	if ( atoi(s) == 0 ) {
+	if ( atoi( s ) == 0 ) {
 		Cvar_SetCheatState();
 	}
 
@@ -373,7 +373,7 @@ void CL_SystemInfoChanged( void ) {
 		Cvar_Set( key, value );
 	}
 	// if game folder should not be set and it is set at the client side
-	if ( !gameSet && *Cvar_VariableString("fs_game") ) {
+	if ( !gameSet && *Cvar_VariableString( "fs_game" ) ) {
 		Cvar_Set( "fs_game", "" );
 	}
 	cl_connectedToPureServer = Cvar_VariableValue( "sv_pure" );
@@ -386,11 +386,11 @@ CL_ParseGamestate
 */
 void CL_ParseGamestate( msg_t *msg ) {
 	int				i;
-	entityState_t	*es;
+	entityState_t	* es;
 	int				newnum;
 	entityState_t	nullstate;
 	int				cmd;
-	char			*s;
+	char		*	s;
 
 	Con_Close();
 
@@ -410,7 +410,7 @@ void CL_ParseGamestate( msg_t *msg ) {
 		if ( cmd == svc_EOF ) {
 			break;
 		}
-		
+
 		if ( cmd == svc_configstring ) {
 			int		len;
 
@@ -434,7 +434,7 @@ void CL_ParseGamestate( msg_t *msg ) {
 			if ( newnum < 0 || newnum >= MAX_GENTITIES ) {
 				Com_Error( ERR_DROP, "Baseline number out of range: %i", newnum );
 			}
-			Com_Memset (&nullstate, 0, sizeof(nullstate));
+			Com_Memset( &nullstate, 0, sizeof( nullstate ) );
 			es = &cl.entityBaselines[ newnum ];
 			MSG_ReadDeltaEntity( msg, &nullstate, es, newnum );
 		} else {
@@ -442,7 +442,7 @@ void CL_ParseGamestate( msg_t *msg ) {
 		}
 	}
 
-	clc.clientNum = MSG_ReadLong(msg);
+	clc.clientNum = MSG_ReadLong( msg );
 	// read the checksum feed
 	clc.checksumFeed = MSG_ReadLong( msg );
 
@@ -450,7 +450,7 @@ void CL_ParseGamestate( msg_t *msg ) {
 	CL_SystemInfoChanged();
 
 	// reinitialize the filesystem if the game directory has changed
-  FS_ConditionalRestart( clc.checksumFeed );
+	FS_ConditionalRestart( clc.checksumFeed );
 
 	// This used to call CL_StartHunkUsers, but now we enter the download state before loading the
 	// cgame
@@ -470,49 +470,47 @@ CL_ParseDownload
 A download message has been received from the server
 =====================
 */
-void CL_ParseDownload ( msg_t *msg ) {
+void CL_ParseDownload( msg_t *msg ) {
 	int		size;
 	unsigned char data[MAX_MSGLEN];
 	int block;
 
 	// read the data
-	block = MSG_ReadShort ( msg );
+	block = MSG_ReadShort( msg );
 
-	if ( !block )
-	{
+	if ( !block ) {
 		// block zero is special, contains file size
-		clc.downloadSize = MSG_ReadLong ( msg );
+		clc.downloadSize = MSG_ReadLong( msg );
 
 		Cvar_SetValue( "cl_downloadSize", clc.downloadSize );
 
-		if (clc.downloadSize < 0)
-		{
-			Com_Error(ERR_DROP, MSG_ReadString( msg ) );
+		if ( clc.downloadSize < 0 ) {
+			Com_Error( ERR_DROP, MSG_ReadString( msg ) );
 			return;
 		}
 	}
 
-	size = MSG_ReadShort ( msg );
-	if (size > 0)
+	size = MSG_ReadShort( msg );
+	if ( size > 0 ) {
 		MSG_ReadData( msg, data, size );
+	}
 
-	if (clc.downloadBlock != block) {
-		Com_DPrintf( "CL_ParseDownload: Expected block %d, got %d\n", clc.downloadBlock, block);
+	if ( clc.downloadBlock != block ) {
+		Com_DPrintf( "CL_ParseDownload: Expected block %d, got %d\n", clc.downloadBlock, block );
 		return;
 	}
 
 	// open the file if not opened yet
-	if (!clc.download)
-	{
-		if (!*clc.downloadTempName) {
-			Com_Printf("Server sending download, but no download was requested\n");
+	if ( !clc.download ) {
+		if ( !*clc.downloadTempName ) {
+			Com_Printf( "Server sending download, but no download was requested\n" );
 			CL_AddReliableCommand( "stopdl" );
 			return;
 		}
 
 		clc.download = FS_SV_FOpenFileWrite( clc.downloadTempName );
 
-		if (!clc.download) {
+		if ( !clc.download ) {
 			Com_Printf( "Could not create %s\n", clc.downloadTempName );
 			CL_AddReliableCommand( "stopdl" );
 			CL_NextDownload();
@@ -520,10 +518,11 @@ void CL_ParseDownload ( msg_t *msg ) {
 		}
 	}
 
-	if (size)
+	if ( size ) {
 		FS_Write( data, size, clc.download );
+	}
 
-	CL_AddReliableCommand( va("nextdl %d", clc.downloadBlock) );
+	CL_AddReliableCommand( va( "nextdl %d", clc.downloadBlock ) );
 	clc.downloadBlock++;
 
 	clc.downloadCount += size;
@@ -531,13 +530,13 @@ void CL_ParseDownload ( msg_t *msg ) {
 	// So UI gets access to it
 	Cvar_SetValue( "cl_downloadCount", clc.downloadCount );
 
-	if (!size) { // A zero length block means EOF
-		if (clc.download) {
+	if ( !size ) { // A zero length block means EOF
+		if ( clc.download ) {
 			FS_FCloseFile( clc.download );
 			clc.download = 0;
 
 			// rename the file
-			FS_SV_Rename ( clc.downloadTempName, clc.downloadName );
+			FS_SV_Rename( clc.downloadTempName, clc.downloadName );
 		}
 		*clc.downloadTempName = *clc.downloadName = 0;
 		Cvar_Set( "cl_downloadName", "" );
@@ -551,7 +550,7 @@ void CL_ParseDownload ( msg_t *msg ) {
 		CL_WritePacket();
 
 		// get another file if needed
-		CL_NextDownload ();
+		CL_NextDownload();
 	}
 }
 
@@ -564,7 +563,7 @@ when it transitions a snapshot
 =====================
 */
 void CL_ParseCommandString( msg_t *msg ) {
-	char	*s;
+	char	* s;
 	int		seq;
 	int		index;
 
@@ -577,7 +576,7 @@ void CL_ParseCommandString( msg_t *msg ) {
 	}
 	clc.serverCommandSequence = seq;
 
-	index = seq & (MAX_RELIABLE_COMMANDS-1);
+	index = seq & ( MAX_RELIABLE_COMMANDS - 1 );
 	Q_strncpyz( clc.serverCommands[ index ], s, sizeof( clc.serverCommands[ index ] ) );
 }
 
@@ -591,16 +590,16 @@ void CL_ParseServerMessage( msg_t *msg ) {
 	int			cmd;
 
 	if ( cl_shownet->integer == 1 ) {
-		Com_Printf ("%i ",msg->cursize);
+		Com_Printf( "%i ", msg->cursize );
 	} else if ( cl_shownet->integer >= 2 ) {
-		Com_Printf ("------------------\n");
+		Com_Printf( "------------------\n" );
 	}
 
-	MSG_Bitstream(msg);
+	MSG_Bitstream( msg );
 
 	// get the reliable sequence acknowledge number
 	clc.reliableAcknowledge = MSG_ReadLong( msg );
-	// 
+	//
 	if ( clc.reliableAcknowledge < clc.reliableSequence - MAX_RELIABLE_COMMANDS ) {
 		clc.reliableAcknowledge = clc.reliableSequence;
 	}
@@ -610,44 +609,44 @@ void CL_ParseServerMessage( msg_t *msg ) {
 	//
 	while ( 1 ) {
 		if ( msg->readcount > msg->cursize ) {
-			Com_Error (ERR_DROP,"CL_ParseServerMessage: read past end of server message");
+			Com_Error( ERR_DROP, "CL_ParseServerMessage: read past end of server message" );
 			break;
 		}
 
 		cmd = MSG_ReadByte( msg );
 
-		if ( cmd == svc_EOF) {
+		if ( cmd == svc_EOF ) {
 			SHOWNET( msg, "END OF MESSAGE" );
 			break;
 		}
 
 		if ( cl_shownet->integer >= 2 ) {
 			if ( !svc_strings[cmd] ) {
-				Com_Printf( "%3i:BAD CMD %i\n", msg->readcount-1, cmd );
+				Com_Printf( "%3i:BAD CMD %i\n", msg->readcount - 1, cmd );
 			} else {
 				SHOWNET( msg, svc_strings[cmd] );
 			}
 		}
-	
-	// other commands
+
+		// other commands
 		switch ( cmd ) {
-		default:
-			Com_Error (ERR_DROP,"CL_ParseServerMessage: Illegible server message\n");
-			break;			
-		case svc_nop:
-			break;
-		case svc_serverCommand:
-			CL_ParseCommandString( msg );
-			break;
-		case svc_gamestate:
-			CL_ParseGamestate( msg );
-			break;
-		case svc_snapshot:
-			CL_ParseSnapshot( msg );
-			break;
-		case svc_download:
-			CL_ParseDownload( msg );
-			break;
+			default:
+				Com_Error( ERR_DROP, "CL_ParseServerMessage: Illegible server message\n" );
+				break;
+			case svc_nop:
+				break;
+			case svc_serverCommand:
+				CL_ParseCommandString( msg );
+				break;
+			case svc_gamestate:
+				CL_ParseGamestate( msg );
+				break;
+			case svc_snapshot:
+				CL_ParseSnapshot( msg );
+				break;
+			case svc_download:
+				CL_ParseDownload( msg );
+				break;
 		}
 	}
 }

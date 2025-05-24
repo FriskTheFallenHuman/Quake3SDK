@@ -32,8 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define CRC_INIT_VALUE	0xffff
 #define CRC_XOR_VALUE	0x0000
 
-unsigned short crctable[257] =
-{
+unsigned short crctable[257] = {
 	0x0000,	0x1021,	0x2042,	0x3063,	0x4084,	0x50a5,	0x60c6,	0x70e7,
 	0x8108,	0x9129,	0xa14a,	0xb16b,	0xc18c,	0xd1ad,	0xe1ce,	0xf1ef,
 	0x1231,	0x0210,	0x3273,	0x2252,	0x52b5,	0x4294,	0x72f7,	0x62d6,
@@ -74,8 +73,7 @@ unsigned short crctable[257] =
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void CRC_Init(unsigned short *crcvalue)
-{
+void CRC_Init( unsigned short * crcvalue ) {
 	*crcvalue = CRC_INIT_VALUE;
 } //end of the function CRC_Init
 //===========================================================================
@@ -84,9 +82,8 @@ void CRC_Init(unsigned short *crcvalue)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void CRC_ProcessByte(unsigned short *crcvalue, byte data)
-{
-	*crcvalue = (*crcvalue << 8) ^ crctable[(*crcvalue >> 8) ^ data];
+void CRC_ProcessByte( unsigned short * crcvalue, byte data ) {
+	*crcvalue = ( *crcvalue << 8 ) ^ crctable[( *crcvalue >> 8 ) ^ data];
 } //end of the function CRC_ProcessByte
 //===========================================================================
 //
@@ -94,8 +91,7 @@ void CRC_ProcessByte(unsigned short *crcvalue, byte data)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-unsigned short CRC_Value(unsigned short crcvalue)
-{
+unsigned short CRC_Value( unsigned short crcvalue ) {
 	return crcvalue ^ CRC_XOR_VALUE;
 } //end of the function CRC_Value
 //===========================================================================
@@ -104,20 +100,20 @@ unsigned short CRC_Value(unsigned short crcvalue)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-unsigned short CRC_ProcessString(unsigned char *data, int length)
-{
+unsigned short CRC_ProcessString( unsigned char * data, int length ) {
 	unsigned short crcvalue;
 	int i, ind;
 
-	CRC_Init(&crcvalue);
+	CRC_Init( &crcvalue );
 
-	for (i = 0; i < length; i++)
-	{
-		ind = (crcvalue >> 8) ^ data[i];
-		if (ind < 0 || ind > 256) ind = 0;
-		crcvalue = (crcvalue << 8) ^ crctable[ind];
+	for ( i = 0; i < length; i++ ) {
+		ind = ( crcvalue >> 8 ) ^ data[i];
+		if ( ind < 0 || ind > 256 ) {
+			ind = 0;
+		}
+		crcvalue = ( crcvalue << 8 ) ^ crctable[ind];
 	} //end for
-	return CRC_Value(crcvalue);
+	return CRC_Value( crcvalue );
 } //end of the function CRC_ProcessString
 //===========================================================================
 //
@@ -125,12 +121,10 @@ unsigned short CRC_ProcessString(unsigned char *data, int length)
 // Returns:					-
 // Changes Globals:		-
 //===========================================================================
-void CRC_ContinueProcessString(unsigned short *crc, char *data, int length)
-{
+void CRC_ContinueProcessString( unsigned short * crc, char * data, int length ) {
 	int i;
 
-	for (i = 0; i < length; i++)
-	{
-		*crc = (*crc << 8) ^ crctable[(*crc >> 8) ^ data[i]];
+	for ( i = 0; i < length; i++ ) {
+		*crc = ( *crc << 8 ) ^ crctable[( *crc >> 8 ) ^ data[i]];
 	} //end for
 } //end of the function CRC_ProcessString

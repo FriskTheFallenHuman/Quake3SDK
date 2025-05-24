@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -44,7 +44,7 @@ NETWORK OPTIONS MENU
 #define ID_BACK				15
 
 
-static const char *rate_items[] = {
+static const char * rate_items[] = {
 	"<= 28.8K",
 	"33.6K",
 	"56K",
@@ -78,51 +78,47 @@ static networkOptionsInfo_t	networkOptionsInfo;
 UI_NetworkOptionsMenu_Event
 =================
 */
-static void UI_NetworkOptionsMenu_Event( void* ptr, int event ) {
-	if( event != QM_ACTIVATED ) {
+static void UI_NetworkOptionsMenu_Event( void * ptr, int event ) {
+	if ( event != QM_ACTIVATED ) {
 		return;
 	}
 
-	switch( ((menucommon_s*)ptr)->id ) {
-	case ID_GRAPHICS:
-		UI_PopMenu();
-		UI_GraphicsOptionsMenu();
-		break;
+	switch ( ( ( menucommon_s * )ptr )->id ) {
+		case ID_GRAPHICS:
+			UI_PopMenu();
+			UI_GraphicsOptionsMenu();
+			break;
 
-	case ID_DISPLAY:
-		UI_PopMenu();
-		UI_DisplayOptionsMenu();
-		break;
+		case ID_DISPLAY:
+			UI_PopMenu();
+			UI_DisplayOptionsMenu();
+			break;
 
-	case ID_SOUND:
-		UI_PopMenu();
-		UI_SoundOptionsMenu();
-		break;
+		case ID_SOUND:
+			UI_PopMenu();
+			UI_SoundOptionsMenu();
+			break;
 
-	case ID_NETWORK:
-		break;
+		case ID_NETWORK:
+			break;
 
-	case ID_RATE:
-		if( networkOptionsInfo.rate.curvalue == 0 ) {
-			trap_Cvar_SetValue( "rate", 2500 );
-		}
-		else if( networkOptionsInfo.rate.curvalue == 1 ) {
-			trap_Cvar_SetValue( "rate", 3000 );
-		}
-		else if( networkOptionsInfo.rate.curvalue == 2 ) {
-			trap_Cvar_SetValue( "rate", 4000 );
-		}
-		else if( networkOptionsInfo.rate.curvalue == 3 ) {
-			trap_Cvar_SetValue( "rate", 5000 );
-		}
-		else if( networkOptionsInfo.rate.curvalue == 4 ) {
-			trap_Cvar_SetValue( "rate", 25000 );
-		}
-		break;
+		case ID_RATE:
+			if ( networkOptionsInfo.rate.curvalue == 0 ) {
+				trap_Cvar_SetValue( "rate", 2500 );
+			} else if ( networkOptionsInfo.rate.curvalue == 1 ) {
+				trap_Cvar_SetValue( "rate", 3000 );
+			} else if ( networkOptionsInfo.rate.curvalue == 2 ) {
+				trap_Cvar_SetValue( "rate", 4000 );
+			} else if ( networkOptionsInfo.rate.curvalue == 3 ) {
+				trap_Cvar_SetValue( "rate", 5000 );
+			} else if ( networkOptionsInfo.rate.curvalue == 4 ) {
+				trap_Cvar_SetValue( "rate", 25000 );
+			}
+			break;
 
-	case ID_BACK:
-		UI_PopMenu();
-		break;
+		case ID_BACK:
+			UI_PopMenu();
+			break;
 	}
 }
 
@@ -136,7 +132,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	int		y;
 	int		rate;
 
-	memset( &networkOptionsInfo, 0, sizeof(networkOptionsInfo) );
+	memset( &networkOptionsInfo, 0, sizeof( networkOptionsInfo ) );
 
 	UI_NetworkOptionsMenu_Cache();
 	networkOptionsInfo.menu.wrapAround = qtrue;
@@ -153,7 +149,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.framel.generic.type		= MTYPE_BITMAP;
 	networkOptionsInfo.framel.generic.name		= ART_FRAMEL;
 	networkOptionsInfo.framel.generic.flags		= QMF_INACTIVE;
-	networkOptionsInfo.framel.generic.x			= 0;  
+	networkOptionsInfo.framel.generic.x			= 0;
 	networkOptionsInfo.framel.generic.y			= 78;
 	networkOptionsInfo.framel.width				= 256;
 	networkOptionsInfo.framel.height			= 329;
@@ -167,7 +163,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.framer.height			= 334;
 
 	networkOptionsInfo.graphics.generic.type		= MTYPE_PTEXT;
-	networkOptionsInfo.graphics.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
+	networkOptionsInfo.graphics.generic.flags		= QMF_RIGHT_JUSTIFY | QMF_PULSEIFFOCUS;
 	networkOptionsInfo.graphics.generic.id			= ID_GRAPHICS;
 	networkOptionsInfo.graphics.generic.callback	= UI_NetworkOptionsMenu_Event;
 	networkOptionsInfo.graphics.generic.x			= 216;
@@ -177,7 +173,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.graphics.color				= color_red;
 
 	networkOptionsInfo.display.generic.type			= MTYPE_PTEXT;
-	networkOptionsInfo.display.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
+	networkOptionsInfo.display.generic.flags		= QMF_RIGHT_JUSTIFY | QMF_PULSEIFFOCUS;
 	networkOptionsInfo.display.generic.id			= ID_DISPLAY;
 	networkOptionsInfo.display.generic.callback		= UI_NetworkOptionsMenu_Event;
 	networkOptionsInfo.display.generic.x			= 216;
@@ -187,7 +183,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.display.color				= color_red;
 
 	networkOptionsInfo.sound.generic.type			= MTYPE_PTEXT;
-	networkOptionsInfo.sound.generic.flags			= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
+	networkOptionsInfo.sound.generic.flags			= QMF_RIGHT_JUSTIFY | QMF_PULSEIFFOCUS;
 	networkOptionsInfo.sound.generic.id				= ID_SOUND;
 	networkOptionsInfo.sound.generic.callback		= UI_NetworkOptionsMenu_Event;
 	networkOptionsInfo.sound.generic.x				= 216;
@@ -206,10 +202,10 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	networkOptionsInfo.network.style				= UI_RIGHT;
 	networkOptionsInfo.network.color				= color_red;
 
-	y = 240 - 1 * (BIGCHAR_HEIGHT+2);
+	y = 240 - 1 * ( BIGCHAR_HEIGHT + 2 );
 	networkOptionsInfo.rate.generic.type		= MTYPE_SPINCONTROL;
 	networkOptionsInfo.rate.generic.name		= "Data Rate:";
-	networkOptionsInfo.rate.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+	networkOptionsInfo.rate.generic.flags		= QMF_PULSEIFFOCUS | QMF_SMALLFONT;
 	networkOptionsInfo.rate.generic.callback	= UI_NetworkOptionsMenu_Event;
 	networkOptionsInfo.rate.generic.id			= ID_RATE;
 	networkOptionsInfo.rate.generic.x			= 400;
@@ -218,11 +214,11 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 
 	networkOptionsInfo.back.generic.type		= MTYPE_BITMAP;
 	networkOptionsInfo.back.generic.name		= ART_BACK0;
-	networkOptionsInfo.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
+	networkOptionsInfo.back.generic.flags		= QMF_LEFT_JUSTIFY | QMF_PULSEIFFOCUS;
 	networkOptionsInfo.back.generic.callback	= UI_NetworkOptionsMenu_Event;
 	networkOptionsInfo.back.generic.id			= ID_BACK;
 	networkOptionsInfo.back.generic.x			= 0;
-	networkOptionsInfo.back.generic.y			= 480-64;
+	networkOptionsInfo.back.generic.y			= 480 - 64;
 	networkOptionsInfo.back.width				= 128;
 	networkOptionsInfo.back.height				= 64;
 	networkOptionsInfo.back.focuspic			= ART_BACK1;
@@ -238,19 +234,15 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.back );
 
 	rate = trap_Cvar_VariableValue( "rate" );
-	if( rate <= 2500 ) {
+	if ( rate <= 2500 ) {
 		networkOptionsInfo.rate.curvalue = 0;
-	}
-	else if( rate <= 3000 ) {
+	} else if ( rate <= 3000 ) {
 		networkOptionsInfo.rate.curvalue = 1;
-	}
-	else if( rate <= 4000 ) {
+	} else if ( rate <= 4000 ) {
 		networkOptionsInfo.rate.curvalue = 2;
-	}
-	else if( rate <= 5000 ) {
+	} else if ( rate <= 5000 ) {
 		networkOptionsInfo.rate.curvalue = 3;
-	}
-	else {
+	} else {
 		networkOptionsInfo.rate.curvalue = 4;
 	}
 }

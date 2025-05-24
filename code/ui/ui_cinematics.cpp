@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -24,7 +24,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 #define ART_BACK0		"menu/art/back_0"
-#define ART_BACK1		"menu/art/back_1"	
+#define ART_BACK1		"menu/art/back_1"
 #define ART_FRAMEL		"menu/art/frame2_l"
 #define ART_FRAMER		"menu/art/frame1_r"
 
@@ -44,7 +44,7 @@ typedef struct {
 
 static cinematicsMenuInfo_t	cinematicsMenuInfo;
 
-static char *cinematics[] = {
+static char * cinematics[] = {
 	"idlogo",
 };
 
@@ -53,8 +53,8 @@ static char *cinematics[] = {
 UI_CinematicsMenu_BackEvent
 ===============
 */
-static void UI_CinematicsMenu_BackEvent( void *ptr, int event ) {
-	if( event != QM_ACTIVATED ) {
+static void UI_CinematicsMenu_BackEvent( void * ptr, int event ) {
+	if ( event != QM_ACTIVATED ) {
 		return;
 	}
 	UI_PopMenu();
@@ -66,18 +66,18 @@ static void UI_CinematicsMenu_BackEvent( void *ptr, int event ) {
 UI_CinematicsMenu_Event
 ===============
 */
-static void UI_CinematicsMenu_Event( void *ptr, int event ) {
+static void UI_CinematicsMenu_Event( void * ptr, int event ) {
 	int		n;
 
-	if (event != QM_ACTIVATED)
+	if ( event != QM_ACTIVATED ) {
 		return;
-
-	n = ((menucommon_s*)ptr)->id - ID_CIN_IDLOGO;
-	trap_Cvar_Set( "nextmap", va( "ui_cinematics %i", n ) );
-	if( uis.demoversion ) {
-		trap_Cmd_ExecuteText( EXEC_APPEND, "disconnect; cinematic demoEnd.RoQ 1\n" );
 	}
-	else {
+
+	n = ( ( menucommon_s * )ptr )->id - ID_CIN_IDLOGO;
+	trap_Cvar_Set( "nextmap", va( "ui_cinematics %i", n ) );
+	if ( uis.demoversion ) {
+		trap_Cmd_ExecuteText( EXEC_APPEND, "disconnect; cinematic demoEnd.RoQ 1\n" );
+	} else {
 		trap_Cmd_ExecuteText( EXEC_APPEND, va( "disconnect; cinematic %s.RoQ\n", cinematics[n] ) );
 	}
 }
@@ -93,7 +93,7 @@ static void UI_CinematicsMenu_Init( void ) {
 
 	UI_CinematicsMenu_Cache();
 
-	memset( &cinematicsMenuInfo, 0, sizeof(cinematicsMenuInfo) );
+	memset( &cinematicsMenuInfo, 0, sizeof( cinematicsMenuInfo ) );
 	cinematicsMenuInfo.menu.fullscreen = qtrue;
 
 	cinematicsMenuInfo.banner.generic.type		= MTYPE_BTEXT;
@@ -106,7 +106,7 @@ static void UI_CinematicsMenu_Init( void ) {
 	cinematicsMenuInfo.framel.generic.type		= MTYPE_BITMAP;
 	cinematicsMenuInfo.framel.generic.name		= ART_FRAMEL;
 	cinematicsMenuInfo.framel.generic.flags		= QMF_INACTIVE;
-	cinematicsMenuInfo.framel.generic.x			= 0;  
+	cinematicsMenuInfo.framel.generic.x			= 0;
 	cinematicsMenuInfo.framel.generic.y			= 78;
 	cinematicsMenuInfo.framel.width  			= 256;
 	cinematicsMenuInfo.framel.height  			= 329;
@@ -121,22 +121,22 @@ static void UI_CinematicsMenu_Init( void ) {
 
 	y = 100;
 	cinematicsMenuInfo.cin_idlogo.generic.type		= MTYPE_PTEXT;
-	cinematicsMenuInfo.cin_idlogo.generic.flags		= QMF_CENTER_JUSTIFY|QMF_PULSEIFFOCUS;
+	cinematicsMenuInfo.cin_idlogo.generic.flags		= QMF_CENTER_JUSTIFY | QMF_PULSEIFFOCUS;
 	cinematicsMenuInfo.cin_idlogo.generic.x			= 320;
 	cinematicsMenuInfo.cin_idlogo.generic.y			= y;
 	cinematicsMenuInfo.cin_idlogo.generic.id		= ID_CIN_IDLOGO;
-	cinematicsMenuInfo.cin_idlogo.generic.callback	= UI_CinematicsMenu_Event; 
+	cinematicsMenuInfo.cin_idlogo.generic.callback	= UI_CinematicsMenu_Event;
 	cinematicsMenuInfo.cin_idlogo.string			= "ID LOGO";
 	cinematicsMenuInfo.cin_idlogo.color				= color_red;
 	cinematicsMenuInfo.cin_idlogo.style				= UI_CENTER;
 
 	cinematicsMenuInfo.back.generic.type		= MTYPE_BITMAP;
 	cinematicsMenuInfo.back.generic.name		= ART_BACK0;
-	cinematicsMenuInfo.back.generic.flags		= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
+	cinematicsMenuInfo.back.generic.flags		= QMF_LEFT_JUSTIFY | QMF_PULSEIFFOCUS;
 	cinematicsMenuInfo.back.generic.id			= ID_BACK;
 	cinematicsMenuInfo.back.generic.callback	= UI_CinematicsMenu_BackEvent;
 	cinematicsMenuInfo.back.generic.x			= 0;
-	cinematicsMenuInfo.back.generic.y			= 480-64;
+	cinematicsMenuInfo.back.generic.y			= 480 - 64;
 	cinematicsMenuInfo.back.width				= 128;
 	cinematicsMenuInfo.back.height				= 64;
 	cinematicsMenuInfo.back.focuspic			= ART_BACK1;

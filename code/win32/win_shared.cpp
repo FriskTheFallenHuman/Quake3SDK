@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -39,12 +39,11 @@ Sys_Milliseconds
 ================
 */
 int			sys_timeBase;
-int Sys_Milliseconds (void)
-{
+int Sys_Milliseconds( void ) {
 	int			sys_curtime;
 	static qboolean	initialized = qfalse;
 
-	if (!initialized) {
+	if ( !initialized ) {
 		sys_timeBase = timeGetTime();
 		initialized = qtrue;
 	}
@@ -67,8 +66,7 @@ int Sys_Milliseconds (void)
 **
 ** --------------------------------------------------------------------------------
 */
-static void CPUID( int func, unsigned regs[4] )
-{
+static void CPUID( int func, unsigned regs[4] ) {
 	unsigned regEAX, regEBX, regECX, regEDX;
 
 #ifndef __VECTORC
@@ -92,10 +90,8 @@ static void CPUID( int func, unsigned regs[4] )
 #endif
 }
 
-static int IsPentium( void )
-{
-	__asm 
-	{
+static int IsPentium( void ) {
+	__asm {
 		pushfd						// save eflags
 		pop		eax
 		test	eax, 0x00200000		// check ID bit
@@ -108,7 +104,7 @@ static int IsPentium( void )
 		test	eax, 0x00200000		// check ID bit
 		jz		good
 		jmp		err					// cpuid not supported
-set21:
+		set21:
 		or		eax, 0x00200000		// set ID bit
 		push	eax					// store new value
 		popfd						// store new value in EFLAGS
@@ -125,8 +121,7 @@ good:
 	return qtrue;
 }
 
-static int Is3DNOW( void )
-{
+static int Is3DNOW( void ) {
 	unsigned regs[4];
 	char pstring[16];
 	char processorString[13];
@@ -153,46 +148,47 @@ static int Is3DNOW( void )
 
 	// check AMD-specific functions
 	CPUID( 0x80000000, regs );
-	if ( regs[0] < 0x80000000 )
+	if ( regs[0] < 0x80000000 ) {
 		return qfalse;
+	}
 
 	// bit 31 of EDX denotes 3DNOW! support
 	CPUID( 0x80000001, regs );
-	if ( regs[3] & ( 1 << 31 ) )
+	if ( regs[3] & ( 1 << 31 ) ) {
 		return qtrue;
+	}
 
 	return qfalse;
 }
 
-static int IsKNI( void )
-{
+static int IsKNI( void ) {
 	unsigned regs[4];
 
 	// get CPU feature bits
 	CPUID( 1, regs );
 
 	// bit 25 of EDX denotes KNI existence
-	if ( regs[3] & ( 1 << 25 ) )
+	if ( regs[3] & ( 1 << 25 ) ) {
 		return qtrue;
+	}
 
 	return qfalse;
 }
 
-static int IsMMX( void )
-{
+static int IsMMX( void ) {
 	unsigned regs[4];
 
 	// get CPU feature bits
 	CPUID( 1, regs );
 
 	// bit 23 of EDX denotes MMX existence
-	if ( regs[3] & ( 1 << 23 ) )
+	if ( regs[3] & ( 1 << 23 ) ) {
 		return qtrue;
+	}
 	return qfalse;
 }
 
-int Sys_GetProcessorId( void )
-{
+int Sys_GetProcessorId( void ) {
 #if defined _M_ALPHA
 	return CPUID_AXP;
 #elif !defined _M_IX86
@@ -200,25 +196,23 @@ int Sys_GetProcessorId( void )
 #else
 
 	// verify we're at least a Pentium or 486 w/ CPUID support
-	if ( !IsPentium() )
+	if ( !IsPentium() ) {
 		return CPUID_INTEL_UNSUPPORTED;
+	}
 
 	// check for MMX
-	if ( !IsMMX() )
-	{
+	if ( !IsMMX() ) {
 		// Pentium or PPro
 		return CPUID_INTEL_PENTIUM;
 	}
 
 	// see if we're an AMD 3DNOW! processor
-	if ( Is3DNOW() )
-	{
+	if ( Is3DNOW() ) {
 		return CPUID_AMD_3DNOW;
 	}
 
 	// see if we're an Intel Katmai
-	if ( IsKNI() )
-	{
+	if ( IsKNI() ) {
 		return CPUID_INTEL_KATMAI;
 	}
 
@@ -237,29 +231,27 @@ int Sys_GetProcessorId( void )
 
 //============================================
 
-char *Sys_GetCurrentUser( void )
-{
+char * Sys_GetCurrentUser( void ) {
 	static char s_userName[1024];
 	unsigned long size = sizeof( s_userName );
 
 
-	if ( !GetUserName( s_userName, &size ) )
+	if ( !GetUserName( s_userName, &size ) ) {
 		strcpy( s_userName, "player" );
+	}
 
-	if ( !s_userName[0] )
-	{
+	if ( !s_userName[0] ) {
 		strcpy( s_userName, "player" );
 	}
 
 	return s_userName;
 }
 
-char	*Sys_DefaultHomePath(void) {
+char	* Sys_DefaultHomePath( void ) {
 	return NULL;
 }
 
-char *Sys_DefaultInstallPath(void)
-{
+char * Sys_DefaultInstallPath( void ) {
 	return Sys_Cwd();
 }
 

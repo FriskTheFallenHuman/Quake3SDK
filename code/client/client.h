@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -55,7 +55,7 @@ typedef struct {
 	int				parseEntitiesNum;		// at the time of this snapshot
 
 	int				serverCommandNum;		// execute all commands up to this before
-											// making the snapshot current
+	// making the snapshot current
 } clSnapshot_t;
 
 
@@ -77,24 +77,24 @@ typedef struct {
 
 // the parseEntities array must be large enough to hold PACKET_BACKUP frames of
 // entities, so that when a delta compressed message arives from the server
-// it can be un-deltad from the original 
+// it can be un-deltad from the original
 #define	MAX_PARSE_ENTITIES	2048
 
 extern int g_console_field_width;
 
 typedef struct {
 	int			timeoutcount;		// it requres several frames in a timeout condition
-									// to disconnect, preventing debugging breaks from
-									// causing immediate disconnects on continue
+	// to disconnect, preventing debugging breaks from
+	// causing immediate disconnects on continue
 	clSnapshot_t	snap;			// latest received from server
 
 	int			serverTime;			// may be paused during play
 	int			oldServerTime;		// to prevent time from flowing bakcwards
 	int			oldFrameServerTime;	// to check tournament restarts
 	int			serverTimeDelta;	// cl.serverTime = cls.realtime + cl.serverTimeDelta
-									// this value changes as net lag varies
+	// this value changes as net lag varies
 	qboolean	extrapolatedSnapshot;	// set if any cgame frame has been forced to extrapolate
-									// cleared when CL_AdjustTimeDelta looks at it
+	// cleared when CL_AdjustTimeDelta looks at it
 	qboolean	newSnapshots;		// set on parse of any valid packet
 
 	gameState_t	gameState;			// configstrings
@@ -114,7 +114,7 @@ typedef struct {
 	// properly generated command
 	usercmd_t	cmds[CMD_BACKUP];	// each mesage will send several old cmds
 	int			cmdNumber;			// incremented each frame, because multiple
-									// frames may need to be packed into a single packet
+	// frames may need to be packed into a single packet
 
 	outPacket_t	outPackets[PACKET_BACKUP];	// information about each packet we have sent out
 
@@ -126,7 +126,7 @@ typedef struct {
 	vec3_t		viewangles;
 
 	int			serverId;			// included in each client message so the server
-												// can tell if it is for a prior map_restart
+	// can tell if it is for a prior map_restart
 	// big stuff at end of structure so most offsets are 15 bits or less
 	clSnapshot_t	snapshots[PACKET_BACKUP];
 
@@ -312,42 +312,42 @@ extern	refexport_t		re;		// interface to refresh .dll
 //
 // cvars
 //
-extern	cvar_t	*cl_nodelta;
-extern	cvar_t	*cl_debugMove;
-extern	cvar_t	*cl_noprint;
-extern	cvar_t	*cl_timegraph;
-extern	cvar_t	*cl_maxpackets;
-extern	cvar_t	*cl_packetdup;
-extern	cvar_t	*cl_shownet;
-extern	cvar_t	*cl_showSend;
-extern	cvar_t	*cl_timeNudge;
-extern	cvar_t	*cl_showTimeDelta;
-extern	cvar_t	*cl_freezeDemo;
+extern	cvar_t	* cl_nodelta;
+extern	cvar_t	* cl_debugMove;
+extern	cvar_t	* cl_noprint;
+extern	cvar_t	* cl_timegraph;
+extern	cvar_t	* cl_maxpackets;
+extern	cvar_t	* cl_packetdup;
+extern	cvar_t	* cl_shownet;
+extern	cvar_t	* cl_showSend;
+extern	cvar_t	* cl_timeNudge;
+extern	cvar_t	* cl_showTimeDelta;
+extern	cvar_t	* cl_freezeDemo;
 
-extern	cvar_t	*cl_yawspeed;
-extern	cvar_t	*cl_pitchspeed;
-extern	cvar_t	*cl_run;
-extern	cvar_t	*cl_anglespeedkey;
+extern	cvar_t	* cl_yawspeed;
+extern	cvar_t	* cl_pitchspeed;
+extern	cvar_t	* cl_run;
+extern	cvar_t	* cl_anglespeedkey;
 
-extern	cvar_t	*cl_sensitivity;
-extern	cvar_t	*cl_freelook;
+extern	cvar_t	* cl_sensitivity;
+extern	cvar_t	* cl_freelook;
 
-extern	cvar_t	*cl_mouseAccel;
-extern	cvar_t	*cl_showMouseRate;
+extern	cvar_t	* cl_mouseAccel;
+extern	cvar_t	* cl_showMouseRate;
 
-extern	cvar_t	*m_pitch;
-extern	cvar_t	*m_yaw;
-extern	cvar_t	*m_forward;
-extern	cvar_t	*m_side;
-extern	cvar_t	*m_filter;
+extern	cvar_t	* m_pitch;
+extern	cvar_t	* m_yaw;
+extern	cvar_t	* m_forward;
+extern	cvar_t	* m_side;
+extern	cvar_t	* m_filter;
 
-extern	cvar_t	*cl_timedemo;
+extern	cvar_t	* cl_timedemo;
 
-extern	cvar_t	*cl_activeAction;
+extern	cvar_t	* cl_activeAction;
 
-extern	cvar_t	*cl_allowDownload;
-extern	cvar_t	*cl_conXOffset;
-extern	cvar_t	*cl_inGameVideo;
+extern	cvar_t	* cl_allowDownload;
+extern	cvar_t	* cl_conXOffset;
+extern	cvar_t	* cl_inGameVideo;
 
 //=================================================
 
@@ -355,33 +355,33 @@ extern	cvar_t	*cl_inGameVideo;
 // cl_main
 //
 
-void CL_Init (void);
-void CL_FlushMemory(void);
-void CL_ShutdownAll(void);
-void CL_AddReliableCommand( const char *cmd );
+void CL_Init ( void );
+void CL_FlushMemory( void );
+void CL_ShutdownAll( void );
+void CL_AddReliableCommand( const char * cmd );
 
 void CL_StartHunkUsers( void );
 
-void CL_Disconnect_f (void);
-void CL_GetChallengePacket (void);
+void CL_Disconnect_f ( void );
+void CL_GetChallengePacket ( void );
 void CL_Vid_Restart_f( void );
-void CL_Snd_Restart_f (void);
+void CL_Snd_Restart_f ( void );
 void CL_StartDemoLoop( void );
 void CL_NextDemo( void );
 void CL_ReadDemoMessage( void );
 
-void CL_InitDownloads(void);
-void CL_NextDownload(void);
+void CL_InitDownloads( void );
+void CL_NextDownload( void );
 
-void CL_GetPing( int n, char *buf, int buflen, int *pingtime );
-void CL_GetPingInfo( int n, char *buf, int buflen );
+void CL_GetPing( int n, char * buf, int buflen, int * pingtime );
+void CL_GetPingInfo( int n, char * buf, int buflen );
 void CL_ClearPing( int n );
 int CL_GetPingQueueCount( void );
 
 void CL_ShutdownRef( void );
 void CL_InitRef( void );
-qboolean CL_CDKeyValidate( const char *key, const char *checksum );
-int CL_ServerStatus( char *serverAddress, char *serverStatusString, int maxLen );
+qboolean CL_CDKeyValidate( const char * key, const char * checksum );
+int CL_ServerStatus( char * serverAddress, char * serverStatusString, int maxLen );
 
 
 //
@@ -399,18 +399,18 @@ extern	kbutton_t	in_mlook, in_klook;
 extern 	kbutton_t 	in_strafe;
 extern 	kbutton_t 	in_speed;
 
-void CL_InitInput (void);
-void CL_SendCmd (void);
-void CL_ClearState (void);
-void CL_ReadPackets (void);
+void CL_InitInput ( void );
+void CL_SendCmd ( void );
+void CL_ClearState ( void );
+void CL_ReadPackets ( void );
 
 void CL_WritePacket( void );
-void IN_CenterView (void);
+void IN_CenterView ( void );
 
 void CL_VerifyCode( void );
 
-float CL_KeyState (kbutton_t *key);
-char *Key_KeynumToString (int keynum);
+float CL_KeyState ( kbutton_t * key );
+char * Key_KeynumToString ( int keynum );
 
 //
 // cl_parse.c
@@ -433,16 +433,16 @@ qboolean CL_UpdateVisiblePings_f( int source );
 //
 // console
 //
-void Con_DrawCharacter (int cx, int line, int num);
+void Con_DrawCharacter ( int cx, int line, int num );
 
-void Con_CheckResize (void);
-void Con_Init (void);
-void Con_Clear_f (void);
-void Con_ToggleConsole_f (void);
-void Con_DrawNotify (void);
-void Con_ClearNotify (void);
-void Con_RunConsole (void);
-void Con_DrawConsole (void);
+void Con_CheckResize ( void );
+void Con_Init ( void );
+void Con_Clear_f ( void );
+void Con_ToggleConsole_f ( void );
+void Con_DrawNotify ( void );
+void Con_ClearNotify ( void );
+void Con_RunConsole ( void );
+void Con_DrawConsole ( void );
 void Con_PageUp( void );
 void Con_PageDown( void );
 void Con_Top( void );
@@ -453,22 +453,22 @@ void Con_Close( void );
 //
 // cl_scrn.c
 //
-void	SCR_Init (void);
-void	SCR_UpdateScreen (void);
+void	SCR_Init ( void );
+void	SCR_UpdateScreen ( void );
 
-void	SCR_DebugGraph (float value, int color);
+void	SCR_DebugGraph ( float value, int color );
 
-int		SCR_GetBigStringWidth( const char *str );	// returns in virtual 640x480 coordinates
+int		SCR_GetBigStringWidth( const char * str );	// returns in virtual 640x480 coordinates
 
-void	SCR_AdjustFrom640( float *x, float *y, float *w, float *h );
-void	SCR_FillRect( float x, float y, float width, float height, 
-					 const float *color );
+void	SCR_AdjustFrom640( float * x, float * y, float * w, float * h );
+void	SCR_FillRect( float x, float y, float width, float height,
+					const float * color );
 void	SCR_DrawPic( float x, float y, float width, float height, qhandle_t hShader );
-void	SCR_DrawNamedPic( float x, float y, float width, float height, const char *picname );
+void	SCR_DrawNamedPic( float x, float y, float width, float height, const char * picname );
 
-void	SCR_DrawBigString( int x, int y, const char *s, float alpha );			// draws a string with embedded color control characters with fade
-void	SCR_DrawBigStringColor( int x, int y, const char *s, vec4_t color );	// ignores embedded color control characters
-void	SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, qboolean forceColor );
+void	SCR_DrawBigString( int x, int y, const char * s, float alpha );			// draws a string with embedded color control characters with fade
+void	SCR_DrawBigStringColor( int x, int y, const char * s, vec4_t color );	// ignores embedded color control characters
+void	SCR_DrawSmallStringExt( int x, int y, const char * string, float * setColor, qboolean forceColor );
 void	SCR_DrawSmallChar( int x, int y, int ch );
 
 
@@ -477,17 +477,17 @@ void	SCR_DrawSmallChar( int x, int y, int ch );
 //
 
 void CL_PlayCinematic_f( void );
-void SCR_DrawCinematic (void);
-void SCR_RunCinematic (void);
-void SCR_StopCinematic (void);
-int CIN_PlayCinematic( const char *arg0, int xpos, int ypos, int width, int height, int bits);
-e_status CIN_StopCinematic(int handle);
-e_status CIN_RunCinematic (int handle);
-void CIN_DrawCinematic (int handle);
-void CIN_SetExtents (int handle, int x, int y, int w, int h);
-void CIN_SetLooping (int handle, qboolean loop);
-void CIN_UploadCinematic(int handle);
-void CIN_CloseAllVideos(void);
+void SCR_DrawCinematic ( void );
+void SCR_RunCinematic ( void );
+void SCR_StopCinematic ( void );
+int CIN_PlayCinematic( const char * arg0, int xpos, int ypos, int width, int height, int bits );
+e_status CIN_StopCinematic( int handle );
+e_status CIN_RunCinematic ( int handle );
+void CIN_DrawCinematic ( int handle );
+void CIN_SetExtents ( int handle, int x, int y, int w, int h );
+void CIN_SetLooping ( int handle, qboolean loop );
+void CIN_UploadCinematic( int handle );
+void CIN_CloseAllVideos( void );
 
 //
 // cl_cgame.c
@@ -498,7 +498,7 @@ qboolean CL_GameCommand( void );
 void CL_CGameRendering( stereoFrame_t stereo );
 void CL_SetCGameTime( void );
 void CL_FirstSnapshot( void );
-void CL_ShaderStateChanged(void);
+void CL_ShaderStateChanged( void );
 
 //
 // cl_ui.c
@@ -514,8 +514,8 @@ void LAN_SaveServersToCache();
 //
 // cl_net_chan.c
 //
-void CL_Netchan_Transmit( netchan_t *chan, msg_t* msg);	//int length, const byte *data );
-void CL_Netchan_TransmitNextFragment( netchan_t *chan );
-qboolean CL_Netchan_Process( netchan_t *chan, msg_t *msg );
+void CL_Netchan_Transmit( netchan_t * chan, msg_t* msg );	//int length, const byte *data );
+void CL_Netchan_TransmitNextFragment( netchan_t * chan );
+qboolean CL_Netchan_Process( netchan_t * chan, msg_t *msg );
 
 #endif /* !CLIENT_H */

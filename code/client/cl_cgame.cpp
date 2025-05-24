@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -23,19 +23,19 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "client.h"
 
-cgameExport_t* cgame;
+cgameExport_t * cgame;
 static uintptr_t dllHandle;
 
-extern qboolean loadCamera(const char *name);
-extern void startCamera(int time);
-extern qboolean getCameraInfo(int time, vec3_t *origin, vec3_t *angles);
+extern qboolean loadCamera( const char * name );
+extern void startCamera( int time );
+extern qboolean getCameraInfo( int time, vec3_t * origin, vec3_t * angles );
 
 /*
 ====================
 CL_GetGameState
 ====================
 */
-void CL_GetGameState( gameState_t *gs ) {
+void CL_GetGameState( gameState_t * gs ) {
 	*gs = cl.gameState;
 }
 
@@ -44,7 +44,7 @@ void CL_GetGameState( gameState_t *gs ) {
 CL_GetGlconfig
 ====================
 */
-void CL_GetGlconfig( glconfig_t *glconfig ) {
+void CL_GetGlconfig( glconfig_t * glconfig ) {
 	*glconfig = cls.glconfig;
 }
 
@@ -54,7 +54,7 @@ void CL_GetGlconfig( glconfig_t *glconfig ) {
 CL_GetUserCmd
 ====================
 */
-qboolean CL_GetUserCmd( int cmdNumber, usercmd_t *ucmd ) {
+qboolean CL_GetUserCmd( int cmdNumber, usercmd_t * ucmd ) {
 	// cmds[cmdNumber] is the last properly generated command
 
 	// can't return anything that we haven't created yet
@@ -83,11 +83,11 @@ int CL_GetCurrentCmdNumber( void ) {
 CL_GetParseEntityState
 ====================
 */
-qboolean	CL_GetParseEntityState( int parseEntityNumber, entityState_t *state ) {
+qboolean	CL_GetParseEntityState( int parseEntityNumber, entityState_t * state ) {
 	// can't return anything that hasn't been parsed yet
 	if ( parseEntityNumber >= cl.parseEntitiesNum ) {
 		Com_Error( ERR_DROP, "CL_GetParseEntityState: %i >= %i",
-			parseEntityNumber, cl.parseEntitiesNum );
+				   parseEntityNumber, cl.parseEntitiesNum );
 	}
 
 	// can't return anything that has been overwritten in the circular buffer
@@ -104,7 +104,7 @@ qboolean	CL_GetParseEntityState( int parseEntityNumber, entityState_t *state ) {
 CL_GetCurrentSnapshotNumber
 ====================
 */
-void	CL_GetCurrentSnapshotNumber( int *snapshotNumber, int *serverTime ) {
+void	CL_GetCurrentSnapshotNumber( int * snapshotNumber, int * serverTime ) {
 	*snapshotNumber = cl.snap.messageNum;
 	*serverTime = cl.snap.serverTime;
 }
@@ -114,8 +114,8 @@ void	CL_GetCurrentSnapshotNumber( int *snapshotNumber, int *serverTime ) {
 CL_GetSnapshot
 ====================
 */
-qboolean	CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) {
-	clSnapshot_t	*clSnap;
+qboolean	CL_GetSnapshot( int snapshotNumber, snapshot_t * snapshot ) {
+	clSnapshot_t	* clSnap;
 	int				i, count;
 
 	if ( snapshotNumber > cl.snap.messageNum ) {
@@ -153,8 +153,8 @@ qboolean	CL_GetSnapshot( int snapshotNumber, snapshot_t *snapshot ) {
 	}
 	snapshot->numEntities = count;
 	for ( i = 0 ; i < count ; i++ ) {
-		snapshot->entities[i] = 
-			cl.parseEntities[ ( clSnap->parseEntitiesNum + i ) & (MAX_PARSE_ENTITIES-1) ];
+		snapshot->entities[i] =
+			cl.parseEntities[( clSnap->parseEntitiesNum + i ) & ( MAX_PARSE_ENTITIES - 1 ) ];
 	}
 
 	// FIXME: configstring changes and server commands!!!
@@ -177,7 +177,7 @@ void CL_SetUserCmdValue( int userCmdValue, float sensitivityScale ) {
 CL_AddCgameCommand
 =====================
 */
-void CL_AddCgameCommand( const char *cmdName ) {
+void CL_AddCgameCommand( const char * cmdName ) {
 	Cmd_AddCommand( cmdName, NULL );
 }
 
@@ -186,7 +186,7 @@ void CL_AddCgameCommand( const char *cmdName ) {
 CL_CgameError
 =====================
 */
-void CL_CgameError( const char *string ) {
+void CL_CgameError( const char * string ) {
 	Com_Error( ERR_DROP, "%s", string );
 }
 
@@ -197,18 +197,18 @@ CL_ConfigstringModified
 =====================
 */
 void CL_ConfigstringModified( void ) {
-	char		*old, *s;
+	char	*	old, * s;
 	int			i, index;
-	char		*dup;
+	char	*	dup;
 	gameState_t	oldGs;
 	int			len;
 
-	index = atoi( Cmd_Argv(1) );
+	index = atoi( Cmd_Argv( 1 ) );
 	if ( index < 0 || index >= MAX_CONFIGSTRINGS ) {
 		Com_Error( ERR_DROP, "configstring > MAX_CONFIGSTRINGS" );
 	}
 	// get everything after "cs <num>"
-	s = Cmd_ArgsFrom(2);
+	s = Cmd_ArgsFrom( 2 );
 
 	old = cl.gameState.stringData + cl.gameState.stringOffsets[ index ];
 	if ( !strcmp( old, s ) ) {
@@ -222,7 +222,7 @@ void CL_ConfigstringModified( void ) {
 
 	// leave the first 0 for uninitialized strings
 	cl.gameState.dataCount = 1;
-		
+
 	for ( i = 0 ; i < MAX_CONFIGSTRINGS ; i++ ) {
 		if ( i == index ) {
 			dup = s;
@@ -261,8 +261,8 @@ Set up argc/argv for the given command
 ===================
 */
 qboolean CL_GetServerCommand( int serverCommandNumber ) {
-	char	*s;
-	char	*cmd;
+	char	* s;
+	char	* cmd;
 	static char bigConfigString[BIG_INFO_STRING];
 	int argc;
 
@@ -270,8 +270,9 @@ qboolean CL_GetServerCommand( int serverCommandNumber ) {
 	if ( serverCommandNumber <= clc.serverCommandSequence - MAX_RELIABLE_COMMANDS ) {
 		// when a demo record was started after the client got a whole bunch of
 		// reliable commands then the client never got those first reliable commands
-		if ( clc.demoplaying )
+		if ( clc.demoplaying ) {
 			return qfalse;
+		}
 		Com_Error( ERR_DROP, "CL_GetServerCommand: a reliable command was cycled out" );
 		return qfalse;
 	}
@@ -288,26 +289,27 @@ qboolean CL_GetServerCommand( int serverCommandNumber ) {
 
 rescan:
 	Cmd_TokenizeString( s );
-	cmd = Cmd_Argv(0);
+	cmd = Cmd_Argv( 0 );
 	argc = Cmd_Argc();
 
 	if ( !strcmp( cmd, "disconnect" ) ) {
 		// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=552
 		// allow server to indicate why they were disconnected
-		if ( argc >= 2 )
-			Com_Error (ERR_SERVERDISCONNECT, va( "Server Disconnected - %s", Cmd_Argv( 1 ) ) );
-		else
-			Com_Error (ERR_SERVERDISCONNECT,"Server disconnected\n");
+		if ( argc >= 2 ) {
+			Com_Error( ERR_SERVERDISCONNECT, va( "Server Disconnected - %s", Cmd_Argv( 1 ) ) );
+		} else {
+			Com_Error( ERR_SERVERDISCONNECT, "Server disconnected\n" );
+		}
 	}
 
 	if ( !strcmp( cmd, "bcs0" ) ) {
-		Com_sprintf( bigConfigString, BIG_INFO_STRING, "cs %s \"%s", Cmd_Argv(1), Cmd_Argv(2) );
+		Com_sprintf( bigConfigString, BIG_INFO_STRING, "cs %s \"%s", Cmd_Argv( 1 ), Cmd_Argv( 2 ) );
 		return qfalse;
 	}
 
 	if ( !strcmp( cmd, "bcs1" ) ) {
-		s = Cmd_Argv(2);
-		if( strlen(bigConfigString) + strlen(s) >= BIG_INFO_STRING ) {
+		s = Cmd_Argv( 2 );
+		if ( strlen( bigConfigString ) + strlen( s ) >= BIG_INFO_STRING ) {
 			Com_Error( ERR_DROP, "bcs exceeded BIG_INFO_STRING" );
 		}
 		strcat( bigConfigString, s );
@@ -315,8 +317,8 @@ rescan:
 	}
 
 	if ( !strcmp( cmd, "bcs2" ) ) {
-		s = Cmd_Argv(2);
-		if( strlen(bigConfigString) + strlen(s) + 1 >= BIG_INFO_STRING ) {
+		s = Cmd_Argv( 2 );
+		if ( strlen( bigConfigString ) + strlen( s ) + 1 >= BIG_INFO_STRING ) {
 			Com_Error( ERR_DROP, "bcs exceeded BIG_INFO_STRING" );
 		}
 		strcat( bigConfigString, s );
@@ -373,7 +375,7 @@ CL_CM_LoadMap
 Just adds default parameters that cgame doesn't need to know about
 ====================
 */
-void CL_CM_LoadMap( const char *mapname ) {
+void CL_CM_LoadMap( const char * mapname ) {
 	int		checksum;
 
 	CM_LoadMap( mapname, qtrue, &checksum );
@@ -391,7 +393,7 @@ void CL_ShutdownCGame( void ) {
 	if ( !dllHandle ) {
 		return;
 	}
-	Sys_DLL_Unload(dllHandle);
+	Sys_DLL_Unload( dllHandle );
 	cgame = NULL;
 	dllHandle = 0;
 }
@@ -404,8 +406,8 @@ Should only be called by CL_StartHunkUsers
 ====================
 */
 void CL_InitCGame( void ) {
-	const char			 *info;
-	const char			 *mapname;
+	const char		*	 info;
+	const char		*	 mapname;
 	int					 t1, t2;
 	static cgameImport_t cgExports;
 
@@ -502,14 +504,14 @@ void CL_InitCGame( void ) {
 	Com_sprintf( cl.mapname, sizeof( cl.mapname ), "maps/%s.bsp", mapname );
 
 	// load the dll
-	dllHandle = Sys_DLL_Load("cgame");
-	if (!dllHandle) {
-		Com_Error(ERR_DROP, "VM_Create on cgame failed");
+	dllHandle = Sys_DLL_Load( "cgame" );
+	if ( !dllHandle ) {
+		Com_Error( ERR_DROP, "VM_Create on cgame failed" );
 	}
 
-	cgame = (cgameExport_t *)Sys_DLL_CallEntry(dllHandle, &cgExports);
-	if (!cgame) {
-		Com_Error(ERR_DROP, "VM_Create cgame api was invalid");
+	cgame = ( cgameExport_t * )Sys_DLL_CallEntry( dllHandle, &cgExports );
+	if ( !cgame ) {
+		Com_Error( ERR_DROP, "VM_Create cgame api was invalid" );
 	}
 
 	cls.state = CA_LOADING;
@@ -517,7 +519,7 @@ void CL_InitCGame( void ) {
 	// init for this gamestate
 	// use the lastExecutedServerCommand instead of the serverCommandSequence
 	// otherwise server commands sent just before a gamestate are dropped
-	cgame->CG_Init(clc.serverMessageSequence, clc.lastExecutedServerCommand, clc.clientNum);
+	cgame->CG_Init( clc.serverMessageSequence, clc.lastExecutedServerCommand, clc.clientNum );
 
 	// we will send a usercmd this frame, which
 	// will cause the server to send us the first snapshot
@@ -525,19 +527,19 @@ void CL_InitCGame( void ) {
 
 	t2 = Sys_Milliseconds();
 
-	Com_Printf( "CL_InitCGame: %5.2f seconds\n", (t2-t1)/1000.0 );
+	Com_Printf( "CL_InitCGame: %5.2f seconds\n", ( t2 - t1 ) / 1000.0 );
 
 	// have the renderer touch all its images, so they are present
 	// on the card even if the driver does deferred loading
 	re.EndRegistration();
 
 	// make sure everything is paged in
-	if (!Sys_LowPhysicalMemory()) {
+	if ( !Sys_LowPhysicalMemory() ) {
 		Com_TouchMemory();
 	}
 
 	// clear anything that got printed
-	Con_ClearNotify ();
+	Con_ClearNotify();
 }
 
 
@@ -564,7 +566,7 @@ CL_CGameRendering
 =====================
 */
 void CL_CGameRendering( stereoFrame_t stereo ) {
-	cgame->CG_DrawActiveFrame(cl.serverTime, stereo, clc.demoplaying);	
+	cgame->CG_DrawActiveFrame( cl.serverTime, stereo, clc.demoplaying );
 }
 
 
@@ -674,7 +676,7 @@ void CL_FirstSnapshot( void ) {
 		Cbuf_AddText( cl_activeAction->string );
 		Cvar_Set( "activeAction", "" );
 	}
-	
+
 	Sys_BeginProfiling();
 }
 
@@ -705,7 +707,7 @@ void CL_SetCGameTime( void ) {
 		if ( cls.state != CA_ACTIVE ) {
 			return;
 		}
-	}	
+	}
 
 	// if we have gotten to this point, cl.snap is guaranteed to be valid
 	if ( !cl.snap.valid ) {
@@ -731,14 +733,14 @@ void CL_SetCGameTime( void ) {
 
 	} else {
 		// cl_timeNudge is a user adjustable cvar that allows more
-		// or less latency to be added in the interest of better 
+		// or less latency to be added in the interest of better
 		// smoothness or better responsiveness.
 		int tn;
-		
+
 		tn = cl_timeNudge->integer;
-		if (tn<-30) {
+		if ( tn < -30 ) {
 			tn = -30;
-		} else if (tn>30) {
+		} else if ( tn > 30 ) {
 			tn = 30;
 		}
 
@@ -778,7 +780,7 @@ void CL_SetCGameTime( void ) {
 	// while a normal demo may have different time samples
 	// each time it is played back
 	if ( cl_timedemo->integer ) {
-		if (!clc.timeDemoStart) {
+		if ( !clc.timeDemoStart ) {
 			clc.timeDemoStart = Sys_Milliseconds();
 		}
 		clc.timeDemoFrames++;

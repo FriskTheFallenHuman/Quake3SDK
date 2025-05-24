@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -35,33 +35,28 @@ static unsigned short s_oldHardwareGamma[3][256];
 **
 ** Determines if the underlying hardware supports the Win32 gamma correction API.
 */
-void WG_CheckHardwareGamma( void )
-{
+void WG_CheckHardwareGamma( void ) {
 	HDC			hDC;
 
 	glConfig.deviceSupportsGamma = qfalse;
 
 	// non-3Dfx standalone drivers don't support gamma changes, period
-	if ( glConfig.driverType == GLDRV_STANDALONE )
-	{
+	if ( glConfig.driverType == GLDRV_STANDALONE ) {
 		return;
 	}
 
-	if ( !r_ignorehwgamma->integer )
-	{
+	if ( !r_ignorehwgamma->integer ) {
 		hDC = GetDC( GetDesktopWindow() );
-		glConfig.deviceSupportsGamma = (qboolean)GetDeviceGammaRamp( hDC, s_oldHardwareGamma );
+		glConfig.deviceSupportsGamma = ( qboolean )GetDeviceGammaRamp( hDC, s_oldHardwareGamma );
 		ReleaseDC( GetDesktopWindow(), hDC );
 
-		if ( glConfig.deviceSupportsGamma )
-		{
+		if ( glConfig.deviceSupportsGamma ) {
 			//
 			// do a sanity check on the gamma values
 			//
 			if ( ( HIBYTE( s_oldHardwareGamma[0][255] ) <= HIBYTE( s_oldHardwareGamma[0][0] ) ) ||
-				 ( HIBYTE( s_oldHardwareGamma[1][255] ) <= HIBYTE( s_oldHardwareGamma[1][0] ) ) ||
-				 ( HIBYTE( s_oldHardwareGamma[2][255] ) <= HIBYTE( s_oldHardwareGamma[2][0] ) ) )
-			{
+					( HIBYTE( s_oldHardwareGamma[1][255] ) <= HIBYTE( s_oldHardwareGamma[1][0] ) ) ||
+					( HIBYTE( s_oldHardwareGamma[2][255] ) <= HIBYTE( s_oldHardwareGamma[2][0] ) ) ) {
 				glConfig.deviceSupportsGamma = qfalse;
 				ri.Printf( PRINT_WARNING, "WARNING: device has broken gamma support, generated gamma.dat\n" );
 			}
@@ -70,14 +65,12 @@ void WG_CheckHardwareGamma( void )
 			// make sure that we didn't have a prior crash in the game, and if so we need to
 			// restore the gamma values to at least a linear value
 			//
-			if ( ( HIBYTE( s_oldHardwareGamma[0][181] ) == 255 ) )
-			{
+			if ( ( HIBYTE( s_oldHardwareGamma[0][181] ) == 255 ) ) {
 				int g;
 
 				ri.Printf( PRINT_WARNING, "WARNING: suspicious gamma tables, using linear ramp for restoration\n" );
 
-				for ( g = 0; g < 255; g++ )
-				{
+				for ( g = 0; g < 255; g++ ) {
 					s_oldHardwareGamma[0][g] = g << 8;
 					s_oldHardwareGamma[1][g] = g << 8;
 					s_oldHardwareGamma[2][g] = g << 8;
@@ -138,18 +131,18 @@ void GLimp_SetGamma( unsigned char red[256], unsigned char green[256], unsigned 
 	}
 
 	// Win2K puts this odd restriction on gamma ramps...
-	vinfo.dwOSVersionInfoSize = sizeof(vinfo);
+	vinfo.dwOSVersionInfoSize = sizeof( vinfo );
 	GetVersionEx( &vinfo );
 	if ( vinfo.dwMajorVersion == 5 && vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT ) {
 		Com_DPrintf( "performing W2K gamma clamp.\n" );
 		for ( j = 0 ; j < 3 ; j++ ) {
 			for ( i = 0 ; i < 128 ; i++ ) {
-				if ( table[j][i] > ( (128+i) << 8 ) ) {
-					table[j][i] = (128+i) << 8;
+				if ( table[j][i] > ( ( 128 + i ) << 8 ) ) {
+					table[j][i] = ( 128 + i ) << 8;
 				}
 			}
-			if ( table[j][127] > 254<<8 ) {
-				table[j][127] = 254<<8;
+			if ( table[j][127] > 254 << 8 ) {
+				table[j][127] = 254 << 8;
 			}
 		}
 	} else {
@@ -159,8 +152,8 @@ void GLimp_SetGamma( unsigned char red[256], unsigned char green[256], unsigned 
 	// enforce constantly increasing
 	for ( j = 0 ; j < 3 ; j++ ) {
 		for ( i = 1 ; i < 256 ; i++ ) {
-			if ( table[j][i] < table[j][i-1] ) {
-				table[j][i] = table[j][i-1];
+			if ( table[j][i] < table[j][i - 1] ) {
+				table[j][i] = table[j][i - 1];
 			}
 		}
 	}
@@ -175,12 +168,10 @@ void GLimp_SetGamma( unsigned char red[256], unsigned char green[256], unsigned 
 /*
 ** WG_RestoreGamma
 */
-void WG_RestoreGamma( void )
-{
-	if ( glConfig.deviceSupportsGamma )
-	{
+void WG_RestoreGamma( void ) {
+	if ( glConfig.deviceSupportsGamma ) {
 		HDC hDC;
-			
+
 		hDC = GetDC( GetDesktopWindow() );
 		SetDeviceGammaRamp( hDC, s_oldHardwareGamma );
 		ReleaseDC( GetDesktopWindow(), hDC );

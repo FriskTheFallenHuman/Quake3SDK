@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -25,15 +25,15 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define	LL(x) x=LittleLong(x)
 
-static qboolean R_LoadMD3 (model_t *mod, int lod, void *buffer, const char *name );
+static qboolean R_LoadMD3( model_t * mod, int lod, void * buffer, const char * name );
 
-model_t	*loadmodel;
+model_t	* loadmodel;
 
 /*
 ** R_GetModelByHandle
 */
-model_t	*R_GetModelByHandle( qhandle_t index ) {
-	model_t		*mod;
+model_t	* R_GetModelByHandle( qhandle_t index ) {
+	model_t	*	mod;
 
 	// out of range gets the defualt model
 	if ( index < 1 || index >= tr.numModels ) {
@@ -50,14 +50,14 @@ model_t	*R_GetModelByHandle( qhandle_t index ) {
 /*
 ** R_AllocModel
 */
-model_t *R_AllocModel( void ) {
-	model_t		*mod;
+model_t * R_AllocModel( void ) {
+	model_t	*	mod;
 
 	if ( tr.numModels == MAX_MOD_KNOWN ) {
 		return NULL;
 	}
 
-	mod = (model_t *)ri.Hunk_Alloc( sizeof( *tr.models[tr.numModels] ), h_low );
+	mod = ( model_t * )ri.Hunk_Alloc( sizeof( *tr.models[tr.numModels] ), h_low );
 	mod->index = tr.numModels;
 	tr.models[tr.numModels] = mod;
 	tr.numModels++;
@@ -77,8 +77,8 @@ optimization to prevent disk rescanning if they are
 asked for again.
 ====================
 */
-qhandle_t RE_RegisterModel( const char *name ) {
-	model_t		*mod;
+qhandle_t RE_RegisterModel( const char * name ) {
+	model_t	*	mod;
 	unsigned	*buf;
 	int			lod;
 	int			ident;
@@ -102,7 +102,7 @@ qhandle_t RE_RegisterModel( const char *name ) {
 	for ( hModel = 1 ; hModel < tr.numModels; hModel++ ) {
 		mod = tr.models[hModel];
 		if ( !strcmp( mod->name, name ) ) {
-			if( mod->type == MOD_BAD ) {
+			if ( mod->type == MOD_BAD ) {
 				return 0;
 			}
 			return hModel;
@@ -112,7 +112,7 @@ qhandle_t RE_RegisterModel( const char *name ) {
 	// allocate a new model_t
 
 	if ( ( mod = R_AllocModel() ) == NULL ) {
-		ri.Printf( PRINT_WARNING, "RE_RegisterModel: R_AllocModel() failed for '%s'\n", name);
+		ri.Printf( PRINT_WARNING, "RE_RegisterModel: R_AllocModel() failed for '%s'\n", name );
 		return 0;
 	}
 
@@ -145,22 +145,22 @@ qhandle_t RE_RegisterModel( const char *name ) {
 			strcat( filename, namebuf );
 		}
 
-		ri.FS_ReadFile( filename, (void **)&buf );
+		ri.FS_ReadFile( filename, ( void ** )&buf );
 		if ( !buf ) {
 			continue;
 		}
-		
+
 		loadmodel = mod;
-		
-		ident = LittleLong(*(unsigned *)buf);
+
+		ident = LittleLong( *( unsigned * )buf );
 		if ( ident != MD3_IDENT ) {
-			ri.Printf (PRINT_WARNING,"RE_RegisterModel: unknown fileid for %s\n", name);
+			ri.Printf( PRINT_WARNING, "RE_RegisterModel: unknown fileid for %s\n", name );
 			goto fail;
 		}
 
 		loaded = R_LoadMD3( mod, lod, buf, name );
-		
-		ri.FS_FreeFile (buf);
+
+		ri.FS_FreeFile( buf );
 
 		if ( !loaded ) {
 			if ( lod == 0 ) {
@@ -185,14 +185,14 @@ qhandle_t RE_RegisterModel( const char *name ) {
 		// loaded, in case the user changes r_lodbias on the fly
 		for ( lod-- ; lod >= 0 ; lod-- ) {
 			mod->numLods++;
-			mod->md3[lod] = mod->md3[lod+1];
+			mod->md3[lod] = mod->md3[lod + 1];
 		}
 
 		return mod->index;
 	}
 #ifdef _DEBUG
 	else {
-		ri.Printf (PRINT_WARNING,"RE_RegisterModel: couldn't load %s\n", name);
+		ri.Printf( PRINT_WARNING, "RE_RegisterModel: couldn't load %s\n", name );
 	}
 #endif
 
@@ -209,53 +209,53 @@ fail:
 R_LoadMD3
 =================
 */
-static qboolean R_LoadMD3 (model_t *mod, int lod, void *buffer, const char *mod_name ) {
+static qboolean R_LoadMD3( model_t * mod, int lod, void * buffer, const char * mod_name ) {
 	int					i, j;
-	md3Header_t			*pinmodel;
-	md3Frame_t			*frame;
-	md3Surface_t		*surf;
-	md3Shader_t			*shader;
-	md3Triangle_t		*tri;
-	md3St_t				*st;
-	md3XyzNormal_t		*xyz;
-	md3Tag_t			*tag;
+	md3Header_t		*	pinmodel;
+	md3Frame_t		*	frame;
+	md3Surface_t	*	surf;
+	md3Shader_t		*	shader;
+	md3Triangle_t	*	tri;
+	md3St_t		*		st;
+	md3XyzNormal_t	*	xyz;
+	md3Tag_t		*	tag;
 	int					version;
 	int					size;
 
-	pinmodel = (md3Header_t *)buffer;
+	pinmodel = ( md3Header_t * )buffer;
 
-	version = LittleLong (pinmodel->version);
-	if (version != MD3_VERSION) {
+	version = LittleLong( pinmodel->version );
+	if ( version != MD3_VERSION ) {
 		ri.Printf( PRINT_WARNING, "R_LoadMD3: %s has wrong version (%i should be %i)\n",
-				 mod_name, version, MD3_VERSION);
+				   mod_name, version, MD3_VERSION );
 		return qfalse;
 	}
 
 	mod->type = MOD_MESH;
-	size = LittleLong(pinmodel->ofsEnd);
+	size = LittleLong( pinmodel->ofsEnd );
 	mod->dataSize += size;
-	mod->md3[lod] = (md3Header_t *)ri.Hunk_Alloc( size, h_low );
+	mod->md3[lod] = ( md3Header_t * )ri.Hunk_Alloc( size, h_low );
 
-	Com_Memcpy (mod->md3[lod], buffer, LittleLong(pinmodel->ofsEnd) );
+	Com_Memcpy( mod->md3[lod], buffer, LittleLong( pinmodel->ofsEnd ) );
 
-	LL(mod->md3[lod]->ident);
-	LL(mod->md3[lod]->version);
-	LL(mod->md3[lod]->numFrames);
-	LL(mod->md3[lod]->numTags);
-	LL(mod->md3[lod]->numSurfaces);
-	LL(mod->md3[lod]->ofsFrames);
-	LL(mod->md3[lod]->ofsTags);
-	LL(mod->md3[lod]->ofsSurfaces);
-	LL(mod->md3[lod]->ofsEnd);
+	LL( mod->md3[lod]->ident );
+	LL( mod->md3[lod]->version );
+	LL( mod->md3[lod]->numFrames );
+	LL( mod->md3[lod]->numTags );
+	LL( mod->md3[lod]->numSurfaces );
+	LL( mod->md3[lod]->ofsFrames );
+	LL( mod->md3[lod]->ofsTags );
+	LL( mod->md3[lod]->ofsSurfaces );
+	LL( mod->md3[lod]->ofsEnd );
 
 	if ( mod->md3[lod]->numFrames < 1 ) {
 		ri.Printf( PRINT_WARNING, "R_LoadMD3: %s has no frames\n", mod_name );
 		return qfalse;
 	}
-	
+
 	// swap all the frames
-	frame = (md3Frame_t *) ( (byte *)mod->md3[lod] + mod->md3[lod]->ofsFrames );
-	for ( i = 0 ; i < mod->md3[lod]->numFrames ; i++, frame++) {
+	frame = ( md3Frame_t * )( ( byte * )mod->md3[lod] + mod->md3[lod]->ofsFrames );
+	for ( i = 0 ; i < mod->md3[lod]->numFrames ; i++, frame++ ) {
 		frame->radius = LittleFloat( frame->radius );
 		for ( j = 0 ; j < 3 ; j++ ) {
 			frame->bounds[0][j] = LittleFloat( frame->bounds[0][j] );
@@ -265,8 +265,8 @@ static qboolean R_LoadMD3 (model_t *mod, int lod, void *buffer, const char *mod_
 	}
 
 	// swap all the tags
-	tag = (md3Tag_t *) ( (byte *)mod->md3[lod] + mod->md3[lod]->ofsTags );
-	for ( i = 0 ; i < mod->md3[lod]->numTags * mod->md3[lod]->numFrames ; i++, tag++) {
+	tag = ( md3Tag_t * )( ( byte * )mod->md3[lod] + mod->md3[lod]->ofsTags );
+	for ( i = 0 ; i < mod->md3[lod]->numTags * mod->md3[lod]->numFrames ; i++, tag++ ) {
 		for ( j = 0 ; j < 3 ; j++ ) {
 			tag->origin[j] = LittleFloat( tag->origin[j] );
 			tag->axis[0][j] = LittleFloat( tag->axis[0][j] );
@@ -276,30 +276,30 @@ static qboolean R_LoadMD3 (model_t *mod, int lod, void *buffer, const char *mod_
 	}
 
 	// swap all the surfaces
-	surf = (md3Surface_t *) ( (byte *)mod->md3[lod] + mod->md3[lod]->ofsSurfaces );
-	for ( i = 0 ; i < mod->md3[lod]->numSurfaces ; i++) {
+	surf = ( md3Surface_t * )( ( byte * )mod->md3[lod] + mod->md3[lod]->ofsSurfaces );
+	for ( i = 0 ; i < mod->md3[lod]->numSurfaces ; i++ ) {
 
-		LL(surf->ident);
-		LL(surf->flags);
-		LL(surf->numFrames);
-		LL(surf->numShaders);
-		LL(surf->numTriangles);
-		LL(surf->ofsTriangles);
-		LL(surf->numVerts);
-		LL(surf->ofsShaders);
-		LL(surf->ofsSt);
-		LL(surf->ofsXyzNormals);
-		LL(surf->ofsEnd);
-		
+		LL( surf->ident );
+		LL( surf->flags );
+		LL( surf->numFrames );
+		LL( surf->numShaders );
+		LL( surf->numTriangles );
+		LL( surf->ofsTriangles );
+		LL( surf->numVerts );
+		LL( surf->ofsShaders );
+		LL( surf->ofsSt );
+		LL( surf->ofsXyzNormals );
+		LL( surf->ofsEnd );
+
 		if ( surf->numVerts > SHADER_MAX_VERTEXES ) {
-			ri.Error (ERR_DROP, "R_LoadMD3: %s has more than %i verts on a surface (%i)",
-				mod_name, SHADER_MAX_VERTEXES, surf->numVerts );
+			ri.Error( ERR_DROP, "R_LoadMD3: %s has more than %i verts on a surface (%i)",
+					  mod_name, SHADER_MAX_VERTEXES, surf->numVerts );
 		}
-		if ( surf->numTriangles*3 > SHADER_MAX_INDEXES ) {
-			ri.Error (ERR_DROP, "R_LoadMD3: %s has more than %i triangles on a surface (%i)",
-				mod_name, SHADER_MAX_INDEXES / 3, surf->numTriangles );
+		if ( surf->numTriangles * 3 > SHADER_MAX_INDEXES ) {
+			ri.Error( ERR_DROP, "R_LoadMD3: %s has more than %i triangles on a surface (%i)",
+					  mod_name, SHADER_MAX_INDEXES / 3, surf->numTriangles );
 		}
-	
+
 		// change to surface identifier
 		surf->ident = SF_MD3;
 
@@ -309,14 +309,14 @@ static qboolean R_LoadMD3 (model_t *mod, int lod, void *buffer, const char *mod_
 		// strip off a trailing _1 or _2
 		// this is a crutch for q3data being a mess
 		j = strlen( surf->name );
-		if ( j > 2 && surf->name[j-2] == '_' ) {
-			surf->name[j-2] = 0;
+		if ( j > 2 && surf->name[j - 2] == '_' ) {
+			surf->name[j - 2] = 0;
 		}
 
 		// register the shaders
-		shader = (md3Shader_t *) ( (byte *)surf + surf->ofsShaders );
+		shader = ( md3Shader_t * )( ( byte * )surf + surf->ofsShaders );
 		for ( j = 0 ; j < surf->numShaders ; j++, shader++ ) {
-			shader_t	*sh;
+			shader_t	* sh;
 
 			sh = R_FindShader( shader->name, LIGHTMAP_NONE, qtrue );
 			if ( sh->defaultShader ) {
@@ -327,24 +327,23 @@ static qboolean R_LoadMD3 (model_t *mod, int lod, void *buffer, const char *mod_
 		}
 
 		// swap all the triangles
-		tri = (md3Triangle_t *) ( (byte *)surf + surf->ofsTriangles );
+		tri = ( md3Triangle_t * )( ( byte * )surf + surf->ofsTriangles );
 		for ( j = 0 ; j < surf->numTriangles ; j++, tri++ ) {
-			LL(tri->indexes[0]);
-			LL(tri->indexes[1]);
-			LL(tri->indexes[2]);
+			LL( tri->indexes[0] );
+			LL( tri->indexes[1] );
+			LL( tri->indexes[2] );
 		}
 
 		// swap all the ST
-		st = (md3St_t *) ( (byte *)surf + surf->ofsSt );
+		st = ( md3St_t * )( ( byte * )surf + surf->ofsSt );
 		for ( j = 0 ; j < surf->numVerts ; j++, st++ ) {
 			st->st[0] = LittleFloat( st->st[0] );
 			st->st[1] = LittleFloat( st->st[1] );
 		}
 
 		// swap all the XyzNormals
-		xyz = (md3XyzNormal_t *) ( (byte *)surf + surf->ofsXyzNormals );
-		for ( j = 0 ; j < surf->numVerts * surf->numFrames ; j++, xyz++ ) 
-		{
+		xyz = ( md3XyzNormal_t * )( ( byte * )surf + surf->ofsXyzNormals );
+		for ( j = 0 ; j < surf->numVerts * surf->numFrames ; j++, xyz++ ) {
 			xyz->xyz[0] = LittleShort( xyz->xyz[0] );
 			xyz->xyz[1] = LittleShort( xyz->xyz[1] );
 			xyz->xyz[2] = LittleShort( xyz->xyz[2] );
@@ -354,9 +353,9 @@ static qboolean R_LoadMD3 (model_t *mod, int lod, void *buffer, const char *mod_
 
 
 		// find the next surface
-		surf = (md3Surface_t *)( (byte *)surf + surf->ofsEnd );
+		surf = ( md3Surface_t * )( ( byte * )surf + surf->ofsEnd );
 	}
-	
+
 	return qtrue;
 }
 
@@ -365,7 +364,7 @@ static qboolean R_LoadMD3 (model_t *mod, int lod, void *buffer, const char *mod_
 /*
 ** RE_BeginRegistration
 */
-void RE_BeginRegistration( glconfig_t *glconfigOut ) {
+void RE_BeginRegistration( glconfig_t * glconfigOut ) {
 
 	R_Init();
 
@@ -382,7 +381,7 @@ void RE_BeginRegistration( glconfig_t *glconfigOut ) {
 	// NOTE: this sucks, for some reason the first stretch pic is never drawn
 	// without this we'd see a white flash on a level load because the very
 	// first time the level shot would not be drawn
-	RE_StretchPic(0, 0, 0, 0, 0, 0, 1, 1, 0);
+	RE_StretchPic( 0, 0, 0, 0, 0, 0, 1, 1, 0 );
 }
 
 //=============================================================================
@@ -393,7 +392,7 @@ R_ModelInit
 ===============
 */
 void R_ModelInit( void ) {
-	model_t		*mod;
+	model_t	*	mod;
 
 	// leave a space for NULL model
 	tr.numModels = 0;
@@ -410,7 +409,7 @@ R_Modellist_f
 */
 void R_Modellist_f( void ) {
 	int		i, j;
-	model_t	*mod;
+	model_t	* mod;
 	int		total;
 	int		lods;
 
@@ -419,11 +418,11 @@ void R_Modellist_f( void ) {
 		mod = tr.models[i];
 		lods = 1;
 		for ( j = 1 ; j < MD3_MAX_LODS ; j++ ) {
-			if ( mod->md3[j] && mod->md3[j] != mod->md3[j-1] ) {
+			if ( mod->md3[j] && mod->md3[j] != mod->md3[j - 1] ) {
 				lods++;
 			}
 		}
-		ri.Printf( PRINT_ALL, "%8i : (%i) %s\n",mod->dataSize, lods, mod->name );
+		ri.Printf( PRINT_ALL, "%8i : (%i) %s\n", mod->dataSize, lods, mod->name );
 		total += mod->dataSize;
 	}
 	ri.Printf( PRINT_ALL, "%8i : Total models\n", total );
@@ -444,8 +443,8 @@ void R_Modellist_f( void ) {
 R_GetTag
 ================
 */
-static md3Tag_t *R_GetTag( md3Header_t *mod, int frame, const char *tagName ) {
-	md3Tag_t		*tag;
+static md3Tag_t * R_GetTag( md3Header_t * mod, int frame, const char * tagName ) {
+	md3Tag_t	*	tag;
 	int				i;
 
 	if ( frame >= mod->numFrames ) {
@@ -453,7 +452,7 @@ static md3Tag_t *R_GetTag( md3Header_t *mod, int frame, const char *tagName ) {
 		frame = mod->numFrames - 1;
 	}
 
-	tag = (md3Tag_t *)((byte *)mod + mod->ofsTags) + frame * mod->numTags;
+	tag = ( md3Tag_t * )( ( byte * )mod + mod->ofsTags ) + frame * mod->numTags;
 	for ( i = 0 ; i < mod->numTags ; i++, tag++ ) {
 		if ( !strcmp( tag->name, tagName ) ) {
 			return tag;	// found it
@@ -468,12 +467,12 @@ static md3Tag_t *R_GetTag( md3Header_t *mod, int frame, const char *tagName ) {
 R_LerpTag
 ================
 */
-int R_LerpTag( orientation_t *tag, qhandle_t handle, int startFrame, int endFrame, 
-					 float frac, const char *tagName ) {
-	md3Tag_t	*start, *end;
+int R_LerpTag( orientation_t * tag, qhandle_t handle, int startFrame, int endFrame,
+			   float frac, const char * tagName ) {
+	md3Tag_t	* start, * end;
 	int		i;
 	float		frontLerp, backLerp;
-	model_t		*model;
+	model_t	*	model;
 
 	model = R_GetModelByHandle( handle );
 	if ( !model->md3[0] ) {
@@ -512,9 +511,9 @@ R_ModelBounds
 ====================
 */
 void R_ModelBounds( qhandle_t handle, vec3_t mins, vec3_t maxs ) {
-	model_t		*model;
-	md3Header_t	*header;
-	md3Frame_t	*frame;
+	model_t	*	model;
+	md3Header_t	* header;
+	md3Frame_t	* frame;
 
 	model = R_GetModelByHandle( handle );
 
@@ -532,7 +531,7 @@ void R_ModelBounds( qhandle_t handle, vec3_t mins, vec3_t maxs ) {
 
 	header = model->md3[0];
 
-	frame = (md3Frame_t *)( (byte *)header + header->ofsFrames );
+	frame = ( md3Frame_t * )( ( byte * )header + header->ofsFrames );
 
 	VectorCopy( frame->bounds[0], mins );
 	VectorCopy( frame->bounds[1], maxs );

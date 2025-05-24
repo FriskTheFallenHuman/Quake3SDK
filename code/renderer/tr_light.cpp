@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -26,7 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define	DLIGHT_AT_RADIUS		16
 // at the edge of a dlight's influence, this amount of light will be added
 
-#define	DLIGHT_MINIMUM_RADIUS	16		
+#define	DLIGHT_MINIMUM_RADIUS	16
 // never calculate a range less than this to prevent huge light numbers
 
 
@@ -39,15 +39,15 @@ Used by both the front end (for DlightBmodel) and
 the back end (before doing the lighting calculation)
 ===============
 */
-void R_TransformDlights( int count, dlight_t *dl, orientationr_t *or) {
+void R_TransformDlights( int count, dlight_t * dl, orientationr_t * or ) {
 	int		i;
 	vec3_t	temp;
 
 	for ( i = 0 ; i < count ; i++, dl++ ) {
-		VectorSubtract( dl->origin, or->origin, temp );
-		dl->transformed[0] = DotProduct( temp, or->axis[0] );
-		dl->transformed[1] = DotProduct( temp, or->axis[1] );
-		dl->transformed[2] = DotProduct( temp, or->axis[2] );
+		VectorSubtract( dl->origin, or ->origin, temp );
+		dl->transformed[0] = DotProduct( temp, or ->axis[0] );
+		dl->transformed[1] = DotProduct( temp, or ->axis[1] );
+		dl->transformed[2] = DotProduct( temp, or ->axis[2] );
 	}
 }
 
@@ -58,17 +58,17 @@ R_DlightBmodel
 Determine which dynamic lights may effect this bmodel
 =============
 */
-void R_DlightBmodel( bmodel_t *bmodel ) {
+void R_DlightBmodel( bmodel_t * bmodel ) {
 	int			i, j;
-	dlight_t	*dl;
+	dlight_t	* dl;
 	int			mask;
-	msurface_t	*surf;
+	msurface_t	* surf;
 
 	// transform all the lights
 	R_TransformDlights( tr.refdef.num_dlights, tr.refdef.dlights, &tr.or );
 
 	mask = 0;
-	for ( i=0 ; i<tr.refdef.num_dlights ; i++ ) {
+	for ( i = 0 ; i < tr.refdef.num_dlights ; i++ ) {
 		dl = &tr.refdef.dlights[i];
 
 		// see if the point is close enough to the bounds to matter
@@ -88,18 +88,18 @@ void R_DlightBmodel( bmodel_t *bmodel ) {
 		mask |= 1 << i;
 	}
 
-	tr.currentEntity->needDlights = qboolean((mask != 0));
+	tr.currentEntity->needDlights = qboolean( ( mask != 0 ) );
 
 	// set the dlight bits in all the surfaces
 	for ( i = 0 ; i < bmodel->numSurfaces ; i++ ) {
 		surf = bmodel->firstSurface + i;
 
 		if ( *surf->data == SF_FACE ) {
-			((srfSurfaceFace_t *)surf->data)->dlightBits[ tr.smpFrame ] = mask;
+			( ( srfSurfaceFace_t * )surf->data )->dlightBits[ tr.smpFrame ] = mask;
 		} else if ( *surf->data == SF_GRID ) {
-			((srfGridMesh_t *)surf->data)->dlightBits[ tr.smpFrame ] = mask;
+			( ( srfGridMesh_t * )surf->data )->dlightBits[ tr.smpFrame ] = mask;
 		} else if ( *surf->data == SF_TRIANGLES ) {
-			((srfTriangles_t *)surf->data)->dlightBits[ tr.smpFrame ] = mask;
+			( ( srfTriangles_t * )surf->data )->dlightBits[ tr.smpFrame ] = mask;
 		}
 	}
 }
@@ -113,9 +113,9 @@ LIGHT SAMPLING
 =============================================================================
 */
 
-extern	cvar_t	*r_ambientScale;
-extern	cvar_t	*r_directedScale;
-extern	cvar_t	*r_debugLight;
+extern	cvar_t	* r_ambientScale;
+extern	cvar_t	* r_directedScale;
+extern	cvar_t	* r_debugLight;
 
 /*
 =================
@@ -123,7 +123,7 @@ R_SetupEntityLightingGrid
 
 =================
 */
-static void R_SetupEntityLightingGrid( trRefEntity_t *ent ) {
+static void R_SetupEntityLightingGrid( trRefEntity_t * ent ) {
 	vec3_t	lightOrigin;
 	int		pos[3];
 	int		i, j;
@@ -146,7 +146,7 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent ) {
 	for ( i = 0 ; i < 3 ; i++ ) {
 		float	v;
 
-		v = lightOrigin[i]*tr.world->lightGridInverseSize[i];
+		v = lightOrigin[i] * tr.world->lightGridInverseSize[i];
 		pos[i] = floor( v );
 		frac[i] = v - pos[i];
 		if ( pos[i] < 0 ) {
@@ -167,7 +167,7 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent ) {
 	gridStep[1] = 8 * tr.world->lightGridBounds[0];
 	gridStep[2] = 8 * tr.world->lightGridBounds[0] * tr.world->lightGridBounds[1];
 	gridData = tr.world->lightGridData + pos[0] * gridStep[0]
-		+ pos[1] * gridStep[1] + pos[2] * gridStep[2];
+			   + pos[1] * gridStep[1] + pos[2] * gridStep[2];
 
 	totalFactor = 0;
 	for ( i = 0 ; i < 8 ; i++ ) {
@@ -175,27 +175,31 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent ) {
 		byte	*data;
 		int		lat, lng;
 		vec3_t	normal;
-		#if idppc
+#if idppc
 		float d0, d1, d2, d3, d4, d5;
-		#endif
+#endif
 		factor = 1.0;
 		data = gridData;
 		for ( j = 0 ; j < 3 ; j++ ) {
-			if ( i & (1<<j) ) {
+			if ( i & ( 1 << j ) ) {
 				factor *= frac[j];
 				data += gridStep[j];
 			} else {
-				factor *= (1.0f - frac[j]);
+				factor *= ( 1.0f - frac[j] );
 			}
 		}
 
-		if ( !(data[0]+data[1]+data[2]) ) {
+		if ( !( data[0] + data[1] + data[2] ) ) {
 			continue;	// ignore samples in walls
 		}
 		totalFactor += factor;
-		#if idppc
-		d0 = data[0]; d1 = data[1]; d2 = data[2];
-		d3 = data[3]; d4 = data[4]; d5 = data[5];
+#if idppc
+		d0 = data[0];
+		d1 = data[1];
+		d2 = data[2];
+		d3 = data[3];
+		d4 = data[4];
+		d5 = data[5];
 
 		ent->ambientLight[0] += factor * d0;
 		ent->ambientLight[1] += factor * d1;
@@ -204,7 +208,7 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent ) {
 		ent->directedLight[0] += factor * d3;
 		ent->directedLight[1] += factor * d4;
 		ent->directedLight[2] += factor * d5;
-		#else
+#else
 		ent->ambientLight[0] += factor * data[0];
 		ent->ambientLight[1] += factor * data[1];
 		ent->ambientLight[2] += factor * data[2];
@@ -212,19 +216,19 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent ) {
 		ent->directedLight[0] += factor * data[3];
 		ent->directedLight[1] += factor * data[4];
 		ent->directedLight[2] += factor * data[5];
-		#endif
+#endif
 		lat = data[7];
 		lng = data[6];
-		lat *= (FUNCTABLE_SIZE/256);
-		lng *= (FUNCTABLE_SIZE/256);
+		lat *= ( FUNCTABLE_SIZE / 256 );
+		lng *= ( FUNCTABLE_SIZE / 256 );
 
 		// decode X as cos( lat ) * sin( long )
 		// decode Y as sin( lat ) * sin( long )
 		// decode Z as cos( long )
 
-		normal[0] = tr.sinTable[(lat+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK] * tr.sinTable[lng];
+		normal[0] = tr.sinTable[( lat + ( FUNCTABLE_SIZE / 4 ) )&FUNCTABLE_MASK] * tr.sinTable[lng];
 		normal[1] = tr.sinTable[lat] * tr.sinTable[lng];
-		normal[2] = tr.sinTable[(lng+(FUNCTABLE_SIZE/4))&FUNCTABLE_MASK];
+		normal[2] = tr.sinTable[( lng + ( FUNCTABLE_SIZE / 4 ) )&FUNCTABLE_MASK];
 
 		VectorMA( direction, factor, normal, direction );
 	}
@@ -247,10 +251,10 @@ static void R_SetupEntityLightingGrid( trRefEntity_t *ent ) {
 LogLight
 ===============
 */
-static void LogLight( trRefEntity_t *ent ) {
+static void LogLight( trRefEntity_t * ent ) {
 	int	max1, max2;
 
-	if ( !(ent->e.renderfx & RF_FIRST_PERSON ) ) {
+	if ( !( ent->e.renderfx & RF_FIRST_PERSON ) ) {
 		return;
 	}
 
@@ -279,16 +283,16 @@ Calculates all the lighting values that will be used
 by the Calc_* functions
 =================
 */
-void R_SetupEntityLighting( const trRefdef_t *refdef, trRefEntity_t *ent ) {
+void R_SetupEntityLighting( const trRefdef_t * refdef, trRefEntity_t * ent ) {
 	int				i;
-	dlight_t		*dl;
+	dlight_t	*	dl;
 	float			power;
 	vec3_t			dir;
 	float			d;
 	vec3_t			lightDir;
 	vec3_t			lightOrigin;
 
-	// lighting calculations 
+	// lighting calculations
 	if ( ent->lightingCalculated ) {
 		return;
 	}
@@ -307,14 +311,14 @@ void R_SetupEntityLighting( const trRefdef_t *refdef, trRefEntity_t *ent ) {
 	}
 
 	// if NOWORLDMODEL, only use dynamic lights (menu system, etc)
-	if ( !(refdef->rdflags & RDF_NOWORLDMODEL ) 
-		&& tr.world->lightGridData ) {
+	if ( !( refdef->rdflags & RDF_NOWORLDMODEL )
+			&& tr.world->lightGridData ) {
 		R_SetupEntityLightingGrid( ent );
 	} else {
-		ent->ambientLight[0] = ent->ambientLight[1] = 
-			ent->ambientLight[2] = tr.identityLight * 150;
-		ent->directedLight[0] = ent->directedLight[1] = 
-			ent->directedLight[2] = tr.identityLight * 150;
+		ent->ambientLight[0] = ent->ambientLight[1] =
+								   ent->ambientLight[2] = tr.identityLight * 150;
+		ent->directedLight[0] = ent->directedLight[1] =
+									ent->directedLight[2] = tr.identityLight * 150;
 		VectorCopy( tr.sunDirection, ent->lightDir );
 	}
 
@@ -359,11 +363,11 @@ void R_SetupEntityLighting( const trRefdef_t *refdef, trRefEntity_t *ent ) {
 	}
 
 	// save out the byte packet version
-	((byte *)&ent->ambientLightInt)[0] = myftol( ent->ambientLight[0] );
-	((byte *)&ent->ambientLightInt)[1] = myftol( ent->ambientLight[1] );
-	((byte *)&ent->ambientLightInt)[2] = myftol( ent->ambientLight[2] );
-	((byte *)&ent->ambientLightInt)[3] = 0xff;
-	
+	( ( byte * )&ent->ambientLightInt )[0] = myftol( ent->ambientLight[0] );
+	( ( byte * )&ent->ambientLightInt )[1] = myftol( ent->ambientLight[1] );
+	( ( byte * )&ent->ambientLightInt )[2] = myftol( ent->ambientLight[2] );
+	( ( byte * )&ent->ambientLightInt )[3] = 0xff;
+
 	// transform the direction to local space
 	VectorNormalize( lightDir );
 	ent->lightDir[0] = DotProduct( lightDir, ent->e.axis[0] );
@@ -376,20 +380,20 @@ void R_SetupEntityLighting( const trRefdef_t *refdef, trRefEntity_t *ent ) {
 R_LightForPoint
 =================
 */
-int R_LightForPoint( vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir )
-{
+int R_LightForPoint( vec3_t point, vec3_t ambientLight, vec3_t directedLight, vec3_t lightDir ) {
 	trRefEntity_t ent;
-	
-	// bk010103 - this segfaults with -nolight maps
-	if ( tr.world->lightGridData == NULL )
-	  return qfalse;
 
-	Com_Memset(&ent, 0, sizeof(ent));
+	// bk010103 - this segfaults with -nolight maps
+	if ( tr.world->lightGridData == NULL ) {
+		return qfalse;
+	}
+
+	Com_Memset( &ent, 0, sizeof( ent ) );
 	VectorCopy( point, ent.e.origin );
 	R_SetupEntityLightingGrid( &ent );
-	VectorCopy(ent.ambientLight, ambientLight);
-	VectorCopy(ent.directedLight, directedLight);
-	VectorCopy(ent.lightDir, lightDir);
+	VectorCopy( ent.ambientLight, ambientLight );
+	VectorCopy( ent.directedLight, directedLight );
+	VectorCopy( ent.lightDir, lightDir );
 
 	return qtrue;
 }

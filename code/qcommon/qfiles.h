@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -72,8 +72,8 @@ typedef struct {
 	char	version;
 	char	encoding;
 	char	bits_per_pixel;
-	unsigned short	xmin,ymin,xmax,ymax;
-	unsigned short	hres,vres;
+	unsigned short	xmin, ymin, xmax, ymax;
+	unsigned short	hres, vres;
 	unsigned char	palette[48];
 	char	reserved;
 	char	color_planes;
@@ -149,7 +149,7 @@ typedef struct md3Tag_s {
 ** XyzNormals		sizeof( md3XyzNormal_t ) * numVerts * numFrames
 */
 typedef struct {
-	int		ident;				// 
+	int		ident;				//
 
 	char	name[MAX_QPATH];	// polyset name
 
@@ -196,7 +196,7 @@ typedef struct {
 	int			flags;
 
 	int			numFrames;
-	int			numTags;			
+	int			numTags;
 	int			numSurfaces;
 
 	int			numSkins;
@@ -218,7 +218,7 @@ typedef struct {
 
 
 #define BSP_IDENT	(('P'<<24)+('S'<<16)+('B'<<8)+'I')
-		// little-endian "IBSP"
+// little-endian "IBSP"
 
 #define BSP_VERSION			46
 

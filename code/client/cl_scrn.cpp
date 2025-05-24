@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -25,11 +25,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 qboolean	scr_initialized;		// ready to draw
 
-cvar_t		*cl_timegraph;
-cvar_t		*cl_debuggraph;
-cvar_t		*cl_graphheight;
-cvar_t		*cl_graphscale;
-cvar_t		*cl_graphshift;
+cvar_t	*	cl_timegraph;
+cvar_t	*	cl_debuggraph;
+cvar_t	*	cl_graphheight;
+cvar_t	*	cl_graphscale;
+cvar_t	*	cl_graphshift;
 
 /*
 ================
@@ -38,7 +38,7 @@ SCR_DrawNamedPic
 Coordinates are 640*480 virtual values
 =================
 */
-void SCR_DrawNamedPic( float x, float y, float width, float height, const char *picname ) {
+void SCR_DrawNamedPic( float x, float y, float width, float height, const char * picname ) {
 	qhandle_t	hShader;
 
 	assert( width != 0 );
@@ -56,15 +56,15 @@ SCR_AdjustFrom640
 Adjusted for resolution and screen aspect ratio
 ================
 */
-void SCR_AdjustFrom640( float *x, float *y, float *w, float *h ) {
+void SCR_AdjustFrom640( float * x, float * y, float * w, float * h ) {
 	float	xscale;
 	float	yscale;
 
 #if 0
-		// adjust for wide screens
-		if ( cls.glconfig.vidWidth * 480 > cls.glconfig.vidHeight * 640 ) {
-			*x += 0.5 * ( cls.glconfig.vidWidth - ( cls.glconfig.vidHeight * 640 / 480 ) );
-		}
+	// adjust for wide screens
+	if ( cls.glconfig.vidWidth * 480 > cls.glconfig.vidHeight * 640 ) {
+		*x += 0.5 * ( cls.glconfig.vidWidth - ( cls.glconfig.vidHeight * 640 / 480 ) );
+	}
 #endif
 
 	// scale for screen sizes
@@ -91,7 +91,7 @@ SCR_FillRect
 Coordinates are 640*480 virtual values
 =================
 */
-void SCR_FillRect( float x, float y, float width, float height, const float *color ) {
+void SCR_FillRect( float x, float y, float width, float height, const float * color ) {
 	re.SetColor( color );
 
 	SCR_AdjustFrom640( &x, &y, &width, &height );
@@ -140,16 +140,16 @@ static void SCR_DrawChar( int x, int y, float size, int ch ) {
 	ah = size;
 	SCR_AdjustFrom640( &ax, &ay, &aw, &ah );
 
-	row = ch>>4;
-	col = ch&15;
+	row = ch >> 4;
+	col = ch & 15;
 
-	frow = row*0.0625;
-	fcol = col*0.0625;
+	frow = row * 0.0625;
+	fcol = col * 0.0625;
 	size = 0.0625;
 
 	re.DrawStretchPic( ax, ay, aw, ah,
-					   fcol, frow, 
-					   fcol + size, frow + size, 
+					   fcol, frow,
+					   fcol + size, frow + size,
 					   cls.charSetShader );
 }
 
@@ -172,16 +172,16 @@ void SCR_DrawSmallChar( int x, int y, int ch ) {
 		return;
 	}
 
-	row = ch>>4;
-	col = ch&15;
+	row = ch >> 4;
+	col = ch & 15;
 
-	frow = row*0.0625;
-	fcol = col*0.0625;
+	frow = row * 0.0625;
+	fcol = col * 0.0625;
 	size = 0.0625;
 
 	re.DrawStretchPic( x, y, SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT,
-					   fcol, frow, 
-					   fcol + size, frow + size, 
+					   fcol, frow,
+					   fcol + size, frow + size,
 					   cls.charSetShader );
 }
 
@@ -196,9 +196,9 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void SCR_DrawStringExt( int x, int y, float size, const char *string, float *setColor, qboolean forceColor ) {
+void SCR_DrawStringExt( int x, int y, float size, const char * string, float * setColor, qboolean forceColor ) {
 	vec4_t		color;
-	const char	*s;
+	const char	* s;
 	int			xx;
 
 	// draw the drop shadow
@@ -212,7 +212,7 @@ void SCR_DrawStringExt( int x, int y, float size, const char *string, float *set
 			s += 2;
 			continue;
 		}
-		SCR_DrawChar( xx+2, y+2, size, *s );
+		SCR_DrawChar( xx + 2, y + 2, size, *s );
 		xx += size;
 		s++;
 	}
@@ -225,7 +225,7 @@ void SCR_DrawStringExt( int x, int y, float size, const char *string, float *set
 	while ( *s ) {
 		if ( Q_IsColorString( s ) ) {
 			if ( !forceColor ) {
-				Com_Memcpy( color, g_color_table[ColorIndex(*(s+1))], sizeof( color ) );
+				Com_Memcpy( color, g_color_table[ColorIndex( *( s + 1 ) )], sizeof( color ) );
 				color[3] = setColor[3];
 				re.SetColor( color );
 			}
@@ -240,7 +240,7 @@ void SCR_DrawStringExt( int x, int y, float size, const char *string, float *set
 }
 
 
-void SCR_DrawBigString( int x, int y, const char *s, float alpha ) {
+void SCR_DrawBigString( int x, int y, const char * s, float alpha ) {
 	float	color[4];
 
 	color[0] = color[1] = color[2] = 1.0;
@@ -248,7 +248,7 @@ void SCR_DrawBigString( int x, int y, const char *s, float alpha ) {
 	SCR_DrawStringExt( x, y, BIGCHAR_WIDTH, s, color, qfalse );
 }
 
-void SCR_DrawBigStringColor( int x, int y, const char *s, vec4_t color ) {
+void SCR_DrawBigStringColor( int x, int y, const char * s, vec4_t color ) {
 	SCR_DrawStringExt( x, y, BIGCHAR_WIDTH, s, color, qtrue );
 }
 
@@ -263,9 +263,9 @@ to a fixed color.
 Coordinates are at 640 by 480 virtual resolution
 ==================
 */
-void SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, qboolean forceColor ) {
+void SCR_DrawSmallStringExt( int x, int y, const char * string, float * setColor, qboolean forceColor ) {
 	vec4_t		color;
-	const char	*s;
+	const char	* s;
 	int			xx;
 
 	// draw the colored text
@@ -275,7 +275,7 @@ void SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, 
 	while ( *s ) {
 		if ( Q_IsColorString( s ) ) {
 			if ( !forceColor ) {
-				Com_Memcpy( color, g_color_table[ColorIndex(*(s+1))], sizeof( color ) );
+				Com_Memcpy( color, g_color_table[ColorIndex( *( s + 1 ) )], sizeof( color ) );
 				color[3] = setColor[3];
 				re.SetColor( color );
 			}
@@ -294,8 +294,8 @@ void SCR_DrawSmallStringExt( int x, int y, const char *string, float *setColor, 
 /*
 ** SCR_Strlen -- skips color escape codes
 */
-static int SCR_Strlen( const char *str ) {
-	const char *s = str;
+static int SCR_Strlen( const char * str ) {
+	const char * s = str;
 	int count = 0;
 
 	while ( *s ) {
@@ -312,8 +312,8 @@ static int SCR_Strlen( const char *str ) {
 
 /*
 ** SCR_GetBigStringWidth
-*/ 
-int	SCR_GetBigStringWidth( const char *str ) {
+*/
+int	SCR_GetBigStringWidth( const char * str ) {
 	return SCR_Strlen( str ) * 16;
 }
 
@@ -348,8 +348,7 @@ DEBUG GRAPH
 ===============================================================================
 */
 
-typedef struct
-{
+typedef struct {
 	float	value;
 	int		color;
 } graphsamp_t;
@@ -362,10 +361,9 @@ static	graphsamp_t	values[1024];
 SCR_DebugGraph
 ==============
 */
-void SCR_DebugGraph (float value, int color)
-{
-	values[current&1023].value = value;
-	values[current&1023].color = color;
+void SCR_DebugGraph ( float value, int color ) {
+	values[current & 1023].value = value;
+	values[current & 1023].color = color;
 	current++;
 }
 
@@ -374,8 +372,7 @@ void SCR_DebugGraph (float value, int color)
 SCR_DrawDebugGraph
 ==============
 */
-void SCR_DrawDebugGraph (void)
-{
+void SCR_DrawDebugGraph ( void ) {
 	int		a, x, y, w, i, h;
 	float	v;
 	int		color;
@@ -387,21 +384,21 @@ void SCR_DrawDebugGraph (void)
 	x = 0;
 	y = cls.glconfig.vidHeight;
 	re.SetColor( g_color_table[0] );
-	re.DrawStretchPic(x, y - cl_graphheight->integer, 
-		w, cl_graphheight->integer, 0, 0, 0, 0, cls.whiteShader );
+	re.DrawStretchPic( x, y - cl_graphheight->integer,
+					   w, cl_graphheight->integer, 0, 0, 0, 0, cls.whiteShader );
 	re.SetColor( NULL );
 
-	for (a=0 ; a<w ; a++)
-	{
-		i = (current-1-a+1024) & 1023;
+	for ( a = 0 ; a < w ; a++ ) {
+		i = ( current - 1 - a + 1024 ) & 1023;
 		v = values[i].value;
 		color = values[i].color;
 		v = v * cl_graphscale->integer + cl_graphshift->integer;
-		
-		if (v < 0)
-			v += cl_graphheight->integer * (1+(int)(-v / cl_graphheight->integer));
-		h = (int)v % cl_graphheight->integer;
-		re.DrawStretchPic( x+w-1-a, y - h, 1, h, 0, 0, 0, 0, cls.whiteShader );
+
+		if ( v < 0 ) {
+			v += cl_graphheight->integer * ( 1 + ( int )( -v / cl_graphheight->integer ) );
+		}
+		h = ( int )v % cl_graphheight->integer;
+		re.DrawStretchPic( x + w - 1 - a, y - h, 1, h, 0, 0, 0, 0, cls.whiteShader );
 	}
 }
 
@@ -413,11 +410,11 @@ SCR_Init
 ==================
 */
 void SCR_Init( void ) {
-	cl_timegraph = Cvar_Get ("timegraph", "0", CVAR_CHEAT);
-	cl_debuggraph = Cvar_Get ("debuggraph", "0", CVAR_CHEAT);
-	cl_graphheight = Cvar_Get ("graphheight", "32", CVAR_CHEAT);
-	cl_graphscale = Cvar_Get ("graphscale", "1", CVAR_CHEAT);
-	cl_graphshift = Cvar_Get ("graphshift", "0", CVAR_CHEAT);
+	cl_timegraph = Cvar_Get ( "timegraph", "0", CVAR_CHEAT );
+	cl_debuggraph = Cvar_Get ( "debuggraph", "0", CVAR_CHEAT );
+	cl_graphheight = Cvar_Get ( "graphheight", "32", CVAR_CHEAT );
+	cl_graphscale = Cvar_Get ( "graphscale", "1", CVAR_CHEAT );
+	cl_graphshift = Cvar_Get ( "graphshift", "0", CVAR_CHEAT );
 
 	scr_initialized = qtrue;
 }
@@ -446,54 +443,54 @@ void SCR_DrawScreenField( stereoFrame_t stereoFrame ) {
 	}
 
 	if ( !ui ) {
-		Com_DPrintf("draw screen without UI loaded\n");
+		Com_DPrintf( "draw screen without UI loaded\n" );
 		return;
 	}
 
 	// if the menu is going to cover the entire screen, we
 	// don't need to render anything under it
-	if ( !ui->UI_IsFullscreen()) {
-		switch( cls.state ) {
-		default:
-			Com_Error( ERR_FATAL, "SCR_DrawScreenField: bad cls.state" );
-			break;
-		case CA_CINEMATIC:
-			SCR_DrawCinematic();
-			break;
-		case CA_DISCONNECTED:
-			// force menu up
-			S_StopAllSounds();
-			ui->UI_SetActiveMenu(UIMENU_MAIN);
-			break;
-		case CA_CONNECTING:
-		case CA_CHALLENGING:
-		case CA_CONNECTED:
-			// connecting clients will only show the connection dialog
-			// refresh to update the time
-			ui->UI_Refresh(cls.realtime);
-			ui->UI_DrawConnectScreen(qfalse);
-			break;
-		case CA_LOADING:
-		case CA_PRIMED:
-			// draw the game information screen and loading progress
-			CL_CGameRendering( stereoFrame );
+	if ( !ui->UI_IsFullscreen() ) {
+		switch ( cls.state ) {
+			default:
+				Com_Error( ERR_FATAL, "SCR_DrawScreenField: bad cls.state" );
+				break;
+			case CA_CINEMATIC:
+				SCR_DrawCinematic();
+				break;
+			case CA_DISCONNECTED:
+				// force menu up
+				S_StopAllSounds();
+				ui->UI_SetActiveMenu( UIMENU_MAIN );
+				break;
+			case CA_CONNECTING:
+			case CA_CHALLENGING:
+			case CA_CONNECTED:
+				// connecting clients will only show the connection dialog
+				// refresh to update the time
+				ui->UI_Refresh( cls.realtime );
+				ui->UI_DrawConnectScreen( qfalse );
+				break;
+			case CA_LOADING:
+			case CA_PRIMED:
+				// draw the game information screen and loading progress
+				CL_CGameRendering( stereoFrame );
 
-			// also draw the connection information, so it doesn't
-			// flash away too briefly on local or lan games
-			// refresh to update the time
-			ui->UI_Refresh(cls.realtime);
-			ui->UI_DrawConnectScreen(qtrue);
-			break;
-		case CA_ACTIVE:
-			CL_CGameRendering( stereoFrame );
-			SCR_DrawDemoRecording();
-			break;
+				// also draw the connection information, so it doesn't
+				// flash away too briefly on local or lan games
+				// refresh to update the time
+				ui->UI_Refresh( cls.realtime );
+				ui->UI_DrawConnectScreen( qtrue );
+				break;
+			case CA_ACTIVE:
+				CL_CGameRendering( stereoFrame );
+				SCR_DrawDemoRecording();
+				break;
 		}
 	}
 
 	// the menu draws next
 	if ( cls.keyCatchers & KEYCATCH_UI && ui ) {
-		ui->UI_Refresh(cls.realtime);
+		ui->UI_Refresh( cls.realtime );
 	}
 
 	// console draws next

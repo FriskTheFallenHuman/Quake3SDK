@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -55,7 +55,7 @@ vec4_t text_color_disabled  = {0.50f, 0.50f, 0.50f, 1.00f};	// light gray
 vec4_t text_color_normal    = {1.00f, 0.43f, 0.00f, 1.00f};	// light orange
 vec4_t text_color_highlight = {1.00f, 1.00f, 0.00f, 1.00f};	// bright yellow
 vec4_t listbar_color        = {1.00f, 0.43f, 0.00f, 0.30f};	// transluscent orange
-vec4_t text_color_status    = {1.00f, 1.00f, 1.00f, 1.00f};	// bright white	
+vec4_t text_color_status    = {1.00f, 1.00f, 1.00f, 1.00f};	// bright white
 
 // action widget
 static void	Action_Init( menuaction_s *a );
@@ -97,8 +97,7 @@ static void BText_Draw( menutext_s *b );
 Text_Init
 =================
 */
-static void Text_Init( menutext_s *t )
-{
+static void Text_Init( menutext_s *t ) {
 	t->generic.flags |= QMF_INACTIVE;
 }
 
@@ -107,12 +106,11 @@ static void Text_Init( menutext_s *t )
 Text_Draw
 =================
 */
-static void Text_Draw( menutext_s *t )
-{
+static void Text_Draw( menutext_s *t ) {
 	int		x;
 	int		y;
-	char	buff[512];	
-	float*	color;
+	char	buff[512];
+	float	* color;
 
 	x = t->generic.x;
 	y = t->generic.y;
@@ -120,17 +118,20 @@ static void Text_Draw( menutext_s *t )
 	buff[0] = '\0';
 
 	// possible label
-	if (t->generic.name)
-		strcpy(buff,t->generic.name);
+	if ( t->generic.name ) {
+		strcpy( buff, t->generic.name );
+	}
 
 	// possible value
-	if (t->string)
-		strcat(buff,t->string);
-		
-	if (t->generic.flags & QMF_GRAYED)
+	if ( t->string ) {
+		strcat( buff, t->string );
+	}
+
+	if ( t->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
-	else
+	} else {
 		color = t->color;
+	}
 
 	UI_DrawString( x, y, buff, t->style, color );
 }
@@ -140,8 +141,7 @@ static void Text_Draw( menutext_s *t )
 BText_Init
 =================
 */
-static void BText_Init( menutext_s *t )
-{
+static void BText_Init( menutext_s *t ) {
 	t->generic.flags |= QMF_INACTIVE;
 }
 
@@ -150,19 +150,19 @@ static void BText_Init( menutext_s *t )
 BText_Draw
 =================
 */
-static void BText_Draw( menutext_s *t )
-{
+static void BText_Draw( menutext_s *t ) {
 	int		x;
 	int		y;
-	float*	color;
+	float	* color;
 
 	x = t->generic.x;
 	y = t->generic.y;
 
-	if (t->generic.flags & QMF_GRAYED)
+	if ( t->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
-	else
+	} else {
 		color = t->color;
+	}
 
 	UI_DrawBannerString( x, y, t->string, t->style, color );
 }
@@ -172,8 +172,7 @@ static void BText_Draw( menutext_s *t )
 PText_Init
 =================
 */
-static void PText_Init( menutext_s *t )
-{
+static void PText_Init( menutext_s *t ) {
 	int	x;
 	int	y;
 	int	w;
@@ -187,10 +186,9 @@ static void PText_Init( menutext_s *t )
 	w = UI_ProportionalStringWidth( t->string ) * sizeScale;
 	h =	PROP_HEIGHT * sizeScale;
 
-	if( t->generic.flags & QMF_RIGHT_JUSTIFY ) {
+	if ( t->generic.flags & QMF_RIGHT_JUSTIFY ) {
 		x -= w;
-	}
-	else if( t->generic.flags & QMF_CENTER_JUSTIFY ) {
+	} else if ( t->generic.flags & QMF_CENTER_JUSTIFY ) {
 		x -= w / 2;
 	}
 
@@ -205,8 +203,7 @@ static void PText_Init( menutext_s *t )
 PText_Draw
 =================
 */
-static void PText_Draw( menutext_s *t )
-{
+static void PText_Draw( menutext_s *t ) {
 	int		x;
 	int		y;
 	float *	color;
@@ -215,17 +212,17 @@ static void PText_Draw( menutext_s *t )
 	x = t->generic.x;
 	y = t->generic.y;
 
-	if (t->generic.flags & QMF_GRAYED)
+	if ( t->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
-	else
+	} else {
 		color = t->color;
+	}
 
 	style = t->style;
-	if( t->generic.flags & QMF_PULSEIFFOCUS ) {
-		if( Menu_ItemAtCursor( t->generic.parent ) == t ) {
+	if ( t->generic.flags & QMF_PULSEIFFOCUS ) {
+		if ( Menu_ItemAtCursor( t->generic.parent ) == t ) {
 			style |= UI_PULSE;
-		}
-		else {
+		} else {
 			style |= UI_INVERSE;
 		}
 	}
@@ -238,8 +235,7 @@ static void PText_Draw( menutext_s *t )
 Bitmap_Init
 =================
 */
-void Bitmap_Init( menubitmap_s *b )
-{
+void Bitmap_Init( menubitmap_s *b ) {
 	int	x;
 	int	y;
 	int	w;
@@ -249,20 +245,17 @@ void Bitmap_Init( menubitmap_s *b )
 	y = b->generic.y;
 	w = b->width;
 	h =	b->height;
-	if( w < 0 ) {
+	if ( w < 0 ) {
 		w = -w;
 	}
-	if( h < 0 ) {
+	if ( h < 0 ) {
 		h = -h;
 	}
 
-	if (b->generic.flags & QMF_RIGHT_JUSTIFY)
-	{
+	if ( b->generic.flags & QMF_RIGHT_JUSTIFY ) {
 		x = x - w;
-	}
-	else if (b->generic.flags & QMF_CENTER_JUSTIFY)
-	{
-		x = x - w/2;
+	} else if ( b->generic.flags & QMF_CENTER_JUSTIFY ) {
+		x = x - w / 2;
 	}
 
 	b->generic.left   = x;
@@ -279,84 +272,73 @@ void Bitmap_Init( menubitmap_s *b )
 Bitmap_Draw
 =================
 */
-void Bitmap_Draw( menubitmap_s *b )
-{
+void Bitmap_Draw( menubitmap_s *b ) {
 	float	x;
 	float	y;
 	float	w;
 	float	h;
 	vec4_t	tempcolor;
-	float*	color;
+	float	* color;
 
 	x = b->generic.x;
 	y = b->generic.y;
 	w = b->width;
 	h =	b->height;
 
-	if (b->generic.flags & QMF_RIGHT_JUSTIFY)
-	{
+	if ( b->generic.flags & QMF_RIGHT_JUSTIFY ) {
 		x = x - w;
-	}
-	else if (b->generic.flags & QMF_CENTER_JUSTIFY)
-	{
-		x = x - w/2;
+	} else if ( b->generic.flags & QMF_CENTER_JUSTIFY ) {
+		x = x - w / 2;
 	}
 
 	// used to refresh shader
-	if (b->generic.name && !b->shader)
-	{
+	if ( b->generic.name && !b->shader ) {
 		b->shader = trap_R_RegisterShaderNoMip( b->generic.name );
-		if (!b->shader && b->errorpic)
+		if ( !b->shader && b->errorpic ) {
 			b->shader = trap_R_RegisterShaderNoMip( b->errorpic );
+		}
 	}
 
-	if (b->focuspic && !b->focusshader)
+	if ( b->focuspic && !b->focusshader ) {
 		b->focusshader = trap_R_RegisterShaderNoMip( b->focuspic );
+	}
 
-	if (b->generic.flags & QMF_GRAYED)
-	{
-		if (b->shader)
-		{
+	if ( b->generic.flags & QMF_GRAYED ) {
+		if ( b->shader ) {
 			trap_R_SetColor( colorMdGrey );
 			UI_DrawHandlePic( x, y, w, h, b->shader );
 			trap_R_SetColor( NULL );
 		}
-	}
-	else
-	{
-		if (b->shader)
+	} else {
+		if ( b->shader ) {
 			UI_DrawHandlePic( x, y, w, h, b->shader );
+		}
 
 		// bk001204 - parentheses
-		if (  ( (b->generic.flags & QMF_PULSE) 
-			|| (b->generic.flags & QMF_PULSEIFFOCUS) )
-		      && (Menu_ItemAtCursor( b->generic.parent ) == b))
-		{	
-			if (b->focuscolor)			
-			{
+		if ( ( ( b->generic.flags & QMF_PULSE )
+				|| ( b->generic.flags & QMF_PULSEIFFOCUS ) )
+				&& ( Menu_ItemAtCursor( b->generic.parent ) == b ) ) {
+			if ( b->focuscolor ) {
 				tempcolor[0] = b->focuscolor[0];
 				tempcolor[1] = b->focuscolor[1];
 				tempcolor[2] = b->focuscolor[2];
-				color        = tempcolor;	
-			}
-			else
+				color        = tempcolor;
+			} else {
 				color = pulse_color;
-			color[3] = 0.5+0.5*sin(uis.realtime/PULSE_DIVISOR);
+			}
+			color[3] = 0.5 + 0.5 * sin( uis.realtime / PULSE_DIVISOR );
 
 			trap_R_SetColor( color );
 			UI_DrawHandlePic( x, y, w, h, b->focusshader );
 			trap_R_SetColor( NULL );
-		}
-		else if ((b->generic.flags & QMF_HIGHLIGHT) || ((b->generic.flags & QMF_HIGHLIGHT_IF_FOCUS) && (Menu_ItemAtCursor( b->generic.parent ) == b)))
-		{	
-			if (b->focuscolor)
-			{
+		} else if ( ( b->generic.flags & QMF_HIGHLIGHT ) || ( ( b->generic.flags & QMF_HIGHLIGHT_IF_FOCUS ) && ( Menu_ItemAtCursor( b->generic.parent ) == b ) ) ) {
+			if ( b->focuscolor ) {
 				trap_R_SetColor( b->focuscolor );
 				UI_DrawHandlePic( x, y, w, h, b->focusshader );
 				trap_R_SetColor( NULL );
-			}
-			else
+			} else {
 				UI_DrawHandlePic( x, y, w, h, b->focusshader );
+			}
 		}
 	}
 }
@@ -366,19 +348,19 @@ void Bitmap_Draw( menubitmap_s *b )
 Action_Init
 =================
 */
-static void Action_Init( menuaction_s *a )
-{
+static void Action_Init( menuaction_s *a ) {
 	int	len;
 
 	// calculate bounds
-	if (a->generic.name)
-		len = strlen(a->generic.name);
-	else
+	if ( a->generic.name ) {
+		len = strlen( a->generic.name );
+	} else {
 		len = 0;
+	}
 
 	// left justify text
-	a->generic.left   = a->generic.x; 
-	a->generic.right  = a->generic.x + len*BIGCHAR_WIDTH;
+	a->generic.left   = a->generic.x;
+	a->generic.right  = a->generic.x + len * BIGCHAR_WIDTH;
 	a->generic.top    = a->generic.y;
 	a->generic.bottom = a->generic.y + BIGCHAR_HEIGHT;
 }
@@ -388,29 +370,21 @@ static void Action_Init( menuaction_s *a )
 Action_Draw
 =================
 */
-static void Action_Draw( menuaction_s *a )
-{
+static void Action_Draw( menuaction_s *a ) {
 	int		x, y;
 	int		style;
-	float*	color;
+	float	* color;
 
 	style = 0;
 	color = menu_text_color;
-	if ( a->generic.flags & QMF_GRAYED )
-	{
+	if ( a->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
-	}
-	else if (( a->generic.flags & QMF_PULSEIFFOCUS ) && ( a->generic.parent->cursor == a->generic.menuPosition ))
-	{
+	} else if ( ( a->generic.flags & QMF_PULSEIFFOCUS ) && ( a->generic.parent->cursor == a->generic.menuPosition ) ) {
 		color = text_color_highlight;
 		style = UI_PULSE;
-	}
-	else if (( a->generic.flags & QMF_HIGHLIGHT_IF_FOCUS ) && ( a->generic.parent->cursor == a->generic.menuPosition ))
-	{
+	} else if ( ( a->generic.flags & QMF_HIGHLIGHT_IF_FOCUS ) && ( a->generic.parent->cursor == a->generic.menuPosition ) ) {
 		color = text_color_highlight;
-	}
-	else if ( a->generic.flags & QMF_BLINK )
-	{
+	} else if ( a->generic.flags & QMF_BLINK ) {
 		style = UI_BLINK;
 		color = text_color_highlight;
 	}
@@ -418,12 +392,11 @@ static void Action_Draw( menuaction_s *a )
 	x = a->generic.x;
 	y = a->generic.y;
 
-	UI_DrawString( x, y, a->generic.name, UI_LEFT|style, color );
+	UI_DrawString( x, y, a->generic.name, UI_LEFT | style, color );
 
-	if ( a->generic.parent->cursor == a->generic.menuPosition )
-	{
+	if ( a->generic.parent->cursor == a->generic.menuPosition ) {
 		// draw cursor
-		UI_DrawChar( x - BIGCHAR_WIDTH, y, 13, UI_LEFT|UI_BLINK, color);
+		UI_DrawChar( x - BIGCHAR_WIDTH, y, 13, UI_LEFT | UI_BLINK, color );
 	}
 }
 
@@ -432,18 +405,18 @@ static void Action_Draw( menuaction_s *a )
 RadioButton_Init
 =================
 */
-static void RadioButton_Init( menuradiobutton_s *rb )
-{
+static void RadioButton_Init( menuradiobutton_s *rb ) {
 	int	len;
 
 	// calculate bounds
-	if (rb->generic.name)
-		len = strlen(rb->generic.name);
-	else
+	if ( rb->generic.name ) {
+		len = strlen( rb->generic.name );
+	} else {
 		len = 0;
+	}
 
-	rb->generic.left   = rb->generic.x - (len+1)*SMALLCHAR_WIDTH;
-	rb->generic.right  = rb->generic.x + 6*SMALLCHAR_WIDTH;
+	rb->generic.left   = rb->generic.x - ( len + 1 ) * SMALLCHAR_WIDTH;
+	rb->generic.right  = rb->generic.x + 6 * SMALLCHAR_WIDTH;
 	rb->generic.top    = rb->generic.y;
 	rb->generic.bottom = rb->generic.y + SMALLCHAR_HEIGHT;
 }
@@ -453,13 +426,12 @@ static void RadioButton_Init( menuradiobutton_s *rb )
 RadioButton_Key
 =================
 */
-static sfxHandle_t RadioButton_Key( menuradiobutton_s *rb, int key )
-{
-	switch (key)
-	{
+static sfxHandle_t RadioButton_Key( menuradiobutton_s *rb, int key ) {
+	switch ( key ) {
 		case K_MOUSE1:
-			if (!(rb->generic.flags & QMF_HASMOUSEFOCUS))
+			if ( !( rb->generic.flags & QMF_HASMOUSEFOCUS ) ) {
 				break;
+			}
 
 		case K_JOY1:
 		case K_JOY2:
@@ -472,10 +444,11 @@ static sfxHandle_t RadioButton_Key( menuradiobutton_s *rb, int key )
 		case K_KP_RIGHTARROW:
 		case K_RIGHTARROW:
 			rb->curvalue = !rb->curvalue;
-			if ( rb->generic.callback )
+			if ( rb->generic.callback ) {
 				rb->generic.callback( rb, QM_ACTIVATED );
+			}
 
-			return (menu_move_sound);
+			return ( menu_move_sound );
 	}
 
 	// key not handled
@@ -487,52 +460,43 @@ static sfxHandle_t RadioButton_Key( menuradiobutton_s *rb, int key )
 RadioButton_Draw
 =================
 */
-static void RadioButton_Draw( menuradiobutton_s *rb )
-{
+static void RadioButton_Draw( menuradiobutton_s *rb ) {
 	int	x;
 	int y;
-	float *color;
+	float * color;
 	int	style;
 	qboolean focus;
 
 	x = rb->generic.x;
 	y = rb->generic.y;
 
-	focus = (qboolean)(rb->generic.parent->cursor == rb->generic.menuPosition);
+	focus = ( qboolean )( rb->generic.parent->cursor == rb->generic.menuPosition );
 
-	if ( rb->generic.flags & QMF_GRAYED )
-	{
+	if ( rb->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
-		style = UI_LEFT|UI_SMALLFONT;
-	}
-	else if ( focus )
-	{
+		style = UI_LEFT | UI_SMALLFONT;
+	} else if ( focus ) {
 		color = text_color_highlight;
-		style = UI_LEFT|UI_PULSE|UI_SMALLFONT;
-	}
-	else
-	{
+		style = UI_LEFT | UI_PULSE | UI_SMALLFONT;
+	} else {
 		color = text_color_normal;
-		style = UI_LEFT|UI_SMALLFONT;
+		style = UI_LEFT | UI_SMALLFONT;
 	}
 
-	if ( focus )
-	{
+	if ( focus ) {
 		// draw cursor
-		UI_FillRect( rb->generic.left, rb->generic.top, rb->generic.right-rb->generic.left+1, rb->generic.bottom-rb->generic.top+1, listbar_color ); 
-		UI_DrawChar( x, y, 13, UI_CENTER|UI_BLINK|UI_SMALLFONT, color);
+		UI_FillRect( rb->generic.left, rb->generic.top, rb->generic.right - rb->generic.left + 1, rb->generic.bottom - rb->generic.top + 1, listbar_color );
+		UI_DrawChar( x, y, 13, UI_CENTER | UI_BLINK | UI_SMALLFONT, color );
 	}
 
-	if ( rb->generic.name )
-		UI_DrawString( x - SMALLCHAR_WIDTH, y, rb->generic.name, UI_RIGHT|UI_SMALLFONT, color );
+	if ( rb->generic.name ) {
+		UI_DrawString( x - SMALLCHAR_WIDTH, y, rb->generic.name, UI_RIGHT | UI_SMALLFONT, color );
+	}
 
-	if ( !rb->curvalue )
-	{
-		UI_DrawHandlePic( x + SMALLCHAR_WIDTH, y + 2, 16, 16, uis.rb_off);
+	if ( !rb->curvalue ) {
+		UI_DrawHandlePic( x + SMALLCHAR_WIDTH, y + 2, 16, 16, uis.rb_off );
 		UI_DrawString( x + SMALLCHAR_WIDTH + 16, y, "off", style, color );
-	}
-	else
-	{
+	} else {
 		UI_DrawHandlePic( x + SMALLCHAR_WIDTH, y + 2, 16, 16, uis.rb_on );
 		UI_DrawString( x + SMALLCHAR_WIDTH + 16, y, "on", style, color );
 	}
@@ -543,18 +507,18 @@ static void RadioButton_Draw( menuradiobutton_s *rb )
 Slider_Init
 =================
 */
-static void Slider_Init( menuslider_s *s )
-{
+static void Slider_Init( menuslider_s *s ) {
 	int len;
 
 	// calculate bounds
-	if (s->generic.name)
-		len = strlen(s->generic.name);
-	else
+	if ( s->generic.name ) {
+		len = strlen( s->generic.name );
+	} else {
 		len = 0;
+	}
 
-	s->generic.left   = s->generic.x - (len+1)*SMALLCHAR_WIDTH; 
-	s->generic.right  = s->generic.x + (SLIDER_RANGE+2+1)*SMALLCHAR_WIDTH;
+	s->generic.left   = s->generic.x - ( len + 1 ) * SMALLCHAR_WIDTH;
+	s->generic.right  = s->generic.x + ( SLIDER_RANGE + 2 + 1 ) * SMALLCHAR_WIDTH;
 	s->generic.top    = s->generic.y;
 	s->generic.bottom = s->generic.y + SMALLCHAR_HEIGHT;
 }
@@ -564,50 +528,48 @@ static void Slider_Init( menuslider_s *s )
 Slider_Key
 =================
 */
-static sfxHandle_t Slider_Key( menuslider_s *s, int key )
-{
+static sfxHandle_t Slider_Key( menuslider_s *s, int key ) {
 	sfxHandle_t	sound;
 	int			x;
 	int			oldvalue;
 
-	switch (key)
-	{
+	switch ( key ) {
 		case K_MOUSE1:
-			x           = uis.cursorx - s->generic.x - 2*SMALLCHAR_WIDTH;
+			x           = uis.cursorx - s->generic.x - 2 * SMALLCHAR_WIDTH;
 			oldvalue    = s->curvalue;
-			s->curvalue = (x/(float)(SLIDER_RANGE*SMALLCHAR_WIDTH)) * (s->maxvalue-s->minvalue) + s->minvalue;
+			s->curvalue = ( x / ( float )( SLIDER_RANGE * SMALLCHAR_WIDTH ) ) * ( s->maxvalue - s->minvalue ) + s->minvalue;
 
-			if (s->curvalue < s->minvalue)
+			if ( s->curvalue < s->minvalue ) {
 				s->curvalue = s->minvalue;
-			else if (s->curvalue > s->maxvalue)
+			} else if ( s->curvalue > s->maxvalue ) {
 				s->curvalue = s->maxvalue;
-			if (s->curvalue != oldvalue)
+			}
+			if ( s->curvalue != oldvalue ) {
 				sound = menu_move_sound;
-			else
+			} else {
 				sound = 0;
+			}
 			break;
 
 		case K_KP_LEFTARROW:
 		case K_LEFTARROW:
-			if (s->curvalue > s->minvalue)
-			{
+			if ( s->curvalue > s->minvalue ) {
 				s->curvalue--;
 				sound = menu_move_sound;
-			}
-			else
+			} else {
 				sound = menu_buzz_sound;
-			break;			
+			}
+			break;
 
 		case K_KP_RIGHTARROW:
 		case K_RIGHTARROW:
-			if (s->curvalue < s->maxvalue)
-			{
+			if ( s->curvalue < s->maxvalue ) {
 				s->curvalue++;
 				sound = menu_move_sound;
-			}
-			else
+			} else {
 				sound = menu_buzz_sound;
-			break;			
+			}
+			break;
 
 		default:
 			// key not handled
@@ -615,10 +577,11 @@ static sfxHandle_t Slider_Key( menuslider_s *s, int key )
 			break;
 	}
 
-	if ( sound && s->generic.callback )
+	if ( sound && s->generic.callback ) {
 		s->generic.callback( s, QM_ACTIVATED );
+	}
 
-	return (sound);
+	return ( sound );
 }
 
 #if 1
@@ -631,29 +594,27 @@ static void Slider_Draw( menuslider_s *s ) {
 	int			x;
 	int			y;
 	int			style;
-	float		*color;
+	float	*	color;
 	int			button;
 	qboolean	focus;
-	
+
 	x =	s->generic.x;
 	y = s->generic.y;
-	focus = (qboolean)(s->generic.parent->cursor == s->generic.menuPosition);
+	focus = ( qboolean )( s->generic.parent->cursor == s->generic.menuPosition );
 
-	if( s->generic.flags & QMF_GRAYED ) {
+	if ( s->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
 		style = UI_SMALLFONT;
-	}
-	else if( focus ) {
+	} else if ( focus ) {
 		color  = text_color_highlight;
 		style = UI_SMALLFONT | UI_PULSE;
-	}
-	else {
+	} else {
 		color = text_color_normal;
 		style = UI_SMALLFONT;
 	}
 
 	// draw label
-	UI_DrawString( x - SMALLCHAR_WIDTH, y, s->generic.name, UI_RIGHT|style, color );
+	UI_DrawString( x - SMALLCHAR_WIDTH, y, s->generic.name, UI_RIGHT | style, color );
 
 	// draw slider
 	UI_SetColor( color );
@@ -661,28 +622,25 @@ static void Slider_Draw( menuslider_s *s ) {
 	UI_SetColor( NULL );
 
 	// clamp thumb
-	if( s->maxvalue > s->minvalue )	{
-		s->range = ( s->curvalue - s->minvalue ) / ( float ) ( s->maxvalue - s->minvalue );
-		if( s->range < 0 ) {
+	if ( s->maxvalue > s->minvalue )	{
+		s->range = ( s->curvalue - s->minvalue ) / ( float )( s->maxvalue - s->minvalue );
+		if ( s->range < 0 ) {
 			s->range = 0;
-		}
-		else if( s->range > 1) {
+		} else if ( s->range > 1 ) {
 			s->range = 1;
 		}
-	}
-	else {
+	} else {
 		s->range = 0;
 	}
 
 	// draw thumb
-	if( style & UI_PULSE) {
+	if ( style & UI_PULSE ) {
 		button = sliderButton_1;
-	}
-	else {
+	} else {
 		button = sliderButton_0;
 	}
 
-	UI_DrawHandlePic( (int)( x + 2*SMALLCHAR_WIDTH + (SLIDER_RANGE-1)*SMALLCHAR_WIDTH* s->range ) - 2, y - 2, 12, 20, button );
+	UI_DrawHandlePic( ( int )( x + 2 * SMALLCHAR_WIDTH + ( SLIDER_RANGE - 1 )*SMALLCHAR_WIDTH * s->range ) - 2, y - 2, 12, 20, button );
 }
 #else
 /*
@@ -690,68 +648,62 @@ static void Slider_Draw( menuslider_s *s ) {
 Slider_Draw
 =================
 */
-static void Slider_Draw( menuslider_s *s )
-{
-	float *color;
+static void Slider_Draw( menuslider_s *s ) {
+	float * color;
 	int	style;
 	int	i;
 	int x;
 	int y;
 	qboolean focus;
-	
+
 	x =	s->generic.x;
 	y = s->generic.y;
-	focus = (s->generic.parent->cursor == s->generic.menuPosition);
+	focus = ( s->generic.parent->cursor == s->generic.menuPosition );
 
 	style = UI_SMALLFONT;
-	if ( s->generic.flags & QMF_GRAYED )
-	{
+	if ( s->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
-	}
-	else if (focus)
-	{
+	} else if ( focus ) {
 		color  = text_color_highlight;
 		style |= UI_PULSE;
-	}
-	else
-	{
+	} else {
 		color = text_color_normal;
 	}
 
-	if ( focus )
-	{
+	if ( focus ) {
 		// draw cursor
-		UI_FillRect( s->generic.left, s->generic.top, s->generic.right-s->generic.left+1, s->generic.bottom-s->generic.top+1, listbar_color ); 
-		UI_DrawChar( x, y, 13, UI_CENTER|UI_BLINK|UI_SMALLFONT, color);
+		UI_FillRect( s->generic.left, s->generic.top, s->generic.right - s->generic.left + 1, s->generic.bottom - s->generic.top + 1, listbar_color );
+		UI_DrawChar( x, y, 13, UI_CENTER | UI_BLINK | UI_SMALLFONT, color );
 	}
 
 	// draw label
-	UI_DrawString( x - SMALLCHAR_WIDTH, y, s->generic.name, UI_RIGHT|style, color );
+	UI_DrawString( x - SMALLCHAR_WIDTH, y, s->generic.name, UI_RIGHT | style, color );
 
 	// draw slider
-	UI_DrawChar( x + SMALLCHAR_WIDTH, y, 128, UI_LEFT|style, color);
-	for ( i = 0; i < SLIDER_RANGE; i++ )
-		UI_DrawChar( x + (i+2)*SMALLCHAR_WIDTH, y, 129, UI_LEFT|style, color);
-	UI_DrawChar( x + (i+2)*SMALLCHAR_WIDTH, y, 130, UI_LEFT|style, color);
+	UI_DrawChar( x + SMALLCHAR_WIDTH, y, 128, UI_LEFT | style, color );
+	for ( i = 0; i < SLIDER_RANGE; i++ ) {
+		UI_DrawChar( x + ( i + 2 )*SMALLCHAR_WIDTH, y, 129, UI_LEFT | style, color );
+	}
+	UI_DrawChar( x + ( i + 2 )*SMALLCHAR_WIDTH, y, 130, UI_LEFT | style, color );
 
 	// clamp thumb
-	if (s->maxvalue > s->minvalue)
-	{
-		s->range = ( s->curvalue - s->minvalue ) / ( float ) ( s->maxvalue - s->minvalue );
-		if ( s->range < 0)
+	if ( s->maxvalue > s->minvalue ) {
+		s->range = ( s->curvalue - s->minvalue ) / ( float )( s->maxvalue - s->minvalue );
+		if ( s->range < 0 ) {
 			s->range = 0;
-		else if ( s->range > 1)
+		} else if ( s->range > 1 ) {
 			s->range = 1;
-	}
-	else
+		}
+	} else {
 		s->range = 0;
+	}
 
 	// draw thumb
-	if (style & UI_PULSE) {
+	if ( style & UI_PULSE ) {
 		style &= ~UI_PULSE;
 		style |= UI_BLINK;
 	}
-	UI_DrawChar( (int)( x + 2*SMALLCHAR_WIDTH + (SLIDER_RANGE-1)*SMALLCHAR_WIDTH* s->range ), y, 131, UI_LEFT|style, color);
+	UI_DrawChar( ( int )( x + 2 * SMALLCHAR_WIDTH + ( SLIDER_RANGE - 1 )*SMALLCHAR_WIDTH * s->range ), y, 131, UI_LEFT | style, color );
 }
 #endif
 
@@ -763,27 +715,28 @@ SpinControl_Init
 static void SpinControl_Init( menulist_s *s ) {
 	int	len;
 	int	l;
-	const char* str;
+	const char * str;
 
-	if (s->generic.name)
-		len = strlen(s->generic.name) * SMALLCHAR_WIDTH;
-	else
+	if ( s->generic.name ) {
+		len = strlen( s->generic.name ) * SMALLCHAR_WIDTH;
+	} else {
 		len = 0;
+	}
 
 	s->generic.left	= s->generic.x - SMALLCHAR_WIDTH - len;
 
 	len = s->numitems = 0;
-	while ( (str = s->itemnames[s->numitems]) != 0 )
-	{
-		l = strlen(str);
-		if (l > len)
+	while ( ( str = s->itemnames[s->numitems] ) != 0 ) {
+		l = strlen( str );
+		if ( l > len ) {
 			len = l;
+		}
 
 		s->numitems++;
-	}		
+	}
 
 	s->generic.top	  =	s->generic.y;
-	s->generic.right  =	s->generic.x + (len+1)*SMALLCHAR_WIDTH;
+	s->generic.right  =	s->generic.x + ( len + 1 ) * SMALLCHAR_WIDTH;
 	s->generic.bottom =	s->generic.y + SMALLCHAR_HEIGHT;
 }
 
@@ -792,47 +745,45 @@ static void SpinControl_Init( menulist_s *s ) {
 SpinControl_Key
 =================
 */
-static sfxHandle_t SpinControl_Key( menulist_s *s, int key )
-{
+static sfxHandle_t SpinControl_Key( menulist_s *s, int key ) {
 	sfxHandle_t	sound;
 
 	sound = 0;
-	switch (key)
-	{
+	switch ( key ) {
 		case K_MOUSE1:
 			s->curvalue++;
-			if (s->curvalue >= s->numitems)
+			if ( s->curvalue >= s->numitems ) {
 				s->curvalue = 0;
+			}
 			sound = menu_move_sound;
 			break;
-		
+
 		case K_KP_LEFTARROW:
 		case K_LEFTARROW:
-			if (s->curvalue > 0)
-			{
+			if ( s->curvalue > 0 ) {
 				s->curvalue--;
 				sound = menu_move_sound;
-			}
-			else
+			} else {
 				sound = menu_buzz_sound;
+			}
 			break;
 
 		case K_KP_RIGHTARROW:
 		case K_RIGHTARROW:
-			if (s->curvalue < s->numitems-1)
-			{
+			if ( s->curvalue < s->numitems - 1 ) {
 				s->curvalue++;
 				sound = menu_move_sound;
-			}
-			else
+			} else {
 				sound = menu_buzz_sound;
+			}
 			break;
 	}
 
-	if ( sound && s->generic.callback )
+	if ( sound && s->generic.callback ) {
 		s->generic.callback( s, QM_ACTIVATED );
+	}
 
-	return (sound);
+	return ( sound );
 }
 
 /*
@@ -840,10 +791,9 @@ static sfxHandle_t SpinControl_Key( menulist_s *s, int key )
 SpinControl_Draw
 =================
 */
-static void SpinControl_Draw( menulist_s *s )
-{
-	float *color;
-	int	x,y;
+static void SpinControl_Draw( menulist_s *s ) {
+	float * color;
+	int	x, y;
 	int	style;
 	qboolean focus;
 
@@ -851,32 +801,28 @@ static void SpinControl_Draw( menulist_s *s )
 	y =	s->generic.y;
 
 	style = UI_SMALLFONT;
-	focus = (qboolean)(s->generic.parent->cursor == s->generic.menuPosition);
+	focus = ( qboolean )( s->generic.parent->cursor == s->generic.menuPosition );
 
-	if ( s->generic.flags & QMF_GRAYED )
+	if ( s->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
-	else if ( focus )
-	{
+	} else if ( focus ) {
 		color = text_color_highlight;
 		style |= UI_PULSE;
-	}
-	else if ( s->generic.flags & QMF_BLINK )
-	{
+	} else if ( s->generic.flags & QMF_BLINK ) {
 		color = text_color_highlight;
 		style |= UI_BLINK;
-	}
-	else
+	} else {
 		color = text_color_normal;
-
-	if ( focus )
-	{
-		// draw cursor
-		UI_FillRect( s->generic.left, s->generic.top, s->generic.right-s->generic.left+1, s->generic.bottom-s->generic.top+1, listbar_color ); 
-		UI_DrawChar( x, y, 13, UI_CENTER|UI_BLINK|UI_SMALLFONT, color);
 	}
 
-	UI_DrawString( x - SMALLCHAR_WIDTH, y, s->generic.name, style|UI_RIGHT, color );
-	UI_DrawString( x + SMALLCHAR_WIDTH, y, s->itemnames[s->curvalue], style|UI_LEFT, color );
+	if ( focus ) {
+		// draw cursor
+		UI_FillRect( s->generic.left, s->generic.top, s->generic.right - s->generic.left + 1, s->generic.bottom - s->generic.top + 1, listbar_color );
+		UI_DrawChar( x, y, 13, UI_CENTER | UI_BLINK | UI_SMALLFONT, color );
+	}
+
+	UI_DrawString( x - SMALLCHAR_WIDTH, y, s->generic.name, style | UI_RIGHT, color );
+	UI_DrawString( x + SMALLCHAR_WIDTH, y, s->itemnames[s->curvalue], style | UI_LEFT, color );
 }
 
 /*
@@ -884,30 +830,28 @@ static void SpinControl_Draw( menulist_s *s )
 ScrollList_Init
 =================
 */
-static void ScrollList_Init( menulist_s *l )
-{
+static void ScrollList_Init( menulist_s *l ) {
 	int		w;
 
 	l->oldvalue = 0;
 	l->curvalue = 0;
 	l->top      = 0;
 
-	if( !l->columns ) {
+	if ( !l->columns ) {
 		l->columns = 1;
 		l->seperation = 0;
-	}
-	else if( !l->seperation ) {
+	} else if ( !l->seperation ) {
 		l->seperation = 3;
 	}
 
-	w = ( (l->width + l->seperation) * l->columns - l->seperation) * SMALLCHAR_WIDTH;
+	w = ( ( l->width + l->seperation ) * l->columns - l->seperation ) * SMALLCHAR_WIDTH;
 
 	l->generic.left   =	l->generic.x;
-	l->generic.top    = l->generic.y;	
+	l->generic.top    = l->generic.y;
 	l->generic.right  =	l->generic.x + w;
 	l->generic.bottom =	l->generic.y + l->height * SMALLCHAR_HEIGHT;
 
-	if( l->generic.flags & QMF_CENTER_JUSTIFY ) {
+	if ( l->generic.flags & QMF_CENTER_JUSTIFY ) {
 		l->generic.left -= w / 2;
 		l->generic.right -= w / 2;
 	}
@@ -918,52 +862,46 @@ static void ScrollList_Init( menulist_s *l )
 ScrollList_Key
 =================
 */
-sfxHandle_t ScrollList_Key( menulist_s *l, int key )
-{
+sfxHandle_t ScrollList_Key( menulist_s *l, int key ) {
 	int	x;
 	int	y;
 	int	w;
 	int	i;
-	int	j;	
+	int	j;
 	int	c;
 	int	cursorx;
 	int	cursory;
 	int	column;
 	int	index;
 
-	switch (key)
-	{
+	switch ( key ) {
 		case K_MOUSE1:
-			if (l->generic.flags & QMF_HASMOUSEFOCUS)
-			{
+			if ( l->generic.flags & QMF_HASMOUSEFOCUS ) {
 				// check scroll region
 				x = l->generic.x;
 				y = l->generic.y;
-				w = ( (l->width + l->seperation) * l->columns - l->seperation) * SMALLCHAR_WIDTH;
-				if( l->generic.flags & QMF_CENTER_JUSTIFY ) {
+				w = ( ( l->width + l->seperation ) * l->columns - l->seperation ) * SMALLCHAR_WIDTH;
+				if ( l->generic.flags & QMF_CENTER_JUSTIFY ) {
 					x -= w / 2;
 				}
-				if (UI_CursorInRect( x, y, w, l->height*SMALLCHAR_HEIGHT ))
-				{
-					cursorx = (uis.cursorx - x)/SMALLCHAR_WIDTH;
-					column = cursorx / (l->width + l->seperation);
-					cursory = (uis.cursory - y)/SMALLCHAR_HEIGHT;
+				if ( UI_CursorInRect( x, y, w, l->height * SMALLCHAR_HEIGHT ) ) {
+					cursorx = ( uis.cursorx - x ) / SMALLCHAR_WIDTH;
+					column = cursorx / ( l->width + l->seperation );
+					cursory = ( uis.cursory - y ) / SMALLCHAR_HEIGHT;
 					index = column * l->height + cursory;
-					if (l->top + index < l->numitems)
-					{
+					if ( l->top + index < l->numitems ) {
 						l->oldvalue = l->curvalue;
 						l->curvalue = l->top + index;
 
-						if (l->oldvalue != l->curvalue && l->generic.callback)
-						{
+						if ( l->oldvalue != l->curvalue && l->generic.callback ) {
 							l->generic.callback( l, QM_GOTFOCUS );
-							return (menu_move_sound);
+							return ( menu_move_sound );
 						}
 					}
 				}
-			
+
 				// absorbed, silent sound effect
-				return (menu_null_sound);
+				return ( menu_null_sound );
 			}
 			break;
 
@@ -973,123 +911,123 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 			l->curvalue = 0;
 			l->top      = 0;
 
-			if (l->oldvalue != l->curvalue && l->generic.callback)
-			{
+			if ( l->oldvalue != l->curvalue && l->generic.callback ) {
 				l->generic.callback( l, QM_GOTFOCUS );
-				return (menu_move_sound);
+				return ( menu_move_sound );
 			}
-			return (menu_buzz_sound);
+			return ( menu_buzz_sound );
 
 		case K_KP_END:
 		case K_END:
 			l->oldvalue = l->curvalue;
-			l->curvalue = l->numitems-1;
-			if( l->columns > 1 ) {
-				c = (l->curvalue / l->height + 1) * l->height;
-				l->top = c - (l->columns * l->height);
+			l->curvalue = l->numitems - 1;
+			if ( l->columns > 1 ) {
+				c = ( l->curvalue / l->height + 1 ) * l->height;
+				l->top = c - ( l->columns * l->height );
+			} else {
+				l->top = l->curvalue - ( l->height - 1 );
 			}
-			else {
-				l->top = l->curvalue - (l->height - 1);
+			if ( l->top < 0 ) {
+				l->top = 0;
 			}
-			if (l->top < 0)
-				l->top = 0;			
 
-			if (l->oldvalue != l->curvalue && l->generic.callback)
-			{
+			if ( l->oldvalue != l->curvalue && l->generic.callback ) {
 				l->generic.callback( l, QM_GOTFOCUS );
-				return (menu_move_sound);
+				return ( menu_move_sound );
 			}
-			return (menu_buzz_sound);
+			return ( menu_buzz_sound );
 
 		case K_PGUP:
 		case K_KP_PGUP:
-			if( l->columns > 1 ) {
+			if ( l->columns > 1 ) {
 				return menu_null_sound;
 			}
 
-			if (l->curvalue > 0)
-			{
+			if ( l->curvalue > 0 ) {
 				l->oldvalue = l->curvalue;
-				l->curvalue -= l->height-1;
-				if (l->curvalue < 0)
+				l->curvalue -= l->height - 1;
+				if ( l->curvalue < 0 ) {
 					l->curvalue = 0;
+				}
 				l->top = l->curvalue;
-				if (l->top < 0)
+				if ( l->top < 0 ) {
 					l->top = 0;
+				}
 
-				if (l->generic.callback)
+				if ( l->generic.callback ) {
 					l->generic.callback( l, QM_GOTFOCUS );
+				}
 
-				return (menu_move_sound);
+				return ( menu_move_sound );
 			}
-			return (menu_buzz_sound);
+			return ( menu_buzz_sound );
 
 		case K_PGDN:
 		case K_KP_PGDN:
-			if( l->columns > 1 ) {
+			if ( l->columns > 1 ) {
 				return menu_null_sound;
 			}
 
-			if (l->curvalue < l->numitems-1)
-			{
+			if ( l->curvalue < l->numitems - 1 ) {
 				l->oldvalue = l->curvalue;
-				l->curvalue += l->height-1;
-				if (l->curvalue > l->numitems-1)
-					l->curvalue = l->numitems-1;
-				l->top = l->curvalue - (l->height-1);
-				if (l->top < 0)
+				l->curvalue += l->height - 1;
+				if ( l->curvalue > l->numitems - 1 ) {
+					l->curvalue = l->numitems - 1;
+				}
+				l->top = l->curvalue - ( l->height - 1 );
+				if ( l->top < 0 ) {
 					l->top = 0;
+				}
 
-				if (l->generic.callback)
+				if ( l->generic.callback ) {
 					l->generic.callback( l, QM_GOTFOCUS );
+				}
 
-				return (menu_move_sound);
+				return ( menu_move_sound );
 			}
-			return (menu_buzz_sound);
+			return ( menu_buzz_sound );
 
 		case K_KP_UPARROW:
 		case K_UPARROW:
-			if( l->curvalue == 0 ) {
+			if ( l->curvalue == 0 ) {
 				return menu_buzz_sound;
 			}
 
 			l->oldvalue = l->curvalue;
 			l->curvalue--;
 
-			if( l->curvalue < l->top ) {
-				if( l->columns == 1 ) {
+			if ( l->curvalue < l->top ) {
+				if ( l->columns == 1 ) {
 					l->top--;
-				}
-				else {
+				} else {
 					l->top -= l->height;
 				}
 			}
 
-			if( l->generic.callback ) {
+			if ( l->generic.callback ) {
 				l->generic.callback( l, QM_GOTFOCUS );
 			}
 
-			return (menu_move_sound);
+			return ( menu_move_sound );
 
 		case K_KP_DOWNARROW:
 		case K_DOWNARROW:
-			if( l->curvalue == l->numitems - 1 ) {
+			if ( l->curvalue == l->numitems - 1 ) {
 				return menu_buzz_sound;
 			}
 
 			l->oldvalue = l->curvalue;
 			l->curvalue++;
 
-			if( l->curvalue >= l->top + l->columns * l->height ) {
-				if( l->columns == 1 ) {
+			if ( l->curvalue >= l->top + l->columns * l->height ) {
+				if ( l->columns == 1 ) {
 					l->top++;
-				}
-				else {
+				} else {
 					l->top += l->height;
 				}
 			}
 
-			if( l->generic.callback ) {
+			if ( l->generic.callback ) {
 				l->generic.callback( l, QM_GOTFOCUS );
 			}
 
@@ -1097,22 +1035,22 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 
 		case K_KP_LEFTARROW:
 		case K_LEFTARROW:
-			if( l->columns == 1 ) {
+			if ( l->columns == 1 ) {
 				return menu_null_sound;
 			}
 
-			if( l->curvalue < l->height ) {
+			if ( l->curvalue < l->height ) {
 				return menu_buzz_sound;
 			}
 
 			l->oldvalue = l->curvalue;
 			l->curvalue -= l->height;
 
-			if( l->curvalue < l->top ) {
+			if ( l->curvalue < l->top ) {
 				l->top -= l->height;
 			}
 
-			if( l->generic.callback ) {
+			if ( l->generic.callback ) {
 				l->generic.callback( l, QM_GOTFOCUS );
 			}
 
@@ -1120,24 +1058,24 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 
 		case K_KP_RIGHTARROW:
 		case K_RIGHTARROW:
-			if( l->columns == 1 ) {
+			if ( l->columns == 1 ) {
 				return menu_null_sound;
 			}
 
 			c = l->curvalue + l->height;
 
-			if( c >= l->numitems ) {
+			if ( c >= l->numitems ) {
 				return menu_buzz_sound;
 			}
 
 			l->oldvalue = l->curvalue;
 			l->curvalue = c;
 
-			if( l->curvalue > l->top + l->columns * l->height - 1 ) {
+			if ( l->curvalue > l->top + l->columns * l->height - 1 ) {
 				l->top += l->height;
 			}
 
-			if( l->generic.callback ) {
+			if ( l->generic.callback ) {
 				l->generic.callback( l, QM_GOTFOCUS );
 			}
 
@@ -1145,53 +1083,47 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 	}
 
 	// cycle look for ascii key inside list items
-	if ( !Q_isprint( key ) )
-		return (0);
+	if ( !Q_isprint( key ) ) {
+		return ( 0 );
+	}
 
 	// force to lower for case insensitive compare
-	if ( Q_isupper( key ) )
-	{
+	if ( Q_isupper( key ) ) {
 		key -= 'A' - 'a';
 	}
 
 	// iterate list items
-	for (i=1; i<=l->numitems; i++)
-	{
-		j = (l->curvalue + i) % l->numitems;
+	for ( i = 1; i <= l->numitems; i++ ) {
+		j = ( l->curvalue + i ) % l->numitems;
 		c = l->itemnames[j][0];
-		if ( Q_isupper( c ) )
-		{
+		if ( Q_isupper( c ) ) {
 			c -= 'A' - 'a';
 		}
 
-		if (c == key)
-		{
+		if ( c == key ) {
 			// set current item, mimic windows listbox scroll behavior
-			if (j < l->top)
-			{
+			if ( j < l->top ) {
 				// behind top most item, set this as new top
 				l->top = j;
-			}
-			else if (j > l->top+l->height-1)
-			{
+			} else if ( j > l->top + l->height - 1 ) {
 				// past end of list box, do page down
-				l->top = (j+1) - l->height;
-			}
-			
-			if (l->curvalue != j)
-			{
-				l->oldvalue = l->curvalue;
-				l->curvalue = j;
-				if (l->generic.callback)
-					l->generic.callback( l, QM_GOTFOCUS );
-				return ( menu_move_sound );			
+				l->top = ( j + 1 ) - l->height;
 			}
 
-			return (menu_buzz_sound);
+			if ( l->curvalue != j ) {
+				l->oldvalue = l->curvalue;
+				l->curvalue = j;
+				if ( l->generic.callback ) {
+					l->generic.callback( l, QM_GOTFOCUS );
+				}
+				return ( menu_move_sound );
+			}
+
+			return ( menu_buzz_sound );
 		}
 	}
 
-	return (menu_buzz_sound);
+	return ( menu_buzz_sound );
 }
 
 /*
@@ -1199,49 +1131,47 @@ sfxHandle_t ScrollList_Key( menulist_s *l, int key )
 ScrollList_Draw
 =================
 */
-void ScrollList_Draw( menulist_s *l )
-{
+void ScrollList_Draw( menulist_s *l ) {
 	int			x;
 	int			u;
 	int			y;
 	int			i;
 	int			base;
 	int			column;
-	float*		color;
+	float	*	color;
 	qboolean	hasfocus;
 	int			style;
 
-	hasfocus = (qboolean)(l->generic.parent->cursor == l->generic.menuPosition);
+	hasfocus = ( qboolean )( l->generic.parent->cursor == l->generic.menuPosition );
 
 	x =	l->generic.x;
-	for( column = 0; column < l->columns; column++ ) {
+	for ( column = 0; column < l->columns; column++ ) {
 		y =	l->generic.y;
 		base = l->top + column * l->height;
-		for( i = base; i < base + l->height; i++) {
-			if (i >= l->numitems)
+		for ( i = base; i < base + l->height; i++ ) {
+			if ( i >= l->numitems ) {
 				break;
+			}
 
-			if (i == l->curvalue)
-			{
+			if ( i == l->curvalue ) {
 				u = x - 2;
-				if( l->generic.flags & QMF_CENTER_JUSTIFY ) {
-					u -= (l->width * SMALLCHAR_WIDTH) / 2 + 1;
+				if ( l->generic.flags & QMF_CENTER_JUSTIFY ) {
+					u -= ( l->width * SMALLCHAR_WIDTH ) / 2 + 1;
 				}
 
-				UI_FillRect(u,y,l->width*SMALLCHAR_WIDTH,SMALLCHAR_HEIGHT+2,listbar_color);
+				UI_FillRect( u, y, l->width * SMALLCHAR_WIDTH, SMALLCHAR_HEIGHT + 2, listbar_color );
 				color = text_color_highlight;
 
-				if (hasfocus)
-					style = UI_PULSE|UI_LEFT|UI_SMALLFONT;
-				else
-					style = UI_LEFT|UI_SMALLFONT;
-			}
-			else
-			{
+				if ( hasfocus ) {
+					style = UI_PULSE | UI_LEFT | UI_SMALLFONT;
+				} else {
+					style = UI_LEFT | UI_SMALLFONT;
+				}
+			} else {
 				color = text_color_normal;
-				style = UI_LEFT|UI_SMALLFONT;
+				style = UI_LEFT | UI_SMALLFONT;
 			}
-			if( l->generic.flags & QMF_CENTER_JUSTIFY ) {
+			if ( l->generic.flags & QMF_CENTER_JUSTIFY ) {
 				style |= UI_CENTER;
 			}
 
@@ -1250,11 +1180,11 @@ void ScrollList_Draw( menulist_s *l )
 				y,
 				l->itemnames[i],
 				style,
-				color);
+				color );
 
 			y += SMALLCHAR_HEIGHT;
 		}
-		x += (l->width + l->seperation) * SMALLCHAR_WIDTH;
+		x += ( l->width + l->seperation ) * SMALLCHAR_WIDTH;
 	}
 }
 
@@ -1263,66 +1193,64 @@ void ScrollList_Draw( menulist_s *l )
 Menu_AddItem
 =================
 */
-void Menu_AddItem( menuframework_s *menu, void *item )
-{
+void Menu_AddItem( menuframework_s *menu, void * item ) {
 	menucommon_s	*itemptr;
 
-	if (menu->nitems >= MAX_MENUITEMS)
-		trap_Error ("Menu_AddItem: excessive items");
+	if ( menu->nitems >= MAX_MENUITEMS ) {
+		trap_Error( "Menu_AddItem: excessive items" );
+	}
 
 	menu->items[menu->nitems] = item;
-	((menucommon_s*)menu->items[menu->nitems])->parent        = menu;
-	((menucommon_s*)menu->items[menu->nitems])->menuPosition  = menu->nitems;
-	((menucommon_s*)menu->items[menu->nitems])->flags        &= ~QMF_HASMOUSEFOCUS;
+	( ( menucommon_s * )menu->items[menu->nitems] )->parent        = menu;
+	( ( menucommon_s * )menu->items[menu->nitems] )->menuPosition  = menu->nitems;
+	( ( menucommon_s * )menu->items[menu->nitems] )->flags        &= ~QMF_HASMOUSEFOCUS;
 
 	// perform any item specific initializations
-	itemptr = (menucommon_s*)item;
-	if (!(itemptr->flags & QMF_NODEFAULTINIT))
-	{
-		switch (itemptr->type)
-		{
+	itemptr = ( menucommon_s * )item;
+	if ( !( itemptr->flags & QMF_NODEFAULTINIT ) ) {
+		switch ( itemptr->type ) {
 			case MTYPE_ACTION:
-				Action_Init((menuaction_s*)item);
+				Action_Init( ( menuaction_s * )item );
 				break;
 
 			case MTYPE_FIELD:
-				MenuField_Init((menufield_s*)item);
+				MenuField_Init( ( menufield_s * )item );
 				break;
 
 			case MTYPE_SPINCONTROL:
-				SpinControl_Init((menulist_s*)item);
+				SpinControl_Init( ( menulist_s * )item );
 				break;
 
 			case MTYPE_RADIOBUTTON:
-				RadioButton_Init((menuradiobutton_s*)item);
+				RadioButton_Init( ( menuradiobutton_s * )item );
 				break;
 
 			case MTYPE_SLIDER:
-				Slider_Init((menuslider_s*)item);
+				Slider_Init( ( menuslider_s * )item );
 				break;
 
 			case MTYPE_BITMAP:
-				Bitmap_Init((menubitmap_s*)item);
+				Bitmap_Init( ( menubitmap_s * )item );
 				break;
 
 			case MTYPE_TEXT:
-				Text_Init((menutext_s*)item);
+				Text_Init( ( menutext_s * )item );
 				break;
 
 			case MTYPE_SCROLLLIST:
-				ScrollList_Init((menulist_s*)item);
+				ScrollList_Init( ( menulist_s * )item );
 				break;
 
 			case MTYPE_PTEXT:
-				PText_Init((menutext_s*)item);
+				PText_Init( ( menutext_s * )item );
 				break;
 
 			case MTYPE_BTEXT:
-				BText_Init((menutext_s*)item);
+				BText_Init( ( menutext_s * )item );
 				break;
 
 			default:
-				trap_Error( va("Menu_Init: unknown type %d", itemptr->type) );
+				trap_Error( va( "Menu_Init: unknown type %d", itemptr->type ) );
 		}
 	}
 
@@ -1334,25 +1262,25 @@ void Menu_AddItem( menuframework_s *menu, void *item )
 Menu_CursorMoved
 =================
 */
-void Menu_CursorMoved( menuframework_s *m )
-{
-	void (*callback)( void *self, int notification );
-	
-	if (m->cursor_prev == m->cursor)
-		return;
+void Menu_CursorMoved( menuframework_s *m ) {
+	void ( *callback )( void * self, int notification );
 
-	if (m->cursor_prev >= 0 && m->cursor_prev < m->nitems)
-	{
-		callback = ((menucommon_s*)(m->items[m->cursor_prev]))->callback;
-		if (callback)
-			callback(m->items[m->cursor_prev],QM_LOSTFOCUS);
+	if ( m->cursor_prev == m->cursor ) {
+		return;
 	}
-	
-	if (m->cursor >= 0 && m->cursor < m->nitems)
-	{
-		callback = ((menucommon_s*)(m->items[m->cursor]))->callback;
-		if (callback)
-			callback(m->items[m->cursor],QM_GOTFOCUS);
+
+	if ( m->cursor_prev >= 0 && m->cursor_prev < m->nitems ) {
+		callback = ( ( menucommon_s * )( m->items[m->cursor_prev] ) )->callback;
+		if ( callback ) {
+			callback( m->items[m->cursor_prev], QM_LOSTFOCUS );
+		}
+	}
+
+	if ( m->cursor >= 0 && m->cursor < m->nitems ) {
+		callback = ( ( menucommon_s * )( m->items[m->cursor] ) )->callback;
+		if ( callback ) {
+			callback( m->items[m->cursor], QM_GOTFOCUS );
+		}
 	}
 }
 
@@ -1361,10 +1289,8 @@ void Menu_CursorMoved( menuframework_s *m )
 Menu_SetCursor
 =================
 */
-void Menu_SetCursor( menuframework_s *m, int cursor )
-{
-	if (((menucommon_s*)(m->items[cursor]))->flags & (QMF_GRAYED|QMF_INACTIVE))
-	{
+void Menu_SetCursor( menuframework_s *m, int cursor ) {
+	if ( ( ( menucommon_s * )( m->items[cursor] ) )->flags & ( QMF_GRAYED | QMF_INACTIVE ) ) {
 		// cursor can't go there
 		return;
 	}
@@ -1380,14 +1306,11 @@ void Menu_SetCursor( menuframework_s *m, int cursor )
 Menu_SetCursorToItem
 =================
 */
-void Menu_SetCursorToItem( menuframework_s *m, void* ptr )
-{
+void Menu_SetCursorToItem( menuframework_s *m, void * ptr ) {
 	int	i;
 
-	for (i=0; i<m->nitems; i++)
-	{
-		if (m->items[i] == ptr)
-		{
+	for ( i = 0; i < m->nitems; i++ ) {
+		if ( m->items[i] == ptr ) {
 			Menu_SetCursor( m, i );
 			return;
 		}
@@ -1408,10 +1331,9 @@ void Menu_AdjustCursor( menuframework_s *m, int dir ) {
 wrap:
 	while ( m->cursor >= 0 && m->cursor < m->nitems ) {
 		item = ( menucommon_s * ) m->items[m->cursor];
-		if (( item->flags & (QMF_GRAYED|QMF_MOUSEONLY|QMF_INACTIVE) ) ) {
+		if ( ( item->flags & ( QMF_GRAYED | QMF_MOUSEONLY | QMF_INACTIVE ) ) ) {
 			m->cursor += dir;
-		}
-		else {
+		} else {
 			break;
 		}
 	}
@@ -1429,8 +1351,7 @@ wrap:
 			}
 			m->cursor = m->cursor_prev;
 		}
-	}
-	else {
+	} else {
 		if ( m->cursor < 0 ) {
 			if ( m->wrapAround ) {
 				if ( wrapped ) {
@@ -1451,99 +1372,94 @@ wrap:
 Menu_Draw
 =================
 */
-void Menu_Draw( menuframework_s *menu )
-{
+void Menu_Draw( menuframework_s *menu ) {
 	int				i;
 	menucommon_s	*itemptr;
 
 	// draw menu
-	for (i=0; i<menu->nitems; i++)
-	{
-		itemptr = (menucommon_s*)menu->items[i];
+	for ( i = 0; i < menu->nitems; i++ ) {
+		itemptr = ( menucommon_s * )menu->items[i];
 
-		if (itemptr->flags & QMF_HIDDEN)
+		if ( itemptr->flags & QMF_HIDDEN ) {
 			continue;
+		}
 
-		if (itemptr->ownerdraw)
-		{
+		if ( itemptr->ownerdraw ) {
 			// total subclassing, owner draws everything
 			itemptr->ownerdraw( itemptr );
-		}	
-		else 
-		{
-			switch (itemptr->type)
-			{	
+		} else {
+			switch ( itemptr->type ) {
 				case MTYPE_RADIOBUTTON:
-					RadioButton_Draw( (menuradiobutton_s*)itemptr );
+					RadioButton_Draw( ( menuradiobutton_s * )itemptr );
 					break;
 
 				case MTYPE_FIELD:
-					MenuField_Draw( (menufield_s*)itemptr );
+					MenuField_Draw( ( menufield_s * )itemptr );
 					break;
-		
+
 				case MTYPE_SLIDER:
-					Slider_Draw( (menuslider_s*)itemptr );
+					Slider_Draw( ( menuslider_s * )itemptr );
 					break;
- 
+
 				case MTYPE_SPINCONTROL:
-					SpinControl_Draw( (menulist_s*)itemptr );
+					SpinControl_Draw( ( menulist_s * )itemptr );
 					break;
-		
+
 				case MTYPE_ACTION:
-					Action_Draw( (menuaction_s*)itemptr );
+					Action_Draw( ( menuaction_s * )itemptr );
 					break;
-		
+
 				case MTYPE_BITMAP:
-					Bitmap_Draw( (menubitmap_s*)itemptr );
+					Bitmap_Draw( ( menubitmap_s * )itemptr );
 					break;
 
 				case MTYPE_TEXT:
-					Text_Draw( (menutext_s*)itemptr );
+					Text_Draw( ( menutext_s * )itemptr );
 					break;
 
 				case MTYPE_SCROLLLIST:
-					ScrollList_Draw( (menulist_s*)itemptr );
+					ScrollList_Draw( ( menulist_s * )itemptr );
 					break;
-				
+
 				case MTYPE_PTEXT:
-					PText_Draw( (menutext_s*)itemptr );
+					PText_Draw( ( menutext_s * )itemptr );
 					break;
 
 				case MTYPE_BTEXT:
-					BText_Draw( (menutext_s*)itemptr );
+					BText_Draw( ( menutext_s * )itemptr );
 					break;
 
 				default:
-					trap_Error( va("Menu_Draw: unknown type %d", itemptr->type) );
+					trap_Error( va( "Menu_Draw: unknown type %d", itemptr->type ) );
 			}
 		}
 #ifndef NDEBUG
-		if( uis.debug ) {
+		if ( uis.debug ) {
 			int	x;
 			int	y;
 			int	w;
 			int	h;
 
-			if( !( itemptr->flags & QMF_INACTIVE ) ) {
+			if ( !( itemptr->flags & QMF_INACTIVE ) ) {
 				x = itemptr->left;
 				y = itemptr->top;
 				w = itemptr->right - itemptr->left + 1;
 				h =	itemptr->bottom - itemptr->top + 1;
 
-				if (itemptr->flags & QMF_HASMOUSEFOCUS) {
-					UI_DrawRect(x, y, w, h, colorYellow );
-				}
-				else {
-					UI_DrawRect(x, y, w, h, colorWhite );
+				if ( itemptr->flags & QMF_HASMOUSEFOCUS ) {
+					UI_DrawRect( x, y, w, h, colorYellow );
+				} else {
+					UI_DrawRect( x, y, w, h, colorWhite );
 				}
 			}
 		}
 #endif
 	}
 
-	itemptr = (menucommon_s *)Menu_ItemAtCursor( menu );
-	if ( itemptr && itemptr->statusbar)
+	itemptr = ( menucommon_s * )Menu_ItemAtCursor( menu );
+	if ( itemptr && itemptr->statusbar ) {
 		itemptr->statusbar( ( void * ) itemptr );
+	}
 }
 
 /*
@@ -1551,10 +1467,10 @@ void Menu_Draw( menuframework_s *menu )
 Menu_ItemAtCursor
 =================
 */
-void *Menu_ItemAtCursor( menuframework_s *m )
-{
-	if ( m->cursor < 0 || m->cursor >= m->nitems )
+void * Menu_ItemAtCursor( menuframework_s *m ) {
+	if ( m->cursor < 0 || m->cursor >= m->nitems ) {
 		return 0;
+	}
 
 	return m->items[m->cursor];
 }
@@ -1567,7 +1483,7 @@ Menu_ActivateItem
 sfxHandle_t Menu_ActivateItem( menuframework_s *s, menucommon_s* item ) {
 	if ( item->callback ) {
 		item->callback( item, QM_ACTIVATED );
-		if( !( item->flags & QMF_SILENT ) ) {
+		if ( !( item->flags & QMF_SILENT ) ) {
 			return menu_move_sound;
 		}
 	}
@@ -1580,67 +1496,63 @@ sfxHandle_t Menu_ActivateItem( menuframework_s *s, menucommon_s* item ) {
 Menu_DefaultKey
 =================
 */
-sfxHandle_t Menu_DefaultKey( menuframework_s *m, int key )
-{
+sfxHandle_t Menu_DefaultKey( menuframework_s *m, int key ) {
 	sfxHandle_t		sound = 0;
 	menucommon_s	*item;
 	int				cursor_prev;
 
 	// menu system keys
-	switch ( key )
-	{
+	switch ( key ) {
 		case K_MOUSE2:
 		case K_ESCAPE:
 			UI_PopMenu();
 			return menu_out_sound;
 	}
 
-	if (!m || !m->nitems)
+	if ( !m || !m->nitems ) {
 		return 0;
+	}
 
 	// route key stimulus to widget
-	item = (menucommon_s *)Menu_ItemAtCursor( m );
-	if (item && !(item->flags & (QMF_GRAYED|QMF_INACTIVE)))
-	{
-		switch (item->type)
-		{
+	item = ( menucommon_s * )Menu_ItemAtCursor( m );
+	if ( item && !( item->flags & ( QMF_GRAYED | QMF_INACTIVE ) ) ) {
+		switch ( item->type ) {
 			case MTYPE_SPINCONTROL:
-				sound = SpinControl_Key( (menulist_s*)item, key );
+				sound = SpinControl_Key( ( menulist_s * )item, key );
 				break;
 
 			case MTYPE_RADIOBUTTON:
-				sound = RadioButton_Key( (menuradiobutton_s*)item, key );
+				sound = RadioButton_Key( ( menuradiobutton_s * )item, key );
 				break;
 
 			case MTYPE_SLIDER:
-				sound = Slider_Key( (menuslider_s*)item, key );
+				sound = Slider_Key( ( menuslider_s * )item, key );
 				break;
 
 			case MTYPE_SCROLLLIST:
-				sound = ScrollList_Key( (menulist_s*)item, key );
+				sound = ScrollList_Key( ( menulist_s * )item, key );
 				break;
 
 			case MTYPE_FIELD:
-				sound = MenuField_Key( (menufield_s*)item, &key );
+				sound = MenuField_Key( ( menufield_s * )item, &key );
 				break;
 		}
 
-		if (sound) {
+		if ( sound ) {
 			// key was handled
-			return sound;		
+			return sound;
 		}
 	}
 
 	// default handling
-	switch ( key )
-	{
+	switch ( key ) {
 #ifndef NDEBUG
 		case K_F11:
 			//uis.debug ^= 1;
 			break;
 
 		case K_F12:
-			trap_Cmd_ExecuteText(EXEC_APPEND, "screenshot\n");
+			trap_Cmd_ExecuteText( EXEC_APPEND, "screenshot\n" );
 			break;
 #endif
 		case K_KP_UPARROW:
@@ -1670,9 +1582,10 @@ sfxHandle_t Menu_DefaultKey( menuframework_s *m, int key )
 
 		case K_MOUSE1:
 		case K_MOUSE3:
-			if (item)
-				if ((item->flags & QMF_HASMOUSEFOCUS) && !(item->flags & (QMF_GRAYED|QMF_INACTIVE)))
-					return (Menu_ActivateItem( m, item ));
+			if ( item )
+				if ( ( item->flags & QMF_HASMOUSEFOCUS ) && !( item->flags & ( QMF_GRAYED | QMF_INACTIVE ) ) ) {
+					return ( Menu_ActivateItem( m, item ) );
+				}
 			break;
 
 		case K_JOY1:
@@ -1697,9 +1610,10 @@ sfxHandle_t Menu_DefaultKey( menuframework_s *m, int key )
 		case K_AUX16:
 		case K_KP_ENTER:
 		case K_ENTER:
-			if (item)
-				if (!(item->flags & (QMF_MOUSEONLY|QMF_GRAYED|QMF_INACTIVE)))
-					return (Menu_ActivateItem( m, item ));
+			if ( item )
+				if ( !( item->flags & ( QMF_MOUSEONLY | QMF_GRAYED | QMF_INACTIVE ) ) ) {
+					return ( Menu_ActivateItem( m, item ) );
+				}
 			break;
 	}
 
@@ -1711,8 +1625,7 @@ sfxHandle_t Menu_DefaultKey( menuframework_s *m, int key )
 Menu_Cache
 =================
 */
-void Menu_Cache( void )
-{
+void Menu_Cache( void ) {
 	uis.charset			= trap_R_RegisterShaderNoMip( "gfx/2d/bigchars" );
 	uis.charsetProp		= trap_R_RegisterShaderNoMip( "menu/art/font1_prop.tga" );
 	uis.charsetPropGlow	= trap_R_RegisterShaderNoMip( "menu/art/font1_prop_glo.tga" );
@@ -1723,7 +1636,7 @@ void Menu_Cache( void )
 
 	uis.whiteShader = trap_R_RegisterShaderNoMip( "white" );
 	if ( uis.glconfig.hardwareType == GLHW_RAGEPRO ) {
-		// the blend effect turns to shit with the normal 
+		// the blend effect turns to shit with the normal
 		uis.menuBackShader	= trap_R_RegisterShaderNoMip( "menubackRagePro" );
 	} else {
 		uis.menuBackShader	= trap_R_RegisterShaderNoMip( "menuback" );
@@ -1743,4 +1656,4 @@ void Menu_Cache( void )
 	sliderButton_0 = trap_R_RegisterShaderNoMip( "menu/art/sliderbutt_0" );
 	sliderButton_1 = trap_R_RegisterShaderNoMip( "menu/art/sliderbutt_1" );
 }
-	
+

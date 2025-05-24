@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -93,7 +93,7 @@ typedef struct {
 
 static startserver_t s_startserver;
 
-static const char *gametype_items[] = {
+static const char * gametype_items[] = {
 	"Free For All",
 	"Team Deathmatch",
 	"Tournament",
@@ -105,7 +105,7 @@ static int gametype_remap[] = {GT_FFA, GT_TEAM, GT_TOURNAMENT, GT_CTF};
 static int gametype_remap2[] = {0, 2, 0, 1, 3};
 
 // use ui_servers2.c definition
-extern const char* punkbuster_items[];
+extern const char * punkbuster_items[];
 
 static void UI_ServerOptionsMenu( qboolean multiplayer );
 
@@ -115,40 +115,40 @@ static void UI_ServerOptionsMenu( qboolean multiplayer );
 GametypeBits
 =================
 */
-static int GametypeBits( char *string ) {
+static int GametypeBits( char * string ) {
 	int		bits;
-	char	*p;
-	char	*token;
+	char	* p;
+	char	* token;
 
 	bits = 0;
 	p = string;
-	while( 1 ) {
+	while ( 1 ) {
 		token = COM_ParseExt( &p, qfalse );
-		if( token[0] == 0 ) {
+		if ( token[0] == 0 ) {
 			break;
 		}
 
-		if( Q_stricmp( token, "ffa" ) == 0 ) {
+		if ( Q_stricmp( token, "ffa" ) == 0 ) {
 			bits |= 1 << GT_FFA;
 			continue;
 		}
 
-		if( Q_stricmp( token, "tourney" ) == 0 ) {
+		if ( Q_stricmp( token, "tourney" ) == 0 ) {
 			bits |= 1 << GT_TOURNAMENT;
 			continue;
 		}
 
-		if( Q_stricmp( token, "single" ) == 0 ) {
+		if ( Q_stricmp( token, "single" ) == 0 ) {
 			bits |= 1 << GT_SINGLE_PLAYER;
 			continue;
 		}
 
-		if( Q_stricmp( token, "team" ) == 0 ) {
+		if ( Q_stricmp( token, "team" ) == 0 ) {
 			bits |= 1 << GT_TEAM;
 			continue;
 		}
 
-		if( Q_stricmp( token, "ctf" ) == 0 ) {
+		if ( Q_stricmp( token, "ctf" ) == 0 ) {
 			bits |= 1 << GT_CTF;
 			continue;
 		}
@@ -168,14 +168,14 @@ static void StartServer_Update( void ) {
 	int				top;
 	static	char	picname[MAX_MAPSPERPAGE][64];
 
-	top = s_startserver.page*MAX_MAPSPERPAGE;
+	top = s_startserver.page * MAX_MAPSPERPAGE;
 
-	for (i=0; i<MAX_MAPSPERPAGE; i++)
-	{
-		if (top+i >= s_startserver.nummaps)
+	for ( i = 0; i < MAX_MAPSPERPAGE; i++ ) {
+		if ( top + i >= s_startserver.nummaps ) {
 			break;
+		}
 
-		Com_sprintf( picname[i], sizeof(picname[i]), "levelshots/%s", s_startserver.maplist[top+i] );
+		Com_sprintf( picname[i], sizeof( picname[i] ), "levelshots/%s", s_startserver.maplist[top + i] );
 
 		s_startserver.mappics[i].generic.flags &= ~QMF_HIGHLIGHT;
 		s_startserver.mappics[i].generic.name   = picname[i];
@@ -186,8 +186,7 @@ static void StartServer_Update( void ) {
 		s_startserver.mapbuttons[i].generic.flags &= ~QMF_INACTIVE;
 	}
 
-	for (; i<MAX_MAPSPERPAGE; i++)
-	{
+	for ( ; i < MAX_MAPSPERPAGE; i++ ) {
 		s_startserver.mappics[i].generic.flags &= ~QMF_HIGHLIGHT;
 		s_startserver.mappics[i].generic.name   = NULL;
 		s_startserver.mappics[i].shader         = 0;
@@ -199,18 +198,16 @@ static void StartServer_Update( void ) {
 
 
 	// no servers to start
-	if( !s_startserver.nummaps ) {
+	if ( !s_startserver.nummaps ) {
 		s_startserver.next.generic.flags |= QMF_INACTIVE;
 
 		// set the map name
 		strcpy( s_startserver.mapname.string, "NO MAPS FOUND" );
-	}
-	else {
+	} else {
 		// set the highlight
 		s_startserver.next.generic.flags &= ~QMF_INACTIVE;
 		i = s_startserver.currentmap - top;
-		if ( i >=0 && i < MAX_MAPSPERPAGE ) 
-		{
+		if ( i >= 0 && i < MAX_MAPSPERPAGE ) {
 			s_startserver.mappics[i].generic.flags    |= QMF_HIGHLIGHT;
 			s_startserver.mapbuttons[i].generic.flags &= ~QMF_PULSEIFFOCUS;
 		}
@@ -218,7 +215,7 @@ static void StartServer_Update( void ) {
 		// set the map name
 		strcpy( s_startserver.mapname.string, s_startserver.maplist[s_startserver.currentmap] );
 	}
-	
+
 	Q_strupr( s_startserver.mapname.string );
 }
 
@@ -228,12 +225,12 @@ static void StartServer_Update( void ) {
 StartServer_MapEvent
 =================
 */
-static void StartServer_MapEvent( void* ptr, int event ) {
-	if( event != QM_ACTIVATED) {
+static void StartServer_MapEvent( void * ptr, int event ) {
+	if ( event != QM_ACTIVATED ) {
 		return;
 	}
 
-	s_startserver.currentmap = (s_startserver.page*MAX_MAPSPERPAGE) + (((menucommon_s*)ptr)->id - ID_PICTURES);
+	s_startserver.currentmap = ( s_startserver.page * MAX_MAPSPERPAGE ) + ( ( ( menucommon_s * )ptr )->id - ID_PICTURES );
 	StartServer_Update();
 }
 
@@ -243,37 +240,37 @@ static void StartServer_MapEvent( void* ptr, int event ) {
 StartServer_GametypeEvent
 =================
 */
-static void StartServer_GametypeEvent( void* ptr, int event ) {
+static void StartServer_GametypeEvent( void * ptr, int event ) {
 	int			i;
 	int			count;
 	int			gamebits;
 	int			matchbits;
-	const char	*info;
+	const char	* info;
 
-	if( event != QM_ACTIVATED) {
+	if ( event != QM_ACTIVATED ) {
 		return;
 	}
 
 	count = UI_GetNumArenas();
 	s_startserver.nummaps = 0;
 	matchbits = 1 << gametype_remap[s_startserver.gametype.curvalue];
-	if( gametype_remap[s_startserver.gametype.curvalue] == GT_FFA ) {
+	if ( gametype_remap[s_startserver.gametype.curvalue] == GT_FFA ) {
 		matchbits |= ( 1 << GT_SINGLE_PLAYER );
 	}
-	for( i = 0; i < count; i++ ) {
+	for ( i = 0; i < count; i++ ) {
 		info = UI_GetArenaInfoByNumber( i );
 
-		gamebits = GametypeBits( Info_ValueForKey( info, "type") );
-		if( !( gamebits & matchbits ) ) {
+		gamebits = GametypeBits( Info_ValueForKey( info, "type" ) );
+		if ( !( gamebits & matchbits ) ) {
 			continue;
 		}
 
-		Q_strncpyz( s_startserver.maplist[s_startserver.nummaps], Info_ValueForKey( info, "map"), MAX_NAMELENGTH );
+		Q_strncpyz( s_startserver.maplist[s_startserver.nummaps], Info_ValueForKey( info, "map" ), MAX_NAMELENGTH );
 		Q_strupr( s_startserver.maplist[s_startserver.nummaps] );
 		s_startserver.mapGamebits[s_startserver.nummaps] = gamebits;
 		s_startserver.nummaps++;
 	}
-	s_startserver.maxpages = (s_startserver.nummaps + MAX_MAPSPERPAGE-1)/MAX_MAPSPERPAGE;
+	s_startserver.maxpages = ( s_startserver.nummaps + MAX_MAPSPERPAGE - 1 ) / MAX_MAPSPERPAGE;
 	s_startserver.page = 0;
 	s_startserver.currentmap = 0;
 
@@ -286,34 +283,34 @@ static void StartServer_GametypeEvent( void* ptr, int event ) {
 StartServer_MenuEvent
 =================
 */
-static void StartServer_MenuEvent( void* ptr, int event ) {
-	if( event != QM_ACTIVATED ) {
+static void StartServer_MenuEvent( void * ptr, int event ) {
+	if ( event != QM_ACTIVATED ) {
 		return;
 	}
 
-	switch( ((menucommon_s*)ptr)->id ) {
-	case ID_PREVPAGE:
-		if( s_startserver.page > 0 ) {
-			s_startserver.page--;
-			StartServer_Update();
-		}
-		break;
+	switch ( ( ( menucommon_s * )ptr )->id ) {
+		case ID_PREVPAGE:
+			if ( s_startserver.page > 0 ) {
+				s_startserver.page--;
+				StartServer_Update();
+			}
+			break;
 
-	case ID_NEXTPAGE:
-		if( s_startserver.page < s_startserver.maxpages - 1 ) {
-			s_startserver.page++;
-			StartServer_Update();
-		}
-		break;
+		case ID_NEXTPAGE:
+			if ( s_startserver.page < s_startserver.maxpages - 1 ) {
+				s_startserver.page++;
+				StartServer_Update();
+			}
+			break;
 
-	case ID_STARTSERVERNEXT:
-		trap_Cvar_SetValue( "g_gameType", gametype_remap[s_startserver.gametype.curvalue] );
-		UI_ServerOptionsMenu( s_startserver.multiplayer );
-		break;
+		case ID_STARTSERVERNEXT:
+			trap_Cvar_SetValue( "g_gameType", gametype_remap[s_startserver.gametype.curvalue] );
+			UI_ServerOptionsMenu( s_startserver.multiplayer );
+			break;
 
-	case ID_STARTSERVERBACK:
-		UI_PopMenu();
-		break;
+		case ID_STARTSERVERBACK:
+			UI_PopMenu();
+			break;
 	}
 }
 
@@ -323,7 +320,7 @@ static void StartServer_MenuEvent( void* ptr, int event ) {
 StartServer_LevelshotDraw
 ===============
 */
-static void StartServer_LevelshotDraw( void *self ) {
+static void StartServer_LevelshotDraw( void * self ) {
 	menubitmap_s	*b;
 	int				x;
 	int				y;
@@ -331,20 +328,20 @@ static void StartServer_LevelshotDraw( void *self ) {
 	int				h;
 	int				n;
 
-	b = (menubitmap_s *)self;
+	b = ( menubitmap_s * )self;
 
-	if( !b->generic.name ) {
+	if ( !b->generic.name ) {
 		return;
 	}
 
-	if( b->generic.name && !b->shader ) {
+	if ( b->generic.name && !b->shader ) {
 		b->shader = trap_R_RegisterShaderNoMip( b->generic.name );
-		if( !b->shader && b->errorpic ) {
+		if ( !b->shader && b->errorpic ) {
 			b->shader = trap_R_RegisterShaderNoMip( b->errorpic );
 		}
 	}
 
-	if( b->focuspic && !b->focusshader ) {
+	if ( b->focuspic && !b->focusshader ) {
 		b->focusshader = trap_R_RegisterShaderNoMip( b->focuspic );
 	}
 
@@ -352,7 +349,7 @@ static void StartServer_LevelshotDraw( void *self ) {
 	y = b->generic.y;
 	w = b->width;
 	h =	b->height;
-	if( b->shader ) {
+	if ( b->shader ) {
 		UI_DrawHandlePic( x, y, w, h, b->shader );
 	}
 
@@ -363,13 +360,13 @@ static void StartServer_LevelshotDraw( void *self ) {
 	x += b->width / 2;
 	y += 4;
 	n = s_startserver.page * MAX_MAPSPERPAGE + b->generic.id - ID_PICTURES;
-	UI_DrawString( x, y, s_startserver.maplist[n], UI_CENTER|UI_SMALLFONT, color_orange );
+	UI_DrawString( x, y, s_startserver.maplist[n], UI_CENTER | UI_SMALLFONT, color_orange );
 
 	x = b->generic.x;
 	y = b->generic.y;
 	w = b->width;
 	h =	b->height + 28;
-	if( b->generic.flags & QMF_HIGHLIGHT ) {	
+	if ( b->generic.flags & QMF_HIGHLIGHT ) {
 		UI_DrawHandlePic( x, y, w, h, b->focusshader );
 	}
 }
@@ -387,7 +384,7 @@ static void StartServer_MenuInit( void ) {
 	static char mapnamebuffer[64];
 
 	// zero set all our globals
-	memset( &s_startserver, 0 ,sizeof(startserver_t) );
+	memset( &s_startserver, 0, sizeof( startserver_t ) );
 
 	StartServer_Cache();
 
@@ -404,7 +401,7 @@ static void StartServer_MenuInit( void ) {
 	s_startserver.framel.generic.type  = MTYPE_BITMAP;
 	s_startserver.framel.generic.name  = GAMESERVER_FRAMEL;
 	s_startserver.framel.generic.flags = QMF_INACTIVE;
-	s_startserver.framel.generic.x	   = 0;  
+	s_startserver.framel.generic.x	   = 0;
 	s_startserver.framel.generic.y	   = 78;
 	s_startserver.framel.width  	   = 256;
 	s_startserver.framel.height  	   = 329;
@@ -419,23 +416,22 @@ static void StartServer_MenuInit( void ) {
 
 	s_startserver.gametype.generic.type		= MTYPE_SPINCONTROL;
 	s_startserver.gametype.generic.name		= "Game Type:";
-	s_startserver.gametype.generic.flags	= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+	s_startserver.gametype.generic.flags	= QMF_PULSEIFFOCUS | QMF_SMALLFONT;
 	s_startserver.gametype.generic.callback	= StartServer_GametypeEvent;
 	s_startserver.gametype.generic.id		= ID_GAMETYPE;
 	s_startserver.gametype.generic.x		= 320 - 24;
 	s_startserver.gametype.generic.y		= 368;
 	s_startserver.gametype.itemnames		= gametype_items;
 
-	for (i=0; i<MAX_MAPSPERPAGE; i++)
-	{
-		x =	(i % MAX_MAPCOLS) * (128+8) + 188;
-		y = (i / MAX_MAPROWS) * (128+8) + 96;
+	for ( i = 0; i < MAX_MAPSPERPAGE; i++ ) {
+		x =	( i % MAX_MAPCOLS ) * ( 128 + 8 ) + 188;
+		y = ( i / MAX_MAPROWS ) * ( 128 + 8 ) + 96;
 
 		s_startserver.mappics[i].generic.type   = MTYPE_BITMAP;
-		s_startserver.mappics[i].generic.flags  = QMF_LEFT_JUSTIFY|QMF_INACTIVE;
+		s_startserver.mappics[i].generic.flags  = QMF_LEFT_JUSTIFY | QMF_INACTIVE;
 		s_startserver.mappics[i].generic.x	    = x;
 		s_startserver.mappics[i].generic.y	    = y;
-		s_startserver.mappics[i].generic.id		= ID_PICTURES+i;
+		s_startserver.mappics[i].generic.id		= ID_PICTURES + i;
 		s_startserver.mappics[i].width  		= 128;
 		s_startserver.mappics[i].height  	    = 96;
 		s_startserver.mappics[i].focuspic       = GAMESERVER_SELECTED;
@@ -443,8 +439,8 @@ static void StartServer_MenuInit( void ) {
 		s_startserver.mappics[i].generic.ownerdraw = StartServer_LevelshotDraw;
 
 		s_startserver.mapbuttons[i].generic.type     = MTYPE_BITMAP;
-		s_startserver.mapbuttons[i].generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_NODEFAULTINIT;
-		s_startserver.mapbuttons[i].generic.id       = ID_PICTURES+i;
+		s_startserver.mapbuttons[i].generic.flags    = QMF_LEFT_JUSTIFY | QMF_PULSEIFFOCUS | QMF_NODEFAULTINIT;
+		s_startserver.mapbuttons[i].generic.id       = ID_PICTURES + i;
 		s_startserver.mapbuttons[i].generic.callback = StartServer_MapEvent;
 		s_startserver.mapbuttons[i].generic.x	     = x - 30;
 		s_startserver.mapbuttons[i].generic.y	     = y - 32;
@@ -466,7 +462,7 @@ static void StartServer_MenuInit( void ) {
 	s_startserver.arrows.height  	   = 32;
 
 	s_startserver.prevpage.generic.type	    = MTYPE_BITMAP;
-	s_startserver.prevpage.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_startserver.prevpage.generic.flags    = QMF_LEFT_JUSTIFY | QMF_PULSEIFFOCUS;
 	s_startserver.prevpage.generic.callback = StartServer_MenuEvent;
 	s_startserver.prevpage.generic.id	    = ID_PREVPAGE;
 	s_startserver.prevpage.generic.x		= 260;
@@ -476,7 +472,7 @@ static void StartServer_MenuInit( void ) {
 	s_startserver.prevpage.focuspic         = GAMESERVER_ARROWSL;
 
 	s_startserver.nextpage.generic.type	    = MTYPE_BITMAP;
-	s_startserver.nextpage.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_startserver.nextpage.generic.flags    = QMF_LEFT_JUSTIFY | QMF_PULSEIFFOCUS;
 	s_startserver.nextpage.generic.callback = StartServer_MenuEvent;
 	s_startserver.nextpage.generic.id	    = ID_NEXTPAGE;
 	s_startserver.nextpage.generic.x		= 321;
@@ -486,37 +482,37 @@ static void StartServer_MenuInit( void ) {
 	s_startserver.nextpage.focuspic         = GAMESERVER_ARROWSR;
 
 	s_startserver.mapname.generic.type  = MTYPE_PTEXT;
-	s_startserver.mapname.generic.flags = QMF_CENTER_JUSTIFY|QMF_INACTIVE;
+	s_startserver.mapname.generic.flags = QMF_CENTER_JUSTIFY | QMF_INACTIVE;
 	s_startserver.mapname.generic.x	    = 320;
 	s_startserver.mapname.generic.y	    = 440;
 	s_startserver.mapname.string        = mapnamebuffer;
-	s_startserver.mapname.style         = UI_CENTER|UI_BIGFONT;
+	s_startserver.mapname.style         = UI_CENTER | UI_BIGFONT;
 	s_startserver.mapname.color         = text_color_normal;
 
 	s_startserver.back.generic.type	    = MTYPE_BITMAP;
 	s_startserver.back.generic.name     = GAMESERVER_BACK0;
-	s_startserver.back.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_startserver.back.generic.flags    = QMF_LEFT_JUSTIFY | QMF_PULSEIFFOCUS;
 	s_startserver.back.generic.callback = StartServer_MenuEvent;
 	s_startserver.back.generic.id	    = ID_STARTSERVERBACK;
 	s_startserver.back.generic.x		= 0;
-	s_startserver.back.generic.y		= 480-64;
+	s_startserver.back.generic.y		= 480 - 64;
 	s_startserver.back.width  		    = 128;
 	s_startserver.back.height  		    = 64;
 	s_startserver.back.focuspic         = GAMESERVER_BACK1;
 
 	s_startserver.next.generic.type	    = MTYPE_BITMAP;
 	s_startserver.next.generic.name     = GAMESERVER_NEXT0;
-	s_startserver.next.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_startserver.next.generic.flags    = QMF_RIGHT_JUSTIFY | QMF_PULSEIFFOCUS;
 	s_startserver.next.generic.callback = StartServer_MenuEvent;
 	s_startserver.next.generic.id	    = ID_STARTSERVERNEXT;
 	s_startserver.next.generic.x		= 640;
-	s_startserver.next.generic.y		= 480-64;
+	s_startserver.next.generic.y		= 480 - 64;
 	s_startserver.next.width  		    = 128;
 	s_startserver.next.height  		    = 64;
 	s_startserver.next.focuspic         = GAMESERVER_NEXT1;
 
 	s_startserver.item_null.generic.type	= MTYPE_BITMAP;
-	s_startserver.item_null.generic.flags	= QMF_LEFT_JUSTIFY|QMF_MOUSEONLY|QMF_SILENT;
+	s_startserver.item_null.generic.flags	= QMF_LEFT_JUSTIFY | QMF_MOUSEONLY | QMF_SILENT;
 	s_startserver.item_null.generic.x		= 0;
 	s_startserver.item_null.generic.y		= 0;
 	s_startserver.item_null.width			= 640;
@@ -527,8 +523,7 @@ static void StartServer_MenuInit( void ) {
 	Menu_AddItem( &s_startserver.menu, &s_startserver.framer );
 
 	Menu_AddItem( &s_startserver.menu, &s_startserver.gametype );
-	for (i=0; i<MAX_MAPSPERPAGE; i++)
-	{
+	for ( i = 0; i < MAX_MAPSPERPAGE; i++ ) {
 		Menu_AddItem( &s_startserver.menu, &s_startserver.mappics[i] );
 		Menu_AddItem( &s_startserver.menu, &s_startserver.mapbuttons[i] );
 	}
@@ -550,44 +545,43 @@ static void StartServer_MenuInit( void ) {
 StartServer_Cache
 =================
 */
-void StartServer_Cache( void )
-{
+void StartServer_Cache( void ) {
 	int				i;
-	const char		*info;
+	const char	*	info;
 	qboolean		precache;
 	char			picname[64];
 
-	trap_R_RegisterShaderNoMip( GAMESERVER_BACK0 );	
-	trap_R_RegisterShaderNoMip( GAMESERVER_BACK1 );	
-	trap_R_RegisterShaderNoMip( GAMESERVER_NEXT0 );	
-	trap_R_RegisterShaderNoMip( GAMESERVER_NEXT1 );	
-	trap_R_RegisterShaderNoMip( GAMESERVER_FRAMEL );	
-	trap_R_RegisterShaderNoMip( GAMESERVER_FRAMER );	
-	trap_R_RegisterShaderNoMip( GAMESERVER_SELECT );	
-	trap_R_RegisterShaderNoMip( GAMESERVER_SELECTED );	
+	trap_R_RegisterShaderNoMip( GAMESERVER_BACK0 );
+	trap_R_RegisterShaderNoMip( GAMESERVER_BACK1 );
+	trap_R_RegisterShaderNoMip( GAMESERVER_NEXT0 );
+	trap_R_RegisterShaderNoMip( GAMESERVER_NEXT1 );
+	trap_R_RegisterShaderNoMip( GAMESERVER_FRAMEL );
+	trap_R_RegisterShaderNoMip( GAMESERVER_FRAMER );
+	trap_R_RegisterShaderNoMip( GAMESERVER_SELECT );
+	trap_R_RegisterShaderNoMip( GAMESERVER_SELECTED );
 	trap_R_RegisterShaderNoMip( GAMESERVER_UNKNOWNMAP );
 	trap_R_RegisterShaderNoMip( GAMESERVER_ARROWS );
 	trap_R_RegisterShaderNoMip( GAMESERVER_ARROWSL );
 	trap_R_RegisterShaderNoMip( GAMESERVER_ARROWSR );
 
-	precache = trap_Cvar_VariableValue("com_buildscript") > 1.0f ? qtrue : qfalse;
+	precache = trap_Cvar_VariableValue( "com_buildscript" ) > 1.0f ? qtrue : qfalse;
 
 	s_startserver.nummaps = UI_GetNumArenas();
 
-	for( i = 0; i < s_startserver.nummaps; i++ ) {
+	for ( i = 0; i < s_startserver.nummaps; i++ ) {
 		info = UI_GetArenaInfoByNumber( i );
 
-		Q_strncpyz( s_startserver.maplist[i], Info_ValueForKey( info, "map"), MAX_NAMELENGTH );
+		Q_strncpyz( s_startserver.maplist[i], Info_ValueForKey( info, "map" ), MAX_NAMELENGTH );
 		Q_strupr( s_startserver.maplist[i] );
-		s_startserver.mapGamebits[i] = GametypeBits( Info_ValueForKey( info, "type") );
+		s_startserver.mapGamebits[i] = GametypeBits( Info_ValueForKey( info, "type" ) );
 
-		if( precache ) {
-			Com_sprintf( picname, sizeof(picname), "levelshots/%s", s_startserver.maplist[i] );
-			trap_R_RegisterShaderNoMip(picname);
+		if ( precache ) {
+			Com_sprintf( picname, sizeof( picname ), "levelshots/%s", s_startserver.maplist[i] );
+			trap_R_RegisterShaderNoMip( picname );
 		}
 	}
 
-	s_startserver.maxpages = (s_startserver.nummaps + MAX_MAPSPERPAGE-1)/MAX_MAPSPERPAGE;
+	s_startserver.maxpages = ( s_startserver.nummaps + MAX_MAPSPERPAGE - 1 ) / MAX_MAPSPERPAGE;
 }
 
 
@@ -650,26 +644,26 @@ typedef struct {
 	int					gametype;
 	char				mapnamebuffer[32];
 	char				playerNameBuffers[PLAYER_SLOTS][16];
-	
+
 	menulist_s		punkbuster;
 } serveroptions_t;
 
 static serveroptions_t s_serveroptions;
 
-static const char *dedicated_list[] = {
+static const char * dedicated_list[] = {
 	"No",
 	"LAN",
 	"Internet",
 	0
 };
 
-static const char *playerType_list[] = {
+static const char * playerType_list[] = {
 	"Open",
 	"----",
 	0
 };
 
-static const char *playerTeam_list[] = {
+static const char * playerTeam_list[] = {
 	"Blue",
 	"Red",
 	0
@@ -700,50 +694,50 @@ static void ServerOptions_Start( void ) {
 	pure		 = s_serveroptions.pure.curvalue;
 
 	//set maxclients
-	for( n = 0, maxclients = 0; n < PLAYER_SLOTS; n++ ) {
-		if( s_serveroptions.playerType[n].curvalue == 2 ) {
+	for ( n = 0, maxclients = 0; n < PLAYER_SLOTS; n++ ) {
+		if ( s_serveroptions.playerType[n].curvalue == 2 ) {
 			continue;
 		}
-		if( (s_serveroptions.playerType[n].curvalue == 1) && (s_serveroptions.playerNameBuffers[n][0] == 0) ) {
+		if ( ( s_serveroptions.playerType[n].curvalue == 1 ) && ( s_serveroptions.playerNameBuffers[n][0] == 0 ) ) {
 			continue;
 		}
 		maxclients++;
 	}
 
-	switch( s_serveroptions.gametype ) {
-	case GT_FFA:
-	default:
-		trap_Cvar_SetValue( "ui_ffa_fraglimit", fraglimit );
-		trap_Cvar_SetValue( "ui_ffa_timelimit", timelimit );
-		break;
+	switch ( s_serveroptions.gametype ) {
+		case GT_FFA:
+		default:
+			trap_Cvar_SetValue( "ui_ffa_fraglimit", fraglimit );
+			trap_Cvar_SetValue( "ui_ffa_timelimit", timelimit );
+			break;
 
-	case GT_TOURNAMENT:
-		trap_Cvar_SetValue( "ui_tourney_fraglimit", fraglimit );
-		trap_Cvar_SetValue( "ui_tourney_timelimit", timelimit );
-		break;
+		case GT_TOURNAMENT:
+			trap_Cvar_SetValue( "ui_tourney_fraglimit", fraglimit );
+			trap_Cvar_SetValue( "ui_tourney_timelimit", timelimit );
+			break;
 
-	case GT_TEAM:
-		trap_Cvar_SetValue( "ui_team_fraglimit", fraglimit );
-		trap_Cvar_SetValue( "ui_team_timelimit", timelimit );
-		trap_Cvar_SetValue( "ui_team_friendlt", friendlyfire );
-		break;
+		case GT_TEAM:
+			trap_Cvar_SetValue( "ui_team_fraglimit", fraglimit );
+			trap_Cvar_SetValue( "ui_team_timelimit", timelimit );
+			trap_Cvar_SetValue( "ui_team_friendlt", friendlyfire );
+			break;
 
-	case GT_CTF:
-		trap_Cvar_SetValue( "ui_ctf_fraglimit", fraglimit );
-		trap_Cvar_SetValue( "ui_ctf_timelimit", timelimit );
-		trap_Cvar_SetValue( "ui_ctf_friendlt", friendlyfire );
-		break;
+		case GT_CTF:
+			trap_Cvar_SetValue( "ui_ctf_fraglimit", fraglimit );
+			trap_Cvar_SetValue( "ui_ctf_timelimit", timelimit );
+			trap_Cvar_SetValue( "ui_ctf_friendlt", friendlyfire );
+			break;
 	}
 
 	trap_Cvar_SetValue( "sv_maxclients", Com_Clamp( 0, 12, maxclients ) );
 	trap_Cvar_SetValue( "dedicated", Com_Clamp( 0, 2, dedicated ) );
-	trap_Cvar_SetValue ("timelimit", Com_Clamp( 0, timelimit, timelimit ) );
-	trap_Cvar_SetValue ("fraglimit", Com_Clamp( 0, fraglimit, fraglimit ) );
-	trap_Cvar_SetValue ("capturelimit", Com_Clamp( 0, flaglimit, flaglimit ) );
+	trap_Cvar_SetValue ( "timelimit", Com_Clamp( 0, timelimit, timelimit ) );
+	trap_Cvar_SetValue ( "fraglimit", Com_Clamp( 0, fraglimit, fraglimit ) );
+	trap_Cvar_SetValue ( "capturelimit", Com_Clamp( 0, flaglimit, flaglimit ) );
 	trap_Cvar_SetValue( "g_friendlyfire", friendlyfire );
 	trap_Cvar_SetValue( "sv_pure", pure );
-	trap_Cvar_Set("sv_hostname", s_serveroptions.hostname.field.buffer );
-	
+	trap_Cvar_Set( "sv_hostname", s_serveroptions.hostname.field.buffer );
+
 	trap_Cvar_SetValue( "sv_punkbuster", s_serveroptions.punkbuster.curvalue );
 
 	// the wait commands will allow the dedicated to take effect
@@ -751,21 +745,21 @@ static void ServerOptions_Start( void ) {
 
 	// add bots
 	trap_Cmd_ExecuteText( EXEC_APPEND, "wait 3\n" );
-	for( n = 1; n < PLAYER_SLOTS; n++ ) {
-		if( s_serveroptions.playerType[n].curvalue != 1 ) {
+	for ( n = 1; n < PLAYER_SLOTS; n++ ) {
+		if ( s_serveroptions.playerType[n].curvalue != 1 ) {
 			continue;
 		}
-		if( s_serveroptions.playerNameBuffers[n][0] == 0 ) {
+		if ( s_serveroptions.playerNameBuffers[n][0] == 0 ) {
 			continue;
 		}
-		if( s_serveroptions.playerNameBuffers[n][0] == '-' ) {
+		if ( s_serveroptions.playerNameBuffers[n][0] == '-' ) {
 			continue;
 		}
 		trap_Cmd_ExecuteText( EXEC_APPEND, buf );
 	}
 
 	// set player's team
-	if( dedicated == 0 && s_serveroptions.gametype >= GT_TEAM ) {
+	if ( dedicated == 0 && s_serveroptions.gametype >= GT_TEAM ) {
 		trap_Cmd_ExecuteText( EXEC_APPEND, va( "wait 5; team %s\n", playerTeam_list[s_serveroptions.playerTeam[0].curvalue] ) );
 	}
 }
@@ -781,44 +775,42 @@ static void ServerOptions_InitPlayerItems( void ) {
 	int		v;
 
 	// init types
-	if( s_serveroptions.multiplayer ) {
+	if ( s_serveroptions.multiplayer ) {
 		v = 0;	// open
-	}
-	else {
+	} else {
 		v = 1;	// bot
 	}
-	
-	for( n = 0; n < PLAYER_SLOTS; n++ ) {
+
+	for ( n = 0; n < PLAYER_SLOTS; n++ ) {
 		s_serveroptions.playerType[n].curvalue = v;
 	}
 
-	if( s_serveroptions.multiplayer && (s_serveroptions.gametype < GT_TEAM) ) {
-		for( n = 8; n < PLAYER_SLOTS; n++ ) {
+	if ( s_serveroptions.multiplayer && ( s_serveroptions.gametype < GT_TEAM ) ) {
+		for ( n = 8; n < PLAYER_SLOTS; n++ ) {
 			s_serveroptions.playerType[n].curvalue = 2;
 		}
 	}
 
 	// if not a dedicated server, first slot is reserved for the human on the server
-	if( s_serveroptions.dedicated.curvalue == 0 ) {
+	if ( s_serveroptions.dedicated.curvalue == 0 ) {
 		// human
 		s_serveroptions.playerType[0].generic.flags |= QMF_INACTIVE;
 		s_serveroptions.playerType[0].curvalue = 0;
-		trap_Cvar_VariableStringBuffer( "name", s_serveroptions.playerNameBuffers[0], sizeof(s_serveroptions.playerNameBuffers[0]) );
+		trap_Cvar_VariableStringBuffer( "name", s_serveroptions.playerNameBuffers[0], sizeof( s_serveroptions.playerNameBuffers[0] ) );
 		Q_CleanStr( s_serveroptions.playerNameBuffers[0] );
 	}
 
 	// init teams
-	if( s_serveroptions.gametype >= GT_TEAM ) {
-		for( n = 0; n < (PLAYER_SLOTS / 2); n++ ) {
+	if ( s_serveroptions.gametype >= GT_TEAM ) {
+		for ( n = 0; n < ( PLAYER_SLOTS / 2 ); n++ ) {
 			s_serveroptions.playerTeam[n].curvalue = 0;
 		}
-		for( ; n < PLAYER_SLOTS; n++ ) {
+		for ( ; n < PLAYER_SLOTS; n++ ) {
 			s_serveroptions.playerTeam[n].curvalue = 1;
 		}
-	}
-	else {
-		for( n = 0; n < PLAYER_SLOTS; n++ ) {
-			s_serveroptions.playerTeam[n].generic.flags |= (QMF_INACTIVE|QMF_HIDDEN);
+	} else {
+		for ( n = 0; n < PLAYER_SLOTS; n++ ) {
+			s_serveroptions.playerTeam[n].generic.flags |= ( QMF_INACTIVE | QMF_HIDDEN );
 		}
 	}
 }
@@ -841,35 +833,32 @@ static void ServerOptions_SetPlayerItems( void ) {
 //	}
 
 	// names
-	if( s_serveroptions.dedicated.curvalue == 0 ) {
+	if ( s_serveroptions.dedicated.curvalue == 0 ) {
 		s_serveroptions.player0.string = "Human";
 		s_serveroptions.playerName[0].generic.flags &= ~QMF_HIDDEN;
 
 		start = 1;
-	}
-	else {
+	} else {
 		s_serveroptions.player0.string = "Open";
 		start = 0;
 	}
-	for( n = start; n < PLAYER_SLOTS; n++ ) {
-		if( s_serveroptions.playerType[n].curvalue == 1 ) {
-			s_serveroptions.playerName[n].generic.flags &= ~(QMF_INACTIVE|QMF_HIDDEN);
-		}
-		else {
-			s_serveroptions.playerName[n].generic.flags |= (QMF_INACTIVE|QMF_HIDDEN);
+	for ( n = start; n < PLAYER_SLOTS; n++ ) {
+		if ( s_serveroptions.playerType[n].curvalue == 1 ) {
+			s_serveroptions.playerName[n].generic.flags &= ~( QMF_INACTIVE | QMF_HIDDEN );
+		} else {
+			s_serveroptions.playerName[n].generic.flags |= ( QMF_INACTIVE | QMF_HIDDEN );
 		}
 	}
 
 	// teams
-	if( s_serveroptions.gametype < GT_TEAM ) {
+	if ( s_serveroptions.gametype < GT_TEAM ) {
 		return;
 	}
-	for( n = start; n < PLAYER_SLOTS; n++ ) {
-		if( s_serveroptions.playerType[n].curvalue == 2 ) {
-			s_serveroptions.playerTeam[n].generic.flags |= (QMF_INACTIVE|QMF_HIDDEN);
-		}
-		else {
-			s_serveroptions.playerTeam[n].generic.flags &= ~(QMF_INACTIVE|QMF_HIDDEN);
+	for ( n = start; n < PLAYER_SLOTS; n++ ) {
+		if ( s_serveroptions.playerType[n].curvalue == 2 ) {
+			s_serveroptions.playerTeam[n].generic.flags |= ( QMF_INACTIVE | QMF_HIDDEN );
+		} else {
+			s_serveroptions.playerTeam[n].generic.flags &= ~( QMF_INACTIVE | QMF_HIDDEN );
 		}
 	}
 }
@@ -880,52 +869,52 @@ static void ServerOptions_SetPlayerItems( void ) {
 ServerOptions_Event
 =================
 */
-static void ServerOptions_Event( void* ptr, int event ) {
-	switch( ((menucommon_s*)ptr)->id ) {
-	
-	//if( event != QM_ACTIVATED && event != QM_LOSTFOCUS) {
-	//	return;
-	//}
-	case ID_PLAYER_TYPE:
-		if( event != QM_ACTIVATED ) {
-			break;
-		}
-		ServerOptions_SetPlayerItems();
-		break;
+static void ServerOptions_Event( void * ptr, int event ) {
+	switch ( ( ( menucommon_s * )ptr )->id ) {
 
-	case ID_MAXCLIENTS:
-	case ID_DEDICATED:
-		ServerOptions_SetPlayerItems();
-		break;
-	case ID_GO:
-		if( event != QM_ACTIVATED ) {
+		//if( event != QM_ACTIVATED && event != QM_LOSTFOCUS) {
+		//	return;
+		//}
+		case ID_PLAYER_TYPE:
+			if ( event != QM_ACTIVATED ) {
+				break;
+			}
+			ServerOptions_SetPlayerItems();
 			break;
-		}
-		ServerOptions_Start();
-		break;
 
-	case ID_STARTSERVERNEXT:
-		if( event != QM_ACTIVATED ) {
+		case ID_MAXCLIENTS:
+		case ID_DEDICATED:
+			ServerOptions_SetPlayerItems();
 			break;
-		}
-		break;
-	case ID_BACK:
-		if( event != QM_ACTIVATED ) {
+		case ID_GO:
+			if ( event != QM_ACTIVATED ) {
+				break;
+			}
+			ServerOptions_Start();
 			break;
-		}
-		UI_PopMenu();
-		break;
+
+		case ID_STARTSERVERNEXT:
+			if ( event != QM_ACTIVATED ) {
+				break;
+			}
+			break;
+		case ID_BACK:
+			if ( event != QM_ACTIVATED ) {
+				break;
+			}
+			UI_PopMenu();
+			break;
 	}
 }
 
 
-static void ServerOptions_PlayerNameEvent( void* ptr, int event ) {
+static void ServerOptions_PlayerNameEvent( void * ptr, int event ) {
 	int		n;
 
-	if( event != QM_ACTIVATED ) {
+	if ( event != QM_ACTIVATED ) {
 		return;
 	}
-	n = ((menutext_s*)ptr)->generic.id;
+	n = ( ( menutext_s * )ptr )->generic.id;
 }
 
 
@@ -934,11 +923,11 @@ static void ServerOptions_PlayerNameEvent( void* ptr, int event ) {
 ServerOptions_StatusBar
 =================
 */
-static void ServerOptions_StatusBar( void* ptr ) {
-	switch( ((menucommon_s*)ptr)->id ) {
-	default:
-		UI_DrawString( 320, 440, "0 = NO LIMIT", UI_CENTER|UI_SMALLFONT, colorWhite );
-		break;
+static void ServerOptions_StatusBar( void * ptr ) {
+	switch ( ( ( menucommon_s * )ptr )->id ) {
+		default:
+			UI_DrawString( 320, 440, "0 = NO LIMIT", UI_CENTER | UI_SMALLFONT, colorWhite );
+			break;
 	}
 }
 
@@ -948,12 +937,12 @@ static void ServerOptions_StatusBar( void* ptr ) {
 ServerOptions_LevelshotDraw
 ===============
 */
-static void ServerOptions_LevelshotDraw( void *self ) {
+static void ServerOptions_LevelshotDraw( void * self ) {
 	menubitmap_s	*b;
 	int				x;
 	int				y;
 
-	b = (menubitmap_s *)self;
+	b = ( menubitmap_s * )self;
 
 	Bitmap_Draw( b );
 
@@ -963,10 +952,10 @@ static void ServerOptions_LevelshotDraw( void *self ) {
 
 	x += b->width / 2;
 	y += 4;
-	UI_DrawString( x, y, s_serveroptions.mapnamebuffer, UI_CENTER|UI_SMALLFONT, color_orange );
+	UI_DrawString( x, y, s_serveroptions.mapnamebuffer, UI_CENTER | UI_SMALLFONT, color_orange );
 
 	y += SMALLCHAR_HEIGHT;
-	UI_DrawString( x, y, gametype_items[gametype_remap2[s_serveroptions.gametype]], UI_CENTER|UI_SMALLFONT, color_orange );
+	UI_DrawString( x, y, gametype_items[gametype_remap2[s_serveroptions.gametype]], UI_CENTER | UI_SMALLFONT, color_orange );
 }
 
 
@@ -978,29 +967,29 @@ ServerOptions_SetMenuItems
 static void ServerOptions_SetMenuItems( void ) {
 	static char picname[64];
 
-	switch( s_serveroptions.gametype ) {
-	case GT_FFA:
-	default:
-		Com_sprintf( s_serveroptions.fraglimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_ffa_fraglimit" ) ) );
-		Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_ffa_timelimit" ) ) );
-		break;
+	switch ( s_serveroptions.gametype ) {
+		case GT_FFA:
+		default:
+			Com_sprintf( s_serveroptions.fraglimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_ffa_fraglimit" ) ) );
+			Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_ffa_timelimit" ) ) );
+			break;
 
-	case GT_TOURNAMENT:
-		Com_sprintf( s_serveroptions.fraglimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_tourney_fraglimit" ) ) );
-		Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_tourney_timelimit" ) ) );
-		break;
+		case GT_TOURNAMENT:
+			Com_sprintf( s_serveroptions.fraglimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_tourney_fraglimit" ) ) );
+			Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_tourney_timelimit" ) ) );
+			break;
 
-	case GT_TEAM:
-		Com_sprintf( s_serveroptions.fraglimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_team_fraglimit" ) ) );
-		Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_team_timelimit" ) ) );
-		s_serveroptions.friendlyfire.curvalue = (int)Com_Clamp( 0, 1, trap_Cvar_VariableValue( "ui_team_friendly" ) );
-		break;
+		case GT_TEAM:
+			Com_sprintf( s_serveroptions.fraglimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_team_fraglimit" ) ) );
+			Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_team_timelimit" ) ) );
+			s_serveroptions.friendlyfire.curvalue = ( int )Com_Clamp( 0, 1, trap_Cvar_VariableValue( "ui_team_friendly" ) );
+			break;
 
-	case GT_CTF:
-		Com_sprintf( s_serveroptions.flaglimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 100, trap_Cvar_VariableValue( "ui_ctf_capturelimit" ) ) );
-		Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", (int)Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_ctf_timelimit" ) ) );
-		s_serveroptions.friendlyfire.curvalue = (int)Com_Clamp( 0, 1, trap_Cvar_VariableValue( "ui_ctf_friendly" ) );
-		break;
+		case GT_CTF:
+			Com_sprintf( s_serveroptions.flaglimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 100, trap_Cvar_VariableValue( "ui_ctf_capturelimit" ) ) );
+			Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_ctf_timelimit" ) ) );
+			s_serveroptions.friendlyfire.curvalue = ( int )Com_Clamp( 0, 1, trap_Cvar_VariableValue( "ui_ctf_friendly" ) );
+			break;
 	}
 
 	Q_strncpyz( s_serveroptions.hostname.field.buffer, UI_Cvar_VariableString( "sv_hostname" ), sizeof( s_serveroptions.hostname.field.buffer ) );
@@ -1024,45 +1013,41 @@ static void ServerOptions_SetMenuItems( void ) {
 PlayerName_Draw
 =================
 */
-static void PlayerName_Draw( void *item ) {
+static void PlayerName_Draw( void * item ) {
 	menutext_s	*s;
-	float		*color;
+	float	*	color;
 	int			x, y;
 	int			style;
 	qboolean	focus;
 
-	s = (menutext_s *)item;
+	s = ( menutext_s * )item;
 
 	x = s->generic.x;
 	y =	s->generic.y;
 
 	style = UI_SMALLFONT;
-	focus = (qboolean)(s->generic.parent->cursor == s->generic.menuPosition);
+	focus = ( qboolean )( s->generic.parent->cursor == s->generic.menuPosition );
 
-	if ( s->generic.flags & QMF_GRAYED )
+	if ( s->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
-	else if ( focus )
-	{
+	} else if ( focus ) {
 		color = text_color_highlight;
 		style |= UI_PULSE;
-	}
-	else if ( s->generic.flags & QMF_BLINK )
-	{
+	} else if ( s->generic.flags & QMF_BLINK ) {
 		color = text_color_highlight;
 		style |= UI_BLINK;
-	}
-	else
+	} else {
 		color = text_color_normal;
-
-	if ( focus )
-	{
-		// draw cursor
-		UI_FillRect( s->generic.left, s->generic.top, s->generic.right-s->generic.left+1, s->generic.bottom-s->generic.top+1, listbar_color ); 
-		UI_DrawChar( x, y, 13, UI_CENTER|UI_BLINK|UI_SMALLFONT, color);
 	}
 
-	UI_DrawString( x - SMALLCHAR_WIDTH, y, s->generic.name, style|UI_RIGHT, color );
-	UI_DrawString( x + SMALLCHAR_WIDTH, y, s->string, style|UI_LEFT, color );
+	if ( focus ) {
+		// draw cursor
+		UI_FillRect( s->generic.left, s->generic.top, s->generic.right - s->generic.left + 1, s->generic.bottom - s->generic.top + 1, listbar_color );
+		UI_DrawChar( x, y, 13, UI_CENTER | UI_BLINK | UI_SMALLFONT, color );
+	}
+
+	UI_DrawString( x - SMALLCHAR_WIDTH, y, s->generic.name, style | UI_RIGHT, color );
+	UI_DrawString( x + SMALLCHAR_WIDTH, y, s->string, style | UI_LEFT, color );
 }
 
 
@@ -1077,9 +1062,9 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 	int		y;
 	int		n;
 
-	memset( &s_serveroptions, 0 ,sizeof(serveroptions_t) );
+	memset( &s_serveroptions, 0, sizeof( serveroptions_t ) );
 	s_serveroptions.multiplayer = multiplayer;
-	s_serveroptions.gametype = (int)Com_Clamp( 0, 5, trap_Cvar_VariableValue( "g_gameType" ) );
+	s_serveroptions.gametype = ( int )Com_Clamp( 0, 5, trap_Cvar_VariableValue( "g_gameType" ) );
 	s_serveroptions.punkbuster.curvalue = Com_Clamp( 0, 1, trap_Cvar_VariableValue( "sv_punkbuster" ) );
 
 	ServerOptions_Cache();
@@ -1095,7 +1080,7 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 	s_serveroptions.banner.style  				= UI_CENTER;
 
 	s_serveroptions.mappic.generic.type			= MTYPE_BITMAP;
-	s_serveroptions.mappic.generic.flags		= QMF_LEFT_JUSTIFY|QMF_INACTIVE;
+	s_serveroptions.mappic.generic.flags		= QMF_LEFT_JUSTIFY | QMF_INACTIVE;
 	s_serveroptions.mappic.generic.x			= 352;
 	s_serveroptions.mappic.generic.y			= 80;
 	s_serveroptions.mappic.width				= 160;
@@ -1104,7 +1089,7 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 	s_serveroptions.mappic.generic.ownerdraw	= ServerOptions_LevelshotDraw;
 
 	s_serveroptions.picframe.generic.type		= MTYPE_BITMAP;
-	s_serveroptions.picframe.generic.flags		= QMF_LEFT_JUSTIFY|QMF_INACTIVE|QMF_HIGHLIGHT;
+	s_serveroptions.picframe.generic.flags		= QMF_LEFT_JUSTIFY | QMF_INACTIVE | QMF_HIGHLIGHT;
 	s_serveroptions.picframe.generic.x			= 352 - 38;
 	s_serveroptions.picframe.generic.y			= 80 - 40;
 	s_serveroptions.picframe.width  			= 320;
@@ -1112,20 +1097,19 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 	s_serveroptions.picframe.focuspic			= GAMESERVER_SELECT;
 
 	y = 272;
-	if( s_serveroptions.gametype != GT_CTF ) {
+	if ( s_serveroptions.gametype != GT_CTF ) {
 		s_serveroptions.fraglimit.generic.type       = MTYPE_FIELD;
 		s_serveroptions.fraglimit.generic.name       = "Frag Limit:";
-		s_serveroptions.fraglimit.generic.flags      = QMF_NUMBERSONLY|QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+		s_serveroptions.fraglimit.generic.flags      = QMF_NUMBERSONLY | QMF_PULSEIFFOCUS | QMF_SMALLFONT;
 		s_serveroptions.fraglimit.generic.x	         = OPTIONS_X;
 		s_serveroptions.fraglimit.generic.y	         = y;
 		s_serveroptions.fraglimit.generic.statusbar  = ServerOptions_StatusBar;
 		s_serveroptions.fraglimit.field.widthInChars = 3;
 		s_serveroptions.fraglimit.field.maxchars     = 3;
-	}
-	else {
+	} else {
 		s_serveroptions.flaglimit.generic.type       = MTYPE_FIELD;
 		s_serveroptions.flaglimit.generic.name       = "Capture Limit:";
-		s_serveroptions.flaglimit.generic.flags      = QMF_NUMBERSONLY|QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+		s_serveroptions.flaglimit.generic.flags      = QMF_NUMBERSONLY | QMF_PULSEIFFOCUS | QMF_SMALLFONT;
 		s_serveroptions.flaglimit.generic.x	         = OPTIONS_X;
 		s_serveroptions.flaglimit.generic.y	         = y;
 		s_serveroptions.flaglimit.generic.statusbar  = ServerOptions_StatusBar;
@@ -1133,37 +1117,37 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 		s_serveroptions.flaglimit.field.maxchars     = 3;
 	}
 
-	y += BIGCHAR_HEIGHT+2;
+	y += BIGCHAR_HEIGHT + 2;
 	s_serveroptions.timelimit.generic.type       = MTYPE_FIELD;
 	s_serveroptions.timelimit.generic.name       = "Time Limit:";
-	s_serveroptions.timelimit.generic.flags      = QMF_NUMBERSONLY|QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+	s_serveroptions.timelimit.generic.flags      = QMF_NUMBERSONLY | QMF_PULSEIFFOCUS | QMF_SMALLFONT;
 	s_serveroptions.timelimit.generic.x	         = OPTIONS_X;
 	s_serveroptions.timelimit.generic.y	         = y;
 	s_serveroptions.timelimit.generic.statusbar  = ServerOptions_StatusBar;
 	s_serveroptions.timelimit.field.widthInChars = 3;
 	s_serveroptions.timelimit.field.maxchars     = 3;
 
-	if( s_serveroptions.gametype >= GT_TEAM ) {
-		y += BIGCHAR_HEIGHT+2;
+	if ( s_serveroptions.gametype >= GT_TEAM ) {
+		y += BIGCHAR_HEIGHT + 2;
 		s_serveroptions.friendlyfire.generic.type     = MTYPE_RADIOBUTTON;
-		s_serveroptions.friendlyfire.generic.flags    = QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+		s_serveroptions.friendlyfire.generic.flags    = QMF_PULSEIFFOCUS | QMF_SMALLFONT;
 		s_serveroptions.friendlyfire.generic.x	      = OPTIONS_X;
 		s_serveroptions.friendlyfire.generic.y	      = y;
 		s_serveroptions.friendlyfire.generic.name	  = "Friendly Fire:";
 	}
 
-	y += BIGCHAR_HEIGHT+2;
+	y += BIGCHAR_HEIGHT + 2;
 	s_serveroptions.pure.generic.type			= MTYPE_RADIOBUTTON;
-	s_serveroptions.pure.generic.flags			= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+	s_serveroptions.pure.generic.flags			= QMF_PULSEIFFOCUS | QMF_SMALLFONT;
 	s_serveroptions.pure.generic.x				= OPTIONS_X;
 	s_serveroptions.pure.generic.y				= y;
 	s_serveroptions.pure.generic.name			= "Pure Server:";
 
-	if( s_serveroptions.multiplayer ) {
-		y += BIGCHAR_HEIGHT+2;
+	if ( s_serveroptions.multiplayer ) {
+		y += BIGCHAR_HEIGHT + 2;
 		s_serveroptions.dedicated.generic.type		= MTYPE_SPINCONTROL;
 		s_serveroptions.dedicated.generic.id		= ID_DEDICATED;
-		s_serveroptions.dedicated.generic.flags		= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+		s_serveroptions.dedicated.generic.flags		= QMF_PULSEIFFOCUS | QMF_SMALLFONT;
 		s_serveroptions.dedicated.generic.callback	= ServerOptions_Event;
 		s_serveroptions.dedicated.generic.x			= OPTIONS_X;
 		s_serveroptions.dedicated.generic.y			= y;
@@ -1171,8 +1155,8 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 		s_serveroptions.dedicated.itemnames			= dedicated_list;
 	}
 
-	if( s_serveroptions.multiplayer ) {
-		y += BIGCHAR_HEIGHT+2;
+	if ( s_serveroptions.multiplayer ) {
+		y += BIGCHAR_HEIGHT + 2;
 		s_serveroptions.hostname.generic.type       = MTYPE_FIELD;
 		s_serveroptions.hostname.generic.name       = "Hostname:";
 		s_serveroptions.hostname.generic.flags      = QMF_SMALLFONT;
@@ -1182,10 +1166,10 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 		s_serveroptions.hostname.field.maxchars     = 64;
 	}
 
-	y += BIGCHAR_HEIGHT+2;
+	y += BIGCHAR_HEIGHT + 2;
 	s_serveroptions.punkbuster.generic.type			= MTYPE_SPINCONTROL;
 	s_serveroptions.punkbuster.generic.name			= "Punkbuster:";
-	s_serveroptions.punkbuster.generic.flags			= QMF_PULSEIFFOCUS|QMF_SMALLFONT;
+	s_serveroptions.punkbuster.generic.flags			= QMF_PULSEIFFOCUS | QMF_SMALLFONT;
 	s_serveroptions.punkbuster.generic.id			= 0;
 	s_serveroptions.punkbuster.generic.x				= OPTIONS_X;
 	s_serveroptions.punkbuster.generic.y				= y;
@@ -1197,9 +1181,9 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 	s_serveroptions.player0.generic.x				= 32 + SMALLCHAR_WIDTH;
 	s_serveroptions.player0.generic.y				= y;
 	s_serveroptions.player0.color					= color_orange;
-	s_serveroptions.player0.style					= UI_LEFT|UI_SMALLFONT;
+	s_serveroptions.player0.style					= UI_LEFT | UI_SMALLFONT;
 
-	for( n = 0; n < PLAYER_SLOTS; n++ ) {
+	for ( n = 0; n < PLAYER_SLOTS; n++ ) {
 		s_serveroptions.playerType[n].generic.type		= MTYPE_SPINCONTROL;
 		s_serveroptions.playerType[n].generic.flags		= QMF_SMALLFONT;
 		s_serveroptions.playerType[n].generic.id		= ID_PLAYER_TYPE;
@@ -1220,7 +1204,7 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 		s_serveroptions.playerName[n].string			= s_serveroptions.playerNameBuffers[n];
 		s_serveroptions.playerName[n].generic.top		= s_serveroptions.playerName[n].generic.y;
 		s_serveroptions.playerName[n].generic.bottom	= s_serveroptions.playerName[n].generic.y + SMALLCHAR_HEIGHT;
-		s_serveroptions.playerName[n].generic.left		= s_serveroptions.playerName[n].generic.x - SMALLCHAR_HEIGHT/ 2;
+		s_serveroptions.playerName[n].generic.left		= s_serveroptions.playerName[n].generic.x - SMALLCHAR_HEIGHT / 2;
 		s_serveroptions.playerName[n].generic.right		= s_serveroptions.playerName[n].generic.x + 16 * SMALLCHAR_WIDTH;
 
 		s_serveroptions.playerTeam[n].generic.type		= MTYPE_SPINCONTROL;
@@ -1234,22 +1218,22 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 
 	s_serveroptions.back.generic.type	  = MTYPE_BITMAP;
 	s_serveroptions.back.generic.name     = GAMESERVER_BACK0;
-	s_serveroptions.back.generic.flags    = QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_serveroptions.back.generic.flags    = QMF_LEFT_JUSTIFY | QMF_PULSEIFFOCUS;
 	s_serveroptions.back.generic.callback = ServerOptions_Event;
 	s_serveroptions.back.generic.id	      = ID_BACK;
 	s_serveroptions.back.generic.x		  = 0;
-	s_serveroptions.back.generic.y		  = 480-64;
+	s_serveroptions.back.generic.y		  = 480 - 64;
 	s_serveroptions.back.width  		  = 128;
 	s_serveroptions.back.height  		  = 64;
 	s_serveroptions.back.focuspic         = GAMESERVER_BACK1;
 
 	s_serveroptions.next.generic.type	  = MTYPE_BITMAP;
 	s_serveroptions.next.generic.name     = GAMESERVER_NEXT0;
-	s_serveroptions.next.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS|QMF_INACTIVE|QMF_GRAYED|QMF_HIDDEN;
+	s_serveroptions.next.generic.flags    = QMF_RIGHT_JUSTIFY | QMF_PULSEIFFOCUS | QMF_INACTIVE | QMF_GRAYED | QMF_HIDDEN;
 	s_serveroptions.next.generic.callback = ServerOptions_Event;
 	s_serveroptions.next.generic.id	      = ID_STARTSERVERNEXT;
 	s_serveroptions.next.generic.x		  = 640;
-	s_serveroptions.next.generic.y		  = 480-64-72;
+	s_serveroptions.next.generic.y		  = 480 - 64 - 72;
 	s_serveroptions.next.generic.statusbar  = ServerOptions_StatusBar;
 	s_serveroptions.next.width  		  = 128;
 	s_serveroptions.next.height  		  = 64;
@@ -1257,11 +1241,11 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 
 	s_serveroptions.go.generic.type	    = MTYPE_BITMAP;
 	s_serveroptions.go.generic.name     = GAMESERVER_FIGHT0;
-	s_serveroptions.go.generic.flags    = QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_serveroptions.go.generic.flags    = QMF_RIGHT_JUSTIFY | QMF_PULSEIFFOCUS;
 	s_serveroptions.go.generic.callback = ServerOptions_Event;
 	s_serveroptions.go.generic.id	    = ID_GO;
 	s_serveroptions.go.generic.x		= 640;
-	s_serveroptions.go.generic.y		= 480-64;
+	s_serveroptions.go.generic.y		= 480 - 64;
 	s_serveroptions.go.width  		    = 128;
 	s_serveroptions.go.height  		    = 64;
 	s_serveroptions.go.focuspic         = GAMESERVER_FIGHT1;
@@ -1272,31 +1256,30 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 	Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.picframe );
 
 	Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.player0 );
-	for( n = 0; n < PLAYER_SLOTS; n++ ) {
-		if( n != 0 ) {
+	for ( n = 0; n < PLAYER_SLOTS; n++ ) {
+		if ( n != 0 ) {
 			Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.playerType[n] );
 		}
 		Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.playerName[n] );
-		if( s_serveroptions.gametype >= GT_TEAM ) {
+		if ( s_serveroptions.gametype >= GT_TEAM ) {
 			Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.playerTeam[n] );
 		}
 	}
 
-	if( s_serveroptions.gametype != GT_CTF ) {
+	if ( s_serveroptions.gametype != GT_CTF ) {
 		Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.fraglimit );
-	}
-	else {
+	} else {
 		Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.flaglimit );
 	}
 	Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.timelimit );
-	if( s_serveroptions.gametype >= GT_TEAM ) {
+	if ( s_serveroptions.gametype >= GT_TEAM ) {
 		Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.friendlyfire );
 	}
 	Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.pure );
-	if( s_serveroptions.multiplayer ) {
+	if ( s_serveroptions.multiplayer ) {
 		Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.dedicated );
 	}
-	if( s_serveroptions.multiplayer ) {
+	if ( s_serveroptions.multiplayer ) {
 		Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.hostname );
 	}
 
@@ -1304,8 +1287,8 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 	Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.next );
 	Menu_AddItem( &s_serveroptions.menu, &s_serveroptions.go );
 
-	Menu_AddItem( &s_serveroptions.menu, (void*) &s_serveroptions.punkbuster );
-	
+	Menu_AddItem( &s_serveroptions.menu, ( void * ) &s_serveroptions.punkbuster );
+
 	ServerOptions_SetMenuItems();
 }
 

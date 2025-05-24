@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -33,7 +33,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 
 typedef struct {
-	cplane_t	*plane;
+	cplane_t	* plane;
 	int			children[2];		// negative numbers are leafs
 } cNode_t;
 
@@ -54,7 +54,7 @@ typedef struct cmodel_s {
 } cmodel_t;
 
 typedef struct {
-	cplane_t	*plane;
+	cplane_t	* plane;
 	int			surfaceFlags;
 	int			shaderNum;
 } cbrushside_t;
@@ -64,7 +64,7 @@ typedef struct {
 	int			contents;
 	vec3_t		bounds[2];
 	int			numsides;
-	cbrushside_t	*sides;
+	cbrushside_t	* sides;
 	int			checkcount;		// to avoid repeated testings
 } cbrush_t;
 
@@ -73,7 +73,7 @@ typedef struct {
 	int			checkcount;				// to avoid repeated testings
 	int			surfaceFlags;
 	int			contents;
-	struct patchCollide_s	*pc;
+	struct patchCollide_s	* pc;
 } cPatch_t;
 
 
@@ -86,46 +86,46 @@ typedef struct {
 	char		name[MAX_QPATH];
 
 	int			numShaders;
-	dshader_t	*shaders;
+	dshader_t	* shaders;
 
 	int			numBrushSides;
-	cbrushside_t *brushsides;
+	cbrushside_t * brushsides;
 
 	int			numPlanes;
-	cplane_t	*planes;
+	cplane_t	* planes;
 
 	int			numNodes;
-	cNode_t		*nodes;
+	cNode_t	*	nodes;
 
 	int			numLeafs;
-	cLeaf_t		*leafs;
+	cLeaf_t	*	leafs;
 
 	int			numLeafBrushes;
-	int			*leafbrushes;
+	int		*	leafbrushes;
 
 	int			numLeafSurfaces;
-	int			*leafsurfaces;
+	int		*	leafsurfaces;
 
 	int			numSubModels;
-	cmodel_t	*cmodels;
+	cmodel_t	* cmodels;
 
 	int			numBrushes;
-	cbrush_t	*brushes;
+	cbrush_t	* brushes;
 
 	int			numClusters;
 	int			clusterBytes;
-	byte		*visibility;
+	byte	*	visibility;
 	qboolean	vised;			// if false, visibility is just a single cluster of ffs
 
 	int			numEntityChars;
-	char		*entityString;
+	char	*	entityString;
 
 	int			numAreas;
-	cArea_t		*areas;
-	int			*areaPortals;	// [ numAreas*numAreas ] reference counts
+	cArea_t	*	areas;
+	int		*	areaPortals;	// [ numAreas*numAreas ] reference counts
 
 	int			numSurfaces;
-	cPatch_t	**surfaces;			// non-patches will be NULL
+	cPatch_t	** surfaces;			// non-patches will be NULL
 
 	int			floodvalid;
 	int			checkcount;					// incremented on each trace
@@ -139,15 +139,14 @@ typedef struct {
 extern	clipMap_t	cm;
 extern	int			c_pointcontents;
 extern	int			c_traces, c_brush_traces, c_patch_traces;
-extern	cvar_t		*cm_noAreas;
-extern	cvar_t		*cm_noCurves;
-extern	cvar_t		*cm_playerCurveClip;
+extern	cvar_t	*	cm_noAreas;
+extern	cvar_t	*	cm_noCurves;
+extern	cvar_t	*	cm_playerCurveClip;
 
 // cm_test.c
 
 // Used for oriented capsule collision detection
-typedef struct
-{
+typedef struct {
 	qboolean	use;
 	float		radius;
 	float		halfheight;
@@ -173,27 +172,27 @@ typedef struct leafList_s {
 	int		count;
 	int		maxcount;
 	qboolean	overflowed;
-	int		*list;
+	int	*	list;
 	vec3_t	bounds[2];
 	int		lastLeaf;		// for overflows where each leaf can't be stored individually
-	void	(*storeLeafs)( struct leafList_s *ll, int nodenum );
+	void	( *storeLeafs )( struct leafList_s *ll, int nodenum );
 } leafList_t;
 
 
-int CM_BoxBrushes( const vec3_t mins, const vec3_t maxs, cbrush_t **list, int listsize );
+int CM_BoxBrushes( const vec3_t mins, const vec3_t maxs, cbrush_t ** list, int listsize );
 
-void CM_StoreLeafs( leafList_t *ll, int nodenum );
-void CM_StoreBrushes( leafList_t *ll, int nodenum );
+void CM_StoreLeafs( leafList_t * ll, int nodenum );
+void CM_StoreBrushes( leafList_t * ll, int nodenum );
 
-void CM_BoxLeafnums_r( leafList_t *ll, int nodenum );
+void CM_BoxLeafnums_r( leafList_t * ll, int nodenum );
 
-cmodel_t	*CM_ClipHandleToModel( clipHandle_t handle );
+cmodel_t	* CM_ClipHandleToModel( clipHandle_t handle );
 
 // cm_patch.c
 
-struct patchCollide_s	*CM_GeneratePatchCollide( int width, int height, vec3_t *points );
-void CM_TraceThroughPatchCollide( traceWork_t *tw, const struct patchCollide_s *pc );
-qboolean CM_PositionTestInPatchCollide( traceWork_t *tw, const struct patchCollide_s *pc );
+struct patchCollide_s	* CM_GeneratePatchCollide( int width, int height, vec3_t * points );
+void CM_TraceThroughPatchCollide( traceWork_t * tw, const struct patchCollide_s *pc );
+qboolean CM_PositionTestInPatchCollide( traceWork_t * tw, const struct patchCollide_s *pc );
 void CM_ClearLevelPatches( void );
 
 #endif /* !CM_LOCAL_H */

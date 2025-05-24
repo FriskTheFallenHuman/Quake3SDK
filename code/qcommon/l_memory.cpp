@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -37,8 +37,8 @@ int numblocks;
 Mem_GetMemory
 ==================
 */
-void *Mem_GetMemory(int size) {
-	void *ptr;
+void * Mem_GetMemory( int size ) {
+	void * ptr;
 
 	ptr = Z_TagMalloc( size, TAG_UTILS );
 	return ptr;
@@ -50,7 +50,7 @@ Mem_HunkAlloc
 =================
 */
 void * Mem_HunkAlloc( int size ) {
-	if( Hunk_CheckMark() ) {
+	if ( Hunk_CheckMark() ) {
 		Com_Error( ERR_DROP, "SV_Bot_HunkAlloc: Alloc with marks already set\n" );
 	}
 	return Hunk_Alloc( size, h_high );
@@ -63,19 +63,21 @@ void * Mem_HunkAlloc( int size ) {
 // Changes Globals:		-
 //===========================================================================
 #ifdef MEMDEBUG
-void *GetMemoryDebug(unsigned long size, char *label, char *file, int line)
+void * GetMemoryDebug( unsigned long size, char * label, char * file, int line )
 #else
-void *GetMemory(unsigned long size)
+void * GetMemory( unsigned long size )
 #endif //MEMDEBUG
 {
-	void *ptr;
-	unsigned long int *memid;
+	void * ptr;
+	unsigned long int * memid;
 
-	ptr = Mem_GetMemory(size + sizeof(unsigned long int));
-	if (!ptr) return NULL;
-	memid = (unsigned long int *) ptr;
+	ptr = Mem_GetMemory( size + sizeof( unsigned long int ) );
+	if ( !ptr ) {
+		return NULL;
+	}
+	memid = ( unsigned long int * ) ptr;
 	*memid = MEM_ID;
-	return (unsigned long int *) ((char *) ptr + sizeof(unsigned long int));
+	return ( unsigned long int * )( ( char * ) ptr + sizeof( unsigned long int ) );
 } //end of the function GetMemory
 //===========================================================================
 //
@@ -84,18 +86,18 @@ void *GetMemory(unsigned long size)
 // Changes Globals:		-
 //===========================================================================
 #ifdef MEMDEBUG
-void *GetClearedMemoryDebug(unsigned long size, char *label, char *file, int line)
+void * GetClearedMemoryDebug( unsigned long size, char * label, char * file, int line )
 #else
-void *GetClearedMemory(unsigned long size)
+void * GetClearedMemory( unsigned long size )
 #endif //MEMDEBUG
 {
-	void *ptr;
+	void * ptr;
 #ifdef MEMDEBUG
-	ptr = GetMemoryDebug(size, label, file, line);
+	ptr = GetMemoryDebug( size, label, file, line );
 #else
-	ptr = GetMemory(size);
+	ptr = GetMemory( size );
 #endif //MEMDEBUG
-	Com_Memset(ptr, 0, size);
+	Com_Memset( ptr, 0, size );
 	return ptr;
 } //end of the function GetClearedMemory
 //===========================================================================
@@ -105,19 +107,21 @@ void *GetClearedMemory(unsigned long size)
 // Changes Globals:		-
 //===========================================================================
 #ifdef MEMDEBUG
-void *GetHunkMemoryDebug(unsigned long size, char *label, char *file, int line)
+void * GetHunkMemoryDebug( unsigned long size, char * label, char * file, int line )
 #else
-void *GetHunkMemory(unsigned long size)
+void * GetHunkMemory( unsigned long size )
 #endif //MEMDEBUG
 {
-	void *ptr;
-	unsigned long int *memid;
+	void * ptr;
+	unsigned long int * memid;
 
-	ptr = Mem_HunkAlloc(size + sizeof(unsigned long int));
-	if (!ptr) return NULL;
-	memid = (unsigned long int *) ptr;
+	ptr = Mem_HunkAlloc( size + sizeof( unsigned long int ) );
+	if ( !ptr ) {
+		return NULL;
+	}
+	memid = ( unsigned long int * ) ptr;
 	*memid = HUNK_ID;
-	return (unsigned long int *) ((char *) ptr + sizeof(unsigned long int));
+	return ( unsigned long int * )( ( char * ) ptr + sizeof( unsigned long int ) );
 } //end of the function GetHunkMemory
 //===========================================================================
 //
@@ -126,18 +130,18 @@ void *GetHunkMemory(unsigned long size)
 // Changes Globals:		-
 //===========================================================================
 #ifdef MEMDEBUG
-void *GetClearedHunkMemoryDebug(unsigned long size, char *label, char *file, int line)
+void * GetClearedHunkMemoryDebug( unsigned long size, char * label, char * file, int line )
 #else
-void *GetClearedHunkMemory(unsigned long size)
+void * GetClearedHunkMemory( unsigned long size )
 #endif //MEMDEBUG
 {
-	void *ptr;
+	void * ptr;
 #ifdef MEMDEBUG
-	ptr = GetHunkMemoryDebug(size, label, file, line);
+	ptr = GetHunkMemoryDebug( size, label, file, line );
 #else
-	ptr = GetHunkMemory(size);
+	ptr = GetHunkMemory( size );
 #endif //MEMDEBUG
-	Com_Memset(ptr, 0, size);
+	Com_Memset( ptr, 0, size );
 	return ptr;
 } //end of the function GetClearedHunkMemory
 //===========================================================================
@@ -146,15 +150,13 @@ void *GetClearedHunkMemory(unsigned long size)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void FreeMemory(void *ptr)
-{
-	unsigned long int *memid;
+void FreeMemory( void * ptr ) {
+	unsigned long int * memid;
 
-	memid = (unsigned long int *) ((char *) ptr - sizeof(unsigned long int));
+	memid = ( unsigned long int * )( ( char * ) ptr - sizeof( unsigned long int ) );
 
-	if (*memid == MEM_ID)
-	{
-		Z_Free(memid);
+	if ( *memid == MEM_ID ) {
+		Z_Free( memid );
 	} //end if
 } //end of the function FreeMemory
 //===========================================================================
@@ -163,8 +165,7 @@ void FreeMemory(void *ptr)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-int AvailableMemory(void)
-{
+int AvailableMemory( void ) {
 	return Z_AvailableMemory();
 } //end of the function AvailableMemory
 //===========================================================================
@@ -173,8 +174,7 @@ int AvailableMemory(void)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void PrintUsedMemorySize(void)
-{
+void PrintUsedMemorySize( void ) {
 } //end of the function PrintUsedMemorySize
 //===========================================================================
 //
@@ -182,6 +182,5 @@ void PrintUsedMemorySize(void)
 // Returns:				-
 // Changes Globals:		-
 //===========================================================================
-void PrintMemoryLabels(void)
-{
+void PrintMemoryLabels( void ) {
 } //end of the function PrintMemoryLabels

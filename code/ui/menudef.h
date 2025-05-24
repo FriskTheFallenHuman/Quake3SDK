@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -34,7 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define ITEM_TYPE_YESNO 11                // yes no cvar setting
 #define ITEM_TYPE_MULTI 12                // multiple list setting, enumerated
 #define ITEM_TYPE_BIND 13		              // multiple list setting, enumerated
-    
+
 #define ITEM_ALIGN_LEFT 0                 // left alignment
 #define ITEM_ALIGN_CENTER 1               // center alignment
 #define ITEM_ALIGN_RIGHT 2                // right alignment
@@ -46,13 +46,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define ITEM_TEXTSTYLE_OUTLINED 4         // drop shadow ( need a color for this )
 #define ITEM_TEXTSTYLE_OUTLINESHADOWED 5  // drop shadow ( need a color for this )
 #define ITEM_TEXTSTYLE_SHADOWEDMORE 6         // drop shadow ( need a color for this )
-                          
+
 #define WINDOW_BORDER_NONE 0              // no border
 #define WINDOW_BORDER_FULL 1              // full border based on border color ( single pixel )
 #define WINDOW_BORDER_HORZ 2              // horizontal borders only
 #define WINDOW_BORDER_VERT 3              // vertical borders only 
 #define WINDOW_BORDER_KCGRADIENT 4        // horizontal border using the gradient bars
-  
+
 #define WINDOW_STYLE_EMPTY 0              // no background
 #define WINDOW_STYLE_FILLED 1             // filled with background color
 #define WINDOW_STYLE_GRADIENT 2           // gradient bar based on background color 
@@ -131,10 +131,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 // owner draw types
 // ideally these should be done outside of this file but
-// this makes it much easier for the macro expansion to 
+// this makes it much easier for the macro expansion to
 // convert them for the designers ( from the .menu files )
 #define CG_OWNERDRAW_BASE 1
-#define CG_PLAYER_ARMOR_ICON 1              
+#define CG_PLAYER_ARMOR_ICON 1
 #define CG_PLAYER_ARMOR_VALUE 2
 #define CG_PLAYER_HEAD 3
 #define CG_PLAYER_HEALTH 4
@@ -173,13 +173,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define CG_PLAYER_LOCATION 33
 #define CG_TEAM_COLOR 34
 #define CG_CTF_POWERUP 35
-                                        
+
 #define CG_AREA_POWERUP	36
 #define CG_AREA_LAGOMETER	37            // painted with old system
-#define CG_PLAYER_HASFLAG 38            
+#define CG_PLAYER_HASFLAG 38
 #define CG_GAME_TYPE 39                 // not done
 
-#define CG_SELECTEDPLAYER_ARMOR 40      
+#define CG_SELECTEDPLAYER_ARMOR 40
 #define CG_SELECTEDPLAYER_HEALTH 41
 #define CG_PLAYER_STATUS 42
 #define CG_FRAGGED_MSG 43               // painted with old system
@@ -190,7 +190,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define CG_AREA_CHAT 48                 // painted with old system
 #define CG_GAME_STATUS 49
 #define CG_KILLER 50
-#define CG_PLAYER_ARMOR_ICON2D 51              
+#define CG_PLAYER_ARMOR_ICON2D 51
 #define CG_PLAYER_AMMO_ICON2D 52
 #define CG_ACCURACY 53
 #define CG_ASSISTS 54
@@ -203,9 +203,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define CG_TEAMINFO 61
 #define CG_VOICE_HEAD 62
 #define CG_VOICE_NAME 63
-#define CG_PLAYER_HASFLAG2D 64            
+#define CG_PLAYER_HASFLAG2D 64
 #define CG_HARVESTER_SKULLS2D 65					// only shows in harvester
-#define CG_CAPFRAGLIMIT 66	 
+#define CG_CAPFRAGLIMIT 66
 #define CG_1STPLACE 67
 #define CG_2NDPLACE 68
 #define CG_CAPTURES 69

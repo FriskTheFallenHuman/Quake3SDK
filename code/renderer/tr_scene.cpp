@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -97,8 +97,8 @@ Adds all the scene's polys into this view's drawsurf list
 */
 void R_AddPolygonSurfaces( void ) {
 	int			i;
-	shader_t	*sh;
-	srfPoly_t	*poly;
+	shader_t	* sh;
+	srfPoly_t	* poly;
 
 	tr.currentEntityNum = ENTITYNUM_WORLD;
 	tr.shiftedEntityNum = tr.currentEntityNum << QSORT_ENTITYNUM_SHIFT;
@@ -115,8 +115,8 @@ RE_AddPolyToScene
 
 =====================
 */
-void RE_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t *verts, int numPolys ) {
-	srfPoly_t	*poly;
+void RE_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t * verts, int numPolys ) {
+	srfPoly_t	* poly;
 	int			i, j;
 	int			fogIndex;
 	fog_t		*fog;
@@ -127,19 +127,19 @@ void RE_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t *verts
 	}
 
 	if ( !hShader ) {
-		ri.Printf( PRINT_WARNING, "WARNING: RE_AddPolyToScene: NULL poly shader\n");
+		ri.Printf( PRINT_WARNING, "WARNING: RE_AddPolyToScene: NULL poly shader\n" );
 		return;
 	}
 
 	for ( j = 0; j < numPolys; j++ ) {
 		if ( r_numpolyverts + numVerts > max_polyverts || r_numpolys >= max_polys ) {
-	  /*
-	  NOTE TTimo this was initially a PRINT_WARNING
-	  but it happens a lot with high fighting scenes and particles
-	  since we don't plan on changing the const and making for room for those effects
-	  simply cut this message to developer only
-	  */
-			ri.Printf( PRINT_DEVELOPER, "WARNING: RE_AddPolyToScene: r_max_polys or r_max_polyverts reached\n");
+			/*
+			NOTE TTimo this was initially a PRINT_WARNING
+			but it happens a lot with high fighting scenes and particles
+			since we don't plan on changing the const and making for room for those effects
+			simply cut this message to developer only
+			*/
+			ri.Printf( PRINT_DEVELOPER, "WARNING: RE_AddPolyToScene: r_max_polys or r_max_polyverts reached\n" );
 			return;
 		}
 
@@ -148,8 +148,8 @@ void RE_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t *verts
 		poly->hShader = hShader;
 		poly->numVerts = numVerts;
 		poly->verts = &backEndData[tr.smpFrame]->polyVerts[r_numpolyverts];
-		
-		Com_Memcpy( poly->verts, &verts[numVerts*j], numVerts * sizeof( *verts ) );
+
+		Com_Memcpy( poly->verts, &verts[numVerts * j], numVerts * sizeof( *verts ) );
 
 		if ( glConfig.hardwareType == GLHW_RAGEPRO ) {
 			poly->verts->modulate[0] = 255;
@@ -176,13 +176,13 @@ void RE_AddPolyToScene( qhandle_t hShader, int numVerts, const polyVert_t *verts
 				AddPointToBounds( poly->verts[i].xyz, bounds[0], bounds[1] );
 			}
 			for ( fogIndex = 1 ; fogIndex < tr.world->numfogs ; fogIndex++ ) {
-				fog = &tr.world->fogs[fogIndex]; 
+				fog = &tr.world->fogs[fogIndex];
 				if ( bounds[1][0] >= fog->bounds[0][0]
-					&& bounds[1][1] >= fog->bounds[0][1]
-					&& bounds[1][2] >= fog->bounds[0][2]
-					&& bounds[0][0] <= fog->bounds[1][0]
-					&& bounds[0][1] <= fog->bounds[1][1]
-					&& bounds[0][2] <= fog->bounds[1][2] ) {
+						&& bounds[1][1] >= fog->bounds[0][1]
+						&& bounds[1][2] >= fog->bounds[0][2]
+						&& bounds[0][0] <= fog->bounds[1][0]
+						&& bounds[0][1] <= fog->bounds[1][1]
+						&& bounds[0][2] <= fog->bounds[1][2] ) {
 					break;
 				}
 			}
@@ -204,11 +204,11 @@ RE_AddRefEntityToScene
 
 =====================
 */
-void RE_AddRefEntityToScene( const refEntity_t *ent ) {
+void RE_AddRefEntityToScene( const refEntity_t * ent ) {
 	if ( !tr.registered ) {
 		return;
 	}
-  // https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=402
+	// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=402
 	if ( r_numentities >= ENTITYNUM_WORLD ) {
 		return;
 	}
@@ -230,7 +230,7 @@ RE_AddDynamicLightToScene
 =====================
 */
 void RE_AddDynamicLightToScene( const vec3_t org, float intensity, float r, float g, float b, int additive ) {
-	dlight_t	*dl;
+	dlight_t	* dl;
 
 	if ( !tr.registered ) {
 		return;
@@ -246,7 +246,7 @@ void RE_AddDynamicLightToScene( const vec3_t org, float intensity, float r, floa
 		return;
 	}
 	dl = &backEndData[tr.smpFrame]->dlights[r_numdlights++];
-	VectorCopy (org, dl->origin);
+	VectorCopy( org, dl->origin );
 	dl->radius = intensity;
 	dl->color[0] = r;
 	dl->color[1] = g;
@@ -285,7 +285,7 @@ Rendering a scene may require multiple views to be rendered
 to handle mirrors,
 @@@@@@@@@@@@@@@@@@@@@
 */
-void RE_RenderScene( const refdef_t *fd ) {
+void RE_RenderScene( const refdef_t * fd ) {
 	viewParms_t		parms;
 	int				startTime;
 
@@ -300,8 +300,8 @@ void RE_RenderScene( const refdef_t *fd ) {
 
 	startTime = ri.Milliseconds();
 
-	if (!tr.world && !( fd->rdflags & RDF_NOWORLDMODEL ) ) {
-		ri.Error (ERR_DROP, "R_RenderScene: NULL worldmodel");
+	if ( !tr.world && !( fd->rdflags & RDF_NOWORLDMODEL ) ) {
+		ri.Error( ERR_DROP, "R_RenderScene: NULL worldmodel" );
 	}
 
 	Com_Memcpy( tr.refdef.text, fd->text, sizeof( tr.refdef.text ) );
@@ -324,15 +324,15 @@ void RE_RenderScene( const refdef_t *fd ) {
 	// copy the areamask data over and note if it has changed, which
 	// will force a reset of the visible leafs even if the view hasn't moved
 	tr.refdef.areamaskModified = qfalse;
-	if ( ! (tr.refdef.rdflags & RDF_NOWORLDMODEL) ) {
+	if ( !( tr.refdef.rdflags & RDF_NOWORLDMODEL ) ) {
 		int		areaDiff;
 		int		i;
 
 		// compare the area bits
 		areaDiff = 0;
-		for (i = 0 ; i < MAX_MAP_AREA_BYTES/4 ; i++) {
-			areaDiff |= ((int *)tr.refdef.areamask)[i] ^ ((int *)fd->areamask)[i];
-			((int *)tr.refdef.areamask)[i] = ((int *)fd->areamask)[i];
+		for ( i = 0 ; i < MAX_MAP_AREA_BYTES / 4 ; i++ ) {
+			areaDiff |= ( ( int * )tr.refdef.areamask )[i] ^ ( ( int * )fd->areamask )[i];
+			( ( int * )tr.refdef.areamask )[i] = ( ( int * )fd->areamask )[i];
 		}
 
 		if ( areaDiff ) {
@@ -361,8 +361,8 @@ void RE_RenderScene( const refdef_t *fd ) {
 	// turn off dynamic lighting globally by clearing all the
 	// dlights if it needs to be disabled or if vertex lighting is enabled
 	if ( r_dynamiclight->integer == 0 ||
-		 r_vertexLight->integer == 1 ||
-		 glConfig.hardwareType == GLHW_PERMEDIA2 ) {
+			r_vertexLight->integer == 1 ||
+			glConfig.hardwareType == GLHW_PERMEDIA2 ) {
 		tr.refdef.num_dlights = 0;
 	}
 

@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -51,33 +51,32 @@ static char		sys_cmdline[MAX_STRING_CHARS];
 
 int fh = 0;
 
-void Spk_Open(char *name)
-{
-  fh = open( name, O_TRUNC | O_CREAT | O_WRONLY, S_IREAD | S_IWRITE );
+void Spk_Open( char * name ) {
+	fh = open( name, O_TRUNC | O_CREAT | O_WRONLY, S_IREAD | S_IWRITE );
 };
 
-void Spk_Close()
-{
-  if (!fh)
-	return;
+void Spk_Close() {
+	if ( !fh ) {
+		return;
+	}
 
-  close( fh );
-  fh = 0;
+	close( fh );
+	fh = 0;
 }
 
-void Spk_Printf (const char *text, ...)
-{
-  va_list argptr;
-  char buf[32768];
+void Spk_Printf( const char * text, ... ) {
+	va_list argptr;
+	char buf[32768];
 
-  if (!fh)
-	return;
+	if ( !fh ) {
+		return;
+	}
 
-  va_start (argptr,text);
-  vsprintf (buf, text, argptr);
-  write(fh, buf, strlen(buf));
-  _commit(fh);
-  va_end (argptr);
+	va_start( argptr, text );
+	vsprintf( buf, text, argptr );
+	write( fh, buf, strlen( buf ) );
+	_commit( fh );
+	va_end( argptr );
 
 };
 #endif
@@ -90,8 +89,8 @@ Sys_LowPhysicalMemory()
 
 qboolean Sys_LowPhysicalMemory() {
 	MEMORYSTATUS stat;
-  GlobalMemoryStatus (&stat);
-	return (stat.dwTotalPhys <= MEM_THRESHOLD) ? qtrue : qfalse;
+	GlobalMemoryStatus( &stat );
+	return ( stat.dwTotalPhys <= MEM_THRESHOLD ) ? qtrue : qfalse;
 }
 
 /*
@@ -110,14 +109,14 @@ Sys_Error
 Show the early console as an error dialog
 =============
 */
-void QDECL Sys_Error( const char *error, ... ) {
+void QDECL Sys_Error( const char * error, ... ) {
 	va_list		argptr;
 	char		text[4096];
 	MSG        msg;
 
-	va_start (argptr, error);
-	vsprintf (text, error, argptr);
-	va_end (argptr);
+	va_start( argptr, error );
+	vsprintf( text, error, argptr );
+	va_end( argptr );
 
 	Conbuf_AppendText( text );
 	Conbuf_AppendText( "\n" );
@@ -131,15 +130,16 @@ void QDECL Sys_Error( const char *error, ... ) {
 
 	// wait for the user to quit
 	while ( 1 ) {
-		if (!GetMessage (&msg, NULL, 0, 0))
-			Com_Quit_f ();
-		TranslateMessage (&msg);
-		DispatchMessage (&msg);
+		if ( !GetMessage( &msg, NULL, 0, 0 ) ) {
+			Com_Quit_f();
+		}
+		TranslateMessage( &msg );
+		DispatchMessage( &msg );
 	}
 
 	Sys_DestroyConsole();
 
-	exit (1);
+	exit( 1 );
 }
 
 /*
@@ -152,7 +152,7 @@ void Sys_Quit( void ) {
 	IN_Shutdown();
 	Sys_DestroyConsole();
 
-	exit (0);
+	exit( 0 );
 }
 
 /*
@@ -160,7 +160,7 @@ void Sys_Quit( void ) {
 Sys_Print
 ==============
 */
-void Sys_Print( const char *msg ) {
+void Sys_Print( const char * msg ) {
 	Conbuf_AppendText( msg );
 }
 
@@ -170,8 +170,8 @@ void Sys_Print( const char *msg ) {
 Sys_Mkdir
 ==============
 */
-void Sys_Mkdir( const char *path ) {
-	_mkdir (path);
+void Sys_Mkdir( const char * path ) {
+	_mkdir( path );
 }
 
 /*
@@ -179,11 +179,11 @@ void Sys_Mkdir( const char *path ) {
 Sys_Cwd
 ==============
 */
-char *Sys_Cwd( void ) {
+char * Sys_Cwd( void ) {
 	static char cwd[MAX_OSPATH];
 
 	_getcwd( cwd, sizeof( cwd ) - 1 );
-	cwd[MAX_OSPATH-1] = 0;
+	cwd[MAX_OSPATH - 1] = 0;
 
 	return cwd;
 }
@@ -193,7 +193,7 @@ char *Sys_Cwd( void ) {
 Sys_DefaultCDPath
 ==============
 */
-char *Sys_DefaultCDPath( void ) {
+char * Sys_DefaultCDPath( void ) {
 	return "";
 }
 
@@ -202,7 +202,7 @@ char *Sys_DefaultCDPath( void ) {
 Sys_DefaultBasePath
 ==============
 */
-char *Sys_DefaultBasePath( void ) {
+char * Sys_DefaultBasePath( void ) {
 	return Sys_Cwd();
 }
 
@@ -216,7 +216,7 @@ DIRECTORY SCANNING
 
 #define	MAX_FOUND_FILES	0x1000
 
-void Sys_ListFilteredFiles( const char *basedir, char *subdirs, char *filter, char **list, int *numfiles ) {
+void Sys_ListFilteredFiles( const char * basedir, char * subdirs, char * filter, char ** list, int * numfiles ) {
 	char		search[MAX_OSPATH], newsubdirs[MAX_OSPATH];
 	char		filename[MAX_OSPATH];
 	int			findhandle;
@@ -226,26 +226,24 @@ void Sys_ListFilteredFiles( const char *basedir, char *subdirs, char *filter, ch
 		return;
 	}
 
-	if (strlen(subdirs)) {
-		Com_sprintf( search, sizeof(search), "%s\\%s\\*", basedir, subdirs );
-	}
-	else {
-		Com_sprintf( search, sizeof(search), "%s\\*", basedir );
+	if ( strlen( subdirs ) ) {
+		Com_sprintf( search, sizeof( search ), "%s\\%s\\*", basedir, subdirs );
+	} else {
+		Com_sprintf( search, sizeof( search ), "%s\\*", basedir );
 	}
 
-	findhandle = _findfirst (search, &findinfo);
-	if (findhandle == -1) {
+	findhandle = _findfirst( search, &findinfo );
+	if ( findhandle == -1 ) {
 		return;
 	}
 
 	do {
-		if (findinfo.attrib & _A_SUBDIR) {
-			if (Q_stricmp(findinfo.name, ".") && Q_stricmp(findinfo.name, "..")) {
-				if (strlen(subdirs)) {
-					Com_sprintf( newsubdirs, sizeof(newsubdirs), "%s\\%s", subdirs, findinfo.name);
-				}
-				else {
-					Com_sprintf( newsubdirs, sizeof(newsubdirs), "%s", findinfo.name);
+		if ( findinfo.attrib & _A_SUBDIR ) {
+			if ( Q_stricmp( findinfo.name, "." ) && Q_stricmp( findinfo.name, ".." ) ) {
+				if ( strlen( subdirs ) ) {
+					Com_sprintf( newsubdirs, sizeof( newsubdirs ), "%s\\%s", subdirs, findinfo.name );
+				} else {
+					Com_sprintf( newsubdirs, sizeof( newsubdirs ), "%s", findinfo.name );
 				}
 				Sys_ListFilteredFiles( basedir, newsubdirs, filter, list, numfiles );
 			}
@@ -253,48 +251,49 @@ void Sys_ListFilteredFiles( const char *basedir, char *subdirs, char *filter, ch
 		if ( *numfiles >= MAX_FOUND_FILES - 1 ) {
 			break;
 		}
-		Com_sprintf( filename, sizeof(filename), "%s\\%s", subdirs, findinfo.name );
-		if (!Com_FilterPath( filter, filename, qfalse ))
+		Com_sprintf( filename, sizeof( filename ), "%s\\%s", subdirs, findinfo.name );
+		if ( !Com_FilterPath( filter, filename, qfalse ) ) {
 			continue;
+		}
 		list[ *numfiles ] = CopyString( filename );
-		(*numfiles)++;
-	} while ( _findnext (findhandle, &findinfo) != -1 );
+		( *numfiles )++;
+	} while ( _findnext( findhandle, &findinfo ) != -1 );
 
-	_findclose (findhandle);
+	_findclose( findhandle );
 }
 
-static qboolean strgtr(const char *s0, const char *s1) {
+static qboolean strgtr( const char * s0, const char * s1 ) {
 	int l0, l1, i;
 
-	l0 = strlen(s0);
-	l1 = strlen(s1);
+	l0 = strlen( s0 );
+	l1 = strlen( s1 );
 
-	if (l1<l0) {
+	if ( l1 < l0 ) {
 		l0 = l1;
 	}
 
-	for(i=0;i<l0;i++) {
-		if (s1[i] > s0[i]) {
+	for ( i = 0; i < l0; i++ ) {
+		if ( s1[i] > s0[i] ) {
 			return qtrue;
 		}
-		if (s1[i] < s0[i]) {
+		if ( s1[i] < s0[i] ) {
 			return qfalse;
 		}
 	}
 	return qfalse;
 }
 
-char **Sys_ListFiles( const char *directory, const char *extension, char *filter, int *numfiles, qboolean wantsubs ) {
+char ** Sys_ListFiles( const char * directory, const char * extension, char * filter, int * numfiles, qboolean wantsubs ) {
 	char		search[MAX_OSPATH];
 	int			nfiles;
-	char		**listCopy;
-	char		*list[MAX_FOUND_FILES];
+	char	**	listCopy;
+	char	*	list[MAX_FOUND_FILES];
 	struct _finddata_t findinfo;
 	int			findhandle;
 	int			flag;
 	int			i;
 
-	if (filter) {
+	if ( filter ) {
 
 		nfiles = 0;
 		Sys_ListFilteredFiles( directory, "", filter, list, &nfiles );
@@ -302,10 +301,11 @@ char **Sys_ListFiles( const char *directory, const char *extension, char *filter
 		list[ nfiles ] = 0;
 		*numfiles = nfiles;
 
-		if (!nfiles)
+		if ( !nfiles ) {
 			return NULL;
+		}
 
-		listCopy = (char **)Z_Malloc( ( nfiles + 1 ) * sizeof( *listCopy ) );
+		listCopy = ( char ** )Z_Malloc( ( nfiles + 1 ) * sizeof( *listCopy ) );
 		for ( i = 0 ; i < nfiles ; i++ ) {
 			listCopy[i] = list[i];
 		}
@@ -314,7 +314,7 @@ char **Sys_ListFiles( const char *directory, const char *extension, char *filter
 		return listCopy;
 	}
 
-	if ( !extension) {
+	if ( !extension ) {
 		extension = "";
 	}
 
@@ -326,30 +326,30 @@ char **Sys_ListFiles( const char *directory, const char *extension, char *filter
 		flag = _A_SUBDIR;
 	}
 
-	Com_sprintf( search, sizeof(search), "%s\\*%s", directory, extension );
+	Com_sprintf( search, sizeof( search ), "%s\\*%s", directory, extension );
 
 	// search
 	nfiles = 0;
 
-	findhandle = _findfirst (search, &findinfo);
-	if (findhandle == -1) {
+	findhandle = _findfirst( search, &findinfo );
+	if ( findhandle == -1 ) {
 		*numfiles = 0;
 		return NULL;
 	}
 
 	do {
-		if ( (!wantsubs && flag ^ ( findinfo.attrib & _A_SUBDIR )) || (wantsubs && findinfo.attrib & _A_SUBDIR) ) {
+		if ( ( !wantsubs && flag ^ ( findinfo.attrib & _A_SUBDIR ) ) || ( wantsubs && findinfo.attrib & _A_SUBDIR ) ) {
 			if ( nfiles == MAX_FOUND_FILES - 1 ) {
 				break;
 			}
 			list[ nfiles ] = CopyString( findinfo.name );
 			nfiles++;
 		}
-	} while ( _findnext (findhandle, &findinfo) != -1 );
+	} while ( _findnext( findhandle, &findinfo ) != -1 );
 
 	list[ nfiles ] = 0;
 
-	_findclose (findhandle);
+	_findclose( findhandle );
 
 	// return a copy of the list
 	*numfiles = nfiles;
@@ -358,7 +358,7 @@ char **Sys_ListFiles( const char *directory, const char *extension, char *filter
 		return NULL;
 	}
 
-	listCopy = (char **)Z_Malloc( ( nfiles + 1 ) * sizeof( *listCopy ) );
+	listCopy = ( char ** )Z_Malloc( ( nfiles + 1 ) * sizeof( *listCopy ) );
 	for ( i = 0 ; i < nfiles ; i++ ) {
 		listCopy[i] = list[i];
 	}
@@ -366,20 +366,20 @@ char **Sys_ListFiles( const char *directory, const char *extension, char *filter
 
 	do {
 		flag = 0;
-		for(i=1; i<nfiles; i++) {
-			if (strgtr(listCopy[i-1], listCopy[i])) {
-				char *temp = listCopy[i];
-				listCopy[i] = listCopy[i-1];
-				listCopy[i-1] = temp;
+		for ( i = 1; i < nfiles; i++ ) {
+			if ( strgtr( listCopy[i - 1], listCopy[i] ) ) {
+				char * temp = listCopy[i];
+				listCopy[i] = listCopy[i - 1];
+				listCopy[i - 1] = temp;
 				flag = 1;
 			}
 		}
-	} while(flag);
+	} while ( flag );
 
 	return listCopy;
 }
 
-void	Sys_FreeFileList( char **list ) {
+void	Sys_FreeFileList( char ** list ) {
 	int		i;
 
 	if ( !list ) {
@@ -423,25 +423,25 @@ qboolean Sys_ScanForCD( void ) {
 
 	// scan the drives
 	for ( drive[0] = 'c' ; drive[0] <= 'z' ; drive[0]++ ) {
-		if ( GetDriveType (drive) != DRIVE_CDROM ) {
+		if ( GetDriveType( drive ) != DRIVE_CDROM ) {
 			continue;
 		}
 
-		sprintf (cddir, "%s%s", drive, CD_BASEDIR);
-		sprintf (test, "%s\\%s", cddir, CD_EXE);
+		sprintf( cddir, "%s%s", drive, CD_BASEDIR );
+		sprintf( test, "%s\\%s", cddir, CD_EXE );
 		f = fopen( test, "r" );
 		if ( f ) {
-			fclose (f);
+			fclose( f );
 			return qtrue;
-	} else {
-	  sprintf(cddir, "%s%s", drive, CD_BASEDIR_LINUX);
-	  sprintf(test, "%s\\%s", cddir, CD_EXE_LINUX);
-		f = fopen( test, "r" );
-		if ( f ) {
-			fclose (f);
-			  return qtrue;
-	  }
-	}
+		} else {
+			sprintf( cddir, "%s%s", drive, CD_BASEDIR_LINUX );
+			sprintf( test, "%s\\%s", cddir, CD_EXE_LINUX );
+			f = fopen( test, "r" );
+			if ( f ) {
+				fclose( f );
+				return qtrue;
+			}
+		}
 	}
 
 	return qfalse;
@@ -455,8 +455,8 @@ Return true if the proper CD is in the drive
 ================
 */
 qboolean	Sys_CheckCD( void ) {
-  // FIXME: mission pack
-  return qtrue;
+	// FIXME: mission pack
+	return qtrue;
 	//return Sys_ScanForCD();
 }
 
@@ -467,19 +467,19 @@ Sys_GetClipboardData
 
 ================
 */
-char *Sys_GetClipboardData( void ) {
-	char *data = NULL;
-	char *cliptext;
+char * Sys_GetClipboardData( void ) {
+	char * data = NULL;
+	char * cliptext;
 
 	if ( OpenClipboard( NULL ) != 0 ) {
 		HANDLE hClipboardData;
 
 		if ( ( hClipboardData = GetClipboardData( CF_TEXT ) ) != 0 ) {
-			if ( ( cliptext = (char *)GlobalLock( hClipboardData ) ) != 0 ) {
-				data = (char *)Z_Malloc( GlobalSize( hClipboardData ) + 1 );
+			if ( ( cliptext = ( char * )GlobalLock( hClipboardData ) ) != 0 ) {
+				data = ( char * )Z_Malloc( GlobalSize( hClipboardData ) + 1 );
 				Q_strncpyz( data, cliptext, GlobalSize( hClipboardData ) );
 				GlobalUnlock( hClipboardData );
-				
+
 				strtok( data, "\n\r\b" );
 			}
 		}
@@ -497,40 +497,41 @@ LOAD/UNLOAD DLL
 ========================================================================
 */
 
-extern char* FS_BuildOSPath(const char* base, const char* game, const char* qpath);
+extern char * FS_BuildOSPath( const char * base, const char * game, const char * qpath );
 
 /*
 =====================
 Sys_DLL_Load
 =====================
 */
-intptr_t Sys_DLL_Load(const char* fn) {
+intptr_t Sys_DLL_Load( const char * fn ) {
 	HINSTANCE	libHandle;
 	char		dllName[512];
 
-	sprintf(dllName, "%sx86.dll", fn);
+	sprintf( dllName, "%sx86.dll", fn );
 
-	libHandle = LoadLibrary(dllName);
-	if (!libHandle) {
-		char* basepath;
-		char* cdpath;
-		char* gamedir;
-		char* fn;
+	libHandle = LoadLibrary( dllName );
+	if ( !libHandle ) {
+		char * basepath;
+		char * cdpath;
+		char * gamedir;
+		char * fn;
 
-		basepath = Cvar_VariableString("fs_basepath");
-		cdpath = Cvar_VariableString("fs_cdpath");
-		gamedir = Cvar_VariableString("fs_game");
+		basepath = Cvar_VariableString( "fs_basepath" );
+		cdpath = Cvar_VariableString( "fs_cdpath" );
+		gamedir = Cvar_VariableString( "fs_game" );
 
-		fn = FS_BuildOSPath(basepath, gamedir, dllName);
-		libHandle = LoadLibrary(fn);		
+		fn = FS_BuildOSPath( basepath, gamedir, dllName );
+		libHandle = LoadLibrary( fn );
 	}
 
-	if (libHandle)
-		Com_Printf("LoadLibrary '%s' ok\n", dllName);
-	else
-		Com_Printf("LoadLibrary '%s' failed\n", dllName);
+	if ( libHandle ) {
+		Com_Printf( "LoadLibrary '%s' ok\n", dllName );
+	} else {
+		Com_Printf( "LoadLibrary '%s' failed\n", dllName );
+	}
 
-	return (intptr_t)libHandle;
+	return ( intptr_t )libHandle;
 }
 
 /*
@@ -538,16 +539,16 @@ intptr_t Sys_DLL_Load(const char* fn) {
 Sys_DLL_CallEntry
 =====================
 */
-void* Sys_DLL_CallEntry(intptr_t dllHandle, void* engineAPI) {
-	typedef void* (*ModuleEntry)(void* engineAPI);
+void * Sys_DLL_CallEntry( intptr_t dllHandle, void * engineAPI ) {
+	typedef void* ( *ModuleEntry )( void * engineAPI );
 
 	ModuleEntry dllEntry = reinterpret_cast<ModuleEntry>( Sys_DLL_GetProcAddress( dllHandle, "dllEntry" ) );
-	if (!dllEntry) {
-		Com_Error(ERR_FATAL, "Sys_DLL_CallEntry: dllEntry not found!\n");
+	if ( !dllEntry ) {
+		Com_Error( ERR_FATAL, "Sys_DLL_CallEntry: dllEntry not found!\n" );
 		return NULL;
 	}
 
-	return dllEntry(engineAPI);
+	return dllEntry( engineAPI );
 }
 
 /*
@@ -555,8 +556,8 @@ void* Sys_DLL_CallEntry(intptr_t dllHandle, void* engineAPI) {
 Sys_DLL_GetProcAddress
 =====================
 */
-void* Sys_DLL_GetProcAddress(intptr_t dllHandle, const char* procName) {
-	return GetProcAddress((HINSTANCE)dllHandle, procName);
+void * Sys_DLL_GetProcAddress( intptr_t dllHandle, const char * procName ) {
+	return GetProcAddress( ( HINSTANCE )dllHandle, procName );
 }
 
 /*
@@ -569,17 +570,17 @@ void Sys_DLL_Unload( int dllHandle ) {
 	if ( !dllHandle ) {
 		return;
 	}
-	if ( FreeLibrary( (HINSTANCE)dllHandle ) == 0 ) {
+	if ( FreeLibrary( ( HINSTANCE )dllHandle ) == 0 ) {
 		int lastError = GetLastError();
 		LPVOID lpMsgBuf;
 		FormatMessage(
 			FORMAT_MESSAGE_ALLOCATE_BUFFER,
-		    NULL,
+			NULL,
 			lastError,
-			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-			(LPTSTR) &lpMsgBuf,
+			MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ), // Default language
+			( LPTSTR ) &lpMsgBuf,
 			0,
-			NULL 
+			NULL
 		);
 		Com_Error( ERR_FATAL, "Sys_DLL_Unload FreeLibrary failed - %s (%d)", lpMsgBuf, lastError );
 	}
@@ -607,12 +608,12 @@ void Sys_BeginStreamedFile( fileHandle_t f, int readAhead ) {
 void Sys_EndStreamedFile( fileHandle_t f ) {
 }
 
-int Sys_StreamedRead( void *buffer, int size, int count, fileHandle_t f ) {
-   return FS_Read( buffer, size * count, f );
+int Sys_StreamedRead( void * buffer, int size, int count, fileHandle_t f ) {
+	return FS_Read( buffer, size * count, f );
 }
 
 void Sys_StreamSeek( fileHandle_t f, int offset, int origin ) {
-   FS_Seek( f, offset, origin );
+	FS_Seek( f, offset, origin );
 }
 
 
@@ -620,7 +621,7 @@ void Sys_StreamSeek( fileHandle_t f, int offset, int origin ) {
 
 typedef struct {
 	fileHandle_t	file;
-	byte	*buffer;
+	byte	* buffer;
 	qboolean	eof;
 	qboolean	active;
 	int		bufferSize;
@@ -651,14 +652,14 @@ void Sys_StreamThread( void ) {
 	int		bufferPoint;
 	int		r, i;
 
-	while (1) {
+	while ( 1 ) {
 		Sleep( 10 );
 //		EnterCriticalSection (&stream.crit);
 
-		for (i=1;i<MAX_FILE_HANDLES;i++) {
+		for ( i = 1; i < MAX_FILE_HANDLES; i++ ) {
 			// if there is any space left in the buffer, fill it up
 			if ( stream.sIO[i].active  && !stream.sIO[i].eof ) {
-				count = stream.sIO[i].bufferSize - (stream.sIO[i].threadPosition - stream.sIO[i].streamPosition);
+				count = stream.sIO[i].bufferSize - ( stream.sIO[i].threadPosition - stream.sIO[i].streamPosition );
 				if ( !count ) {
 					continue;
 				}
@@ -696,13 +697,13 @@ void Sys_InitStreamThread( void ) {
 //	EnterCriticalSection( &stream.crit );
 
 	stream.threadHandle = CreateThread(
-	   NULL,	// LPSECURITY_ATTRIBUTES lpsa,
-	   0,		// DWORD cbStack,
-	   (LPTHREAD_START_ROUTINE)Sys_StreamThread,	// LPTHREAD_START_ROUTINE lpStartAddr,
-	   0,			// LPVOID lpvThreadParm,
-	   0,			//   DWORD fdwCreate,
-	   &stream.threadId);
-	for(i=0;i<MAX_FILE_HANDLES;i++) {
+							  NULL,	// LPSECURITY_ATTRIBUTES lpsa,
+							  0,		// DWORD cbStack,
+							  ( LPTHREAD_START_ROUTINE )Sys_StreamThread,	// LPTHREAD_START_ROUTINE lpStartAddr,
+							  0,			// LPVOID lpvThreadParm,
+							  0,			//   DWORD fdwCreate,
+							  &stream.threadId );
+	for ( i = 0; i < MAX_FILE_HANDLES; i++ ) {
 		stream.sIO[i].active = qfalse;
 	}
 }
@@ -748,7 +749,7 @@ Sys_EndStreamedFile
 */
 void Sys_EndStreamedFile( fileHandle_t f ) {
 	if ( f != stream.sIO[f].file ) {
-		Com_Error( ERR_FATAL, "Sys_EndStreamedFile: wrong file");
+		Com_Error( ERR_FATAL, "Sys_EndStreamedFile: wrong file" );
 	}
 	// don't leave critical section until another stream is started
 	EnterCriticalSection( &stream.crit );
@@ -768,7 +769,7 @@ Sys_StreamedRead
 
 ================
 */
-int Sys_StreamedRead( void *buffer, int size, int count, fileHandle_t f ) {
+int Sys_StreamedRead( void * buffer, int size, int count, fileHandle_t f ) {
 	int		available;
 	int		remaining;
 	int		sleepCount;
@@ -777,11 +778,11 @@ int Sys_StreamedRead( void *buffer, int size, int count, fileHandle_t f ) {
 	int		bufferPoint;
 	byte	*dest;
 
-	if (stream.sIO[f].active == qfalse) {
+	if ( stream.sIO[f].active == qfalse ) {
 		Com_Error( ERR_FATAL, "Streamed read with non-streaming file" );
 	}
 
-	dest = (byte *)buffer;
+	dest = ( byte * )buffer;
 	remaining = size * count;
 
 	if ( remaining <= 0 ) {
@@ -799,7 +800,7 @@ int Sys_StreamedRead( void *buffer, int size, int count, fileHandle_t f ) {
 				Com_DPrintf( "Sys_StreamedRead: waiting\n" );
 			}
 			if ( ++sleepCount > 100 ) {
-				Com_Error( ERR_FATAL, "Sys_StreamedRead: thread has died");
+				Com_Error( ERR_FATAL, "Sys_StreamedRead: thread has died" );
 			}
 			Sleep( 10 );
 			continue;
@@ -822,7 +823,7 @@ int Sys_StreamedRead( void *buffer, int size, int count, fileHandle_t f ) {
 		LeaveCriticalSection( &stream.crit );
 	}
 
-	return (count * size - remaining) / size;
+	return ( count * size - remaining ) / size;
 }
 
 /*
@@ -872,12 +873,12 @@ Ptr should either be null, or point to a block of data that can
 be freed by the game later.
 ================
 */
-void Sys_QueEvent( int time, sysEventType_t type, int value, int value2, int ptrLength, void *ptr ) {
-	sysEvent_t	*ev;
+void Sys_QueEvent( int time, sysEventType_t type, int value, int value2, int ptrLength, void * ptr ) {
+	sysEvent_t	* ev;
 
 	ev = &eventQue[ eventHead & MASK_QUED_EVENTS ];
 	if ( eventHead - eventTail >= MAX_QUED_EVENTS ) {
-		Com_Printf("Sys_QueEvent: overflow\n");
+		Com_Printf( "Sys_QueEvent: overflow\n" );
 		// we are discarding an event, but don't leak memory
 		if ( ev->evPtr ) {
 			Z_Free( ev->evPtr );
@@ -908,7 +909,7 @@ Sys_GetEvent
 sysEvent_t Sys_GetEvent( void ) {
 	MSG			msg;
 	sysEvent_t	ev;
-	char		*s;
+	char	*	s;
 	msg_t		netmsg;
 	netadr_t	adr;
 
@@ -919,42 +920,42 @@ sysEvent_t Sys_GetEvent( void ) {
 	}
 
 	// pump the message loop
-	while (PeekMessage (&msg, NULL, 0, 0, PM_NOREMOVE)) {
-		if ( !GetMessage (&msg, NULL, 0, 0) ) {
+	while ( PeekMessage ( &msg, NULL, 0, 0, PM_NOREMOVE ) ) {
+		if ( !GetMessage ( &msg, NULL, 0, 0 ) ) {
 			Com_Quit_f();
 		}
 
 		// save the msg time, because wndprocs don't have access to the timestamp
 		g_wv.sysMsgTime = msg.time;
 
-		TranslateMessage (&msg);
-		DispatchMessage (&msg);
+		TranslateMessage ( &msg );
+		DispatchMessage ( &msg );
 	}
 
 	// check for console commands
 	s = Sys_ConsoleInput();
 	if ( s ) {
-		char	*b;
+		char	* b;
 		int		len;
 
 		len = strlen( s ) + 1;
-		b = (char *)Z_Malloc( len );
-		Q_strncpyz( b, s, len-1 );
+		b = ( char * )Z_Malloc( len );
+		Q_strncpyz( b, s, len - 1 );
 		Sys_QueEvent( 0, SE_CONSOLE, 0, 0, len, b );
 	}
 
 	// check for network packets
 	MSG_Init( &netmsg, sys_packetReceived, sizeof( sys_packetReceived ) );
 	if ( Sys_GetPacket ( &adr, &netmsg ) ) {
-		netadr_t		*buf;
+		netadr_t	*	buf;
 		int				len;
 
 		// copy out to a seperate buffer for qeueing
 		// the readcount stepahead is for SOCKS support
 		len = sizeof( netadr_t ) + netmsg.cursize - netmsg.readcount;
-		buf = (netadr_t *)Z_Malloc( len );
+		buf = ( netadr_t * )Z_Malloc( len );
 		*buf = adr;
-		memcpy( buf+1, &netmsg.data[netmsg.readcount], netmsg.cursize - netmsg.readcount );
+		memcpy( buf + 1, &netmsg.data[netmsg.readcount], netmsg.cursize - netmsg.readcount );
 		Sys_QueEvent( 0, SE_PACKET, 0, 0, len, buf );
 	}
 
@@ -1017,114 +1018,90 @@ void Sys_Init( void ) {
 	// NT gets 18ms resolution
 	timeBeginPeriod( 1 );
 
-	Cmd_AddCommand ("in_restart", Sys_In_Restart_f);
-	Cmd_AddCommand ("net_restart", Sys_Net_Restart_f);
+	Cmd_AddCommand ( "in_restart", Sys_In_Restart_f );
+	Cmd_AddCommand ( "net_restart", Sys_Net_Restart_f );
 
 	g_wv.osversion.dwOSVersionInfoSize = sizeof( g_wv.osversion );
 
-	if (!GetVersionEx (&g_wv.osversion))
-		Sys_Error ("Couldn't get OS info");
-
-	if (g_wv.osversion.dwMajorVersion < 4)
-		Sys_Error ("Quake3 requires Windows version 4 or greater");
-	if (g_wv.osversion.dwPlatformId == VER_PLATFORM_WIN32s)
-		Sys_Error ("Quake3 doesn't run on Win32s");
-
-	if ( g_wv.osversion.dwPlatformId == VER_PLATFORM_WIN32_NT )
-	{
-		Cvar_Set( "arch", "winnt" );
+	if ( !GetVersionEx ( &g_wv.osversion ) ) {
+		Sys_Error ( "Couldn't get OS info" );
 	}
-	else if ( g_wv.osversion.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS )
-	{
-		if ( LOWORD( g_wv.osversion.dwBuildNumber ) >= WIN98_BUILD_NUMBER )
-		{
+
+	if ( g_wv.osversion.dwMajorVersion < 4 ) {
+		Sys_Error ( "Quake3 requires Windows version 4 or greater" );
+	}
+	if ( g_wv.osversion.dwPlatformId == VER_PLATFORM_WIN32s ) {
+		Sys_Error ( "Quake3 doesn't run on Win32s" );
+	}
+
+	if ( g_wv.osversion.dwPlatformId == VER_PLATFORM_WIN32_NT ) {
+		Cvar_Set( "arch", "winnt" );
+	} else if ( g_wv.osversion.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS ) {
+		if ( LOWORD( g_wv.osversion.dwBuildNumber ) >= WIN98_BUILD_NUMBER ) {
 			Cvar_Set( "arch", "win98" );
-		}
-		else if ( LOWORD( g_wv.osversion.dwBuildNumber ) >= OSR2_BUILD_NUMBER )
-		{
+		} else if ( LOWORD( g_wv.osversion.dwBuildNumber ) >= OSR2_BUILD_NUMBER ) {
 			Cvar_Set( "arch", "win95 osr2.x" );
-		}
-		else
-		{
+		} else {
 			Cvar_Set( "arch", "win95" );
 		}
-	}
-	else
-	{
+	} else {
 		Cvar_Set( "arch", "unknown Windows variant" );
 	}
 
 	// save out a couple things in rom cvars for the renderer to access
-	Cvar_Get( "win_hinstance", va("%i", (int)g_wv.hInstance), CVAR_ROM );
-	Cvar_Get( "win_wndproc", va("%i", (int)MainWndProc), CVAR_ROM );
+	Cvar_Get( "win_hinstance", va( "%i", ( int )g_wv.hInstance ), CVAR_ROM );
+	Cvar_Get( "win_wndproc", va( "%i", ( int )MainWndProc ), CVAR_ROM );
 
 	//
 	// figure out our CPU
 	//
 	Cvar_Get( "sys_cpustring", "detect", 0 );
-	if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring"), "detect" ) )
-	{
+	if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "detect" ) ) {
 		Com_Printf( "...detecting CPU, found " );
 
 		cpuid = Sys_GetProcessorId();
 
-		switch ( cpuid )
-		{
-		case CPUID_GENERIC:
-			Cvar_Set( "sys_cpustring", "generic" );
-			break;
-		case CPUID_INTEL_UNSUPPORTED:
-			Cvar_Set( "sys_cpustring", "x86 (pre-Pentium)" );
-			break;
-		case CPUID_INTEL_PENTIUM:
-			Cvar_Set( "sys_cpustring", "x86 (P5/PPro, non-MMX)" );
-			break;
-		case CPUID_INTEL_MMX:
-			Cvar_Set( "sys_cpustring", "x86 (P5/Pentium2, MMX)" );
-			break;
-		case CPUID_INTEL_KATMAI:
-			Cvar_Set( "sys_cpustring", "Intel Pentium III" );
-			break;
-		case CPUID_AMD_3DNOW:
-			Cvar_Set( "sys_cpustring", "AMD w/ 3DNow!" );
-			break;
-		case CPUID_AXP:
-			Cvar_Set( "sys_cpustring", "Alpha AXP" );
-			break;
-		default:
-			Com_Error( ERR_FATAL, "Unknown cpu type %d\n", cpuid );
-			break;
+		switch ( cpuid ) {
+			case CPUID_GENERIC:
+				Cvar_Set( "sys_cpustring", "generic" );
+				break;
+			case CPUID_INTEL_UNSUPPORTED:
+				Cvar_Set( "sys_cpustring", "x86 (pre-Pentium)" );
+				break;
+			case CPUID_INTEL_PENTIUM:
+				Cvar_Set( "sys_cpustring", "x86 (P5/PPro, non-MMX)" );
+				break;
+			case CPUID_INTEL_MMX:
+				Cvar_Set( "sys_cpustring", "x86 (P5/Pentium2, MMX)" );
+				break;
+			case CPUID_INTEL_KATMAI:
+				Cvar_Set( "sys_cpustring", "Intel Pentium III" );
+				break;
+			case CPUID_AMD_3DNOW:
+				Cvar_Set( "sys_cpustring", "AMD w/ 3DNow!" );
+				break;
+			case CPUID_AXP:
+				Cvar_Set( "sys_cpustring", "Alpha AXP" );
+				break;
+			default:
+				Com_Error( ERR_FATAL, "Unknown cpu type %d\n", cpuid );
+				break;
 		}
-	}
-	else
-	{
+	} else {
 		Com_Printf( "...forcing CPU type to " );
-		if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "generic" ) )
-		{
+		if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "generic" ) ) {
 			cpuid = CPUID_GENERIC;
-		}
-		else if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "x87" ) )
-		{
+		} else if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "x87" ) ) {
 			cpuid = CPUID_INTEL_PENTIUM;
-		}
-		else if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "mmx" ) )
-		{
+		} else if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "mmx" ) ) {
 			cpuid = CPUID_INTEL_MMX;
-		}
-		else if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "3dnow" ) )
-		{
+		} else if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "3dnow" ) ) {
 			cpuid = CPUID_AMD_3DNOW;
-		}
-		else if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "PentiumIII" ) )
-		{
+		} else if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "PentiumIII" ) ) {
 			cpuid = CPUID_INTEL_KATMAI;
-		}
-		else if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "axp" ) )
-		{
+		} else if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "axp" ) ) {
 			cpuid = CPUID_AXP;
-		}
-		else
-		{
+		} else {
 			Com_Printf( "WARNING: unknown sys_cpustring '%s'\n", Cvar_VariableString( "sys_cpustring" ) );
 			cpuid = CPUID_GENERIC;
 		}
@@ -1148,7 +1125,7 @@ WinMain
 
 ==================
 */
-int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
 	char		cwd[MAX_OSPATH];
 	int			startTime, endTime;
 
@@ -1178,8 +1155,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	Com_Init( sys_cmdline );
 	NET_Init();
 
-	_getcwd (cwd, sizeof(cwd));
-	Com_Printf("Working directory: %s\n", cwd);
+	_getcwd ( cwd, sizeof( cwd ) );
+	Com_Printf( "Working directory: %s\n", cwd );
 
 	// hide the early console since we've reached the point where we
 	// have a working graphics subsystems
@@ -1188,7 +1165,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	}
 
 	// main game loop
-	while( 1 ) {
+	while ( 1 ) {
 		// if not running as a game client, sleep a bit
 		if ( g_wv.isMinimized || ( com_dedicated && com_dedicated->integer ) ) {
 			Sleep( 5 );
@@ -1198,7 +1175,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		// reset it arbitrarily
 //		_controlfp( _PC_24, _MCW_PC );
 //    _controlfp( -1, _MCW_EM  ); // no exceptions, even if some crappy
-								// syscall turns them back on!
+		// syscall turns them back on!
 
 		startTime = Sys_Milliseconds();
 

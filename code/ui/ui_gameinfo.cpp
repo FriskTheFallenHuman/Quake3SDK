@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -34,7 +34,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define POOLSIZE	128 * 1024
 
 static int		ui_numArenas;
-static char		*ui_arenaInfos[MAX_ARENAS];
+static char	*	ui_arenaInfos[MAX_ARENAS];
 
 static char		memoryPool[POOLSIZE];
 static int		allocPoint, outOfMemory;
@@ -45,8 +45,8 @@ static int		allocPoint, outOfMemory;
 UI_Alloc
 ===============
 */
-void *UI_Alloc( int size ) {
-	char	*p;
+void * UI_Alloc( int size ) {
+	char	* p;
 
 	if ( allocPoint + size > POOLSIZE ) {
 		outOfMemory = qtrue;
@@ -75,8 +75,8 @@ void UI_InitMemory( void ) {
 UI_ParseInfos
 ===============
 */
-int UI_ParseInfos( char *buf, int max, char *infos[] ) {
-	char	*token;
+int UI_ParseInfos( char * buf, int max, char * infos[] ) {
+	char	* token;
 	int		count;
 	char	key[MAX_TOKEN_CHARS];
 	char	info[MAX_INFO_STRING];
@@ -117,9 +117,9 @@ int UI_ParseInfos( char *buf, int max, char *infos[] ) {
 			Info_SetValueForKey( info, key, token );
 		}
 		//NOTE: extra space for arena number
-		infos[count] = (char *)UI_Alloc(strlen(info) + strlen("\\num\\") + strlen(va("%d", MAX_ARENAS)) + 1);
-		if (infos[count]) {
-			strcpy(infos[count], info);
+		infos[count] = ( char * )UI_Alloc( strlen( info ) + strlen( "\\num\\" ) + strlen( va( "%d", MAX_ARENAS ) ) + 1 );
+		if ( infos[count] ) {
+			strcpy( infos[count], info );
 			count++;
 		}
 	}
@@ -131,7 +131,7 @@ int UI_ParseInfos( char *buf, int max, char *infos[] ) {
 UI_LoadArenasFromFile
 ===============
 */
-static void UI_LoadArenasFromFile( char *filename ) {
+static void UI_LoadArenasFromFile( char * filename ) {
 	int				len;
 	fileHandle_t	f;
 	char			buf[MAX_ARENAS_TEXT];
@@ -164,59 +164,59 @@ static void UI_LoadArenas( void ) {
 	vmCvar_t	arenasFile;
 	char		filename[128];
 	char		dirlist[1024];
-	char*		dirptr;
+	char	*	dirptr;
 	int			i, n;
 	int			dirlen;
-	char		*type;
-	char		*tag;
+	char	*	type;
 	int			otherNum;
 
 	ui_numArenas = 0;
 
-	trap_Cvar_Register( &arenasFile, "g_arenasFile", "", CVAR_INIT|CVAR_ROM );
-	if( *arenasFile.string ) {
-		UI_LoadArenasFromFile(arenasFile.string);
-	}
-	else {
-		UI_LoadArenasFromFile("scripts/arenas.txt");
+	trap_Cvar_Register( &arenasFile, "g_arenasFile", "", CVAR_INIT | CVAR_ROM );
+	if ( *arenasFile.string ) {
+		UI_LoadArenasFromFile( arenasFile.string );
+	} else {
+		UI_LoadArenasFromFile( "scripts/arenas.txt" );
 	}
 
 	// get all arenas from .arena files
-	numdirs = trap_FS_GetFileList("scripts", ".arena", dirlist, 1024 );
+	numdirs = trap_FS_GetFileList( "scripts", ".arena", dirlist, 1024 );
 	dirptr  = dirlist;
-	for (i = 0; i < numdirs; i++, dirptr += dirlen+1) {
-		dirlen = strlen(dirptr);
-		strcpy(filename, "scripts/");
-		strcat(filename, dirptr);
-		UI_LoadArenasFromFile(filename);
+	for ( i = 0; i < numdirs; i++, dirptr += dirlen + 1 ) {
+		dirlen = strlen( dirptr );
+		strcpy( filename, "scripts/" );
+		strcat( filename, dirptr );
+		UI_LoadArenasFromFile( filename );
 	}
 	trap_Print( va( "%i arenas parsed\n", ui_numArenas ) );
-	if (outOfMemory) trap_Print(S_COLOR_YELLOW"WARNING: not anough memory in pool to load all arenas\n");
+	if ( outOfMemory ) {
+		trap_Print( S_COLOR_YELLOW"WARNING: not anough memory in pool to load all arenas\n" );
+	}
 
 	// set initial numbers
-	for( n = 0; n < ui_numArenas; n++ ) {
+	for ( n = 0; n < ui_numArenas; n++ ) {
 		Info_SetValueForKey( ui_arenaInfos[n], "num", va( "%i", n ) );
 	}
 
 	// go through and count single players levels
-	for( n = 0; n < ui_numArenas; n++ ) {
+	for ( n = 0; n < ui_numArenas; n++ ) {
 		// determine type
 		type = Info_ValueForKey( ui_arenaInfos[n], "type" );
 
 		// if no type specified, it will be treated as "ffa"
-		if( !*type ) {
+		if ( !*type ) {
 			continue;
 		}
 	}
 
 	// go through once more and assign number to the levels
 	otherNum = 0;
-	for( n = 0; n < ui_numArenas; n++ ) {
+	for ( n = 0; n < ui_numArenas; n++ ) {
 		// determine type
 		type = Info_ValueForKey( ui_arenaInfos[n], "type" );
 
 		// if no type specified, it will be treated as "ffa"
-		if( !*type ) {
+		if ( !*type ) {
 			continue;
 		}
 
@@ -229,18 +229,18 @@ static void UI_LoadArenas( void ) {
 UI_GetArenaInfoByNumber
 ===============
 */
-const char *UI_GetArenaInfoByNumber( int num ) {
+const char * UI_GetArenaInfoByNumber( int num ) {
 	int		n;
-	char	*value;
+	char	* value;
 
-	if( num < 0 || num >= ui_numArenas ) {
+	if ( num < 0 || num >= ui_numArenas ) {
 		trap_Print( va( S_COLOR_RED "Invalid arena number: %i\n", num ) );
 		return NULL;
 	}
 
-	for( n = 0; n < ui_numArenas; n++ ) {
+	for ( n = 0; n < ui_numArenas; n++ ) {
 		value = Info_ValueForKey( ui_arenaInfos[n], "num" );
-		if( *value && atoi(value) == num ) {
+		if ( *value && atoi( value ) == num ) {
 			return ui_arenaInfos[n];
 		}
 	}
@@ -254,11 +254,11 @@ const char *UI_GetArenaInfoByNumber( int num ) {
 UI_GetArenaInfoByNumber
 ===============
 */
-const char *UI_GetArenaInfoByMap( const char *map ) {
+const char * UI_GetArenaInfoByMap( const char * map ) {
 	int			n;
 
-	for( n = 0; n < ui_numArenas; n++ ) {
-		if( Q_stricmp( Info_ValueForKey( ui_arenaInfos[n], "map" ), map ) == 0 ) {
+	for ( n = 0; n < ui_numArenas; n++ ) {
+		if ( Q_stricmp( Info_ValueForKey( ui_arenaInfos[n], "map" ), map ) == 0 ) {
 			return ui_arenaInfos[n];
 		}
 	}
@@ -272,11 +272,11 @@ const char *UI_GetArenaInfoByMap( const char *map ) {
 UI_GetSpecialArenaInfo
 ===============
 */
-const char *UI_GetSpecialArenaInfo( const char *tag ) {
+const char * UI_GetSpecialArenaInfo( const char * tag ) {
 	int			n;
 
-	for( n = 0; n < ui_numArenas; n++ ) {
-		if( Q_stricmp( Info_ValueForKey( ui_arenaInfos[n], "special" ), tag ) == 0 ) {
+	for ( n = 0; n < ui_numArenas; n++ ) {
+		if ( Q_stricmp( Info_ValueForKey( ui_arenaInfos[n], "special" ), tag ) == 0 ) {
 			return ui_arenaInfos[n];
 		}
 	}
@@ -295,7 +295,7 @@ UI_GetBestScore
 Returns the player's best finish on a given level, 0 if the have not played the level
 ===============
 */
-void UI_GetBestScore( int level, int *score, int *skill ) {
+void UI_GetBestScore( int level, int * score, int * skill ) {
 	int		n;
 	int		skillScore;
 	int		bestScore;
@@ -303,28 +303,28 @@ void UI_GetBestScore( int level, int *score, int *skill ) {
 	char	arenaKey[16];
 	char	scores[MAX_INFO_VALUE];
 
-	if( !score || !skill ) {
+	if ( !score || !skill ) {
 		return;
 	}
 
-	if( level < 0 || level > ui_numArenas ) {
+	if ( level < 0 || level > ui_numArenas ) {
 		return;
 	}
 
 	bestScore = 0;
 	bestScoreSkill = 0;
 
-	for( n = 1; n <= 5; n++ ) {
+	for ( n = 1; n <= 5; n++ ) {
 		trap_Cvar_VariableStringBuffer( va( "g_spScores%i", n ), scores, MAX_INFO_VALUE );
 
 		Com_sprintf( arenaKey, sizeof( arenaKey ), "l%i", level );
 		skillScore = atoi( Info_ValueForKey( scores, arenaKey ) );
 
-		if( skillScore < 1 || skillScore > 8 ) {
+		if ( skillScore < 1 || skillScore > 8 ) {
 			continue;
 		}
 
-		if( !bestScore || skillScore <= bestScore ) {
+		if ( !bestScore || skillScore <= bestScore ) {
 			bestScore = skillScore;
 			bestScoreSkill = n;
 		}
@@ -353,10 +353,9 @@ void UI_InitGameinfo( void ) {
 	UI_InitMemory();
 	UI_LoadArenas();
 
-	if( trap_Cvar_VariableValue( "fs_restrict" ) ) {
+	if ( trap_Cvar_VariableValue( "fs_restrict" ) ) {
 		uis.demoversion = qtrue;
-	}
-	else {
+	} else {
 		uis.demoversion = qfalse;
 	}
 }

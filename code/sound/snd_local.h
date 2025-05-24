@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -46,21 +46,21 @@ typedef struct adpcm_state {
 
 typedef	struct sndBuffer_s {
 	short					sndChunk[SND_CHUNK_SIZE];
-	struct sndBuffer_s		*next;
+	struct sndBuffer_s	*	next;
 	int						size;
 	adpcm_state_t			adpcm;
 } sndBuffer;
 
 typedef struct sfx_s {
-	sndBuffer		*soundData;
+	sndBuffer	*	soundData;
 	qboolean		defaultSound;			// couldn't be loaded, so use buzz
 	qboolean		inMemory;				// not in Memory
 	qboolean		soundCompressed;		// not in Memory
-	int				soundCompressionMethod;	
+	int				soundCompressionMethod;
 	int 			soundLength;
 	char 			soundName[MAX_QPATH];
 	int				lastTimeUsed;
-	struct sfx_s	*next;
+	struct sfx_s	* next;
 } sfx_t;
 
 typedef struct {
@@ -69,7 +69,7 @@ typedef struct {
 	int			submission_chunk;		// don't mix less than this #
 	int			samplebits;
 	int			speed;
-	byte		*buffer;
+	byte	*	buffer;
 } dma_t;
 
 #define START_SAMPLE_IMMEDIATE	0x7fffffff
@@ -77,7 +77,7 @@ typedef struct {
 typedef struct loopSound_s {
 	vec3_t		origin;
 	vec3_t		velocity;
-	sfx_t		*sfx;
+	sfx_t	*	sfx;
 	int			mergeFrame;
 	qboolean	active;
 	qboolean	kill;
@@ -87,8 +87,7 @@ typedef struct loopSound_s {
 	int			framenum;
 } loopSound_t;
 
-typedef struct
-{
+typedef struct {
 	int			allocTime;
 	int			startSample;	// START_SAMPLE_IMMEDIATE = set immediately on next mix
 	int			entnum;			// to allow overriding a specific sound
@@ -100,7 +99,7 @@ typedef struct
 	float		oldDopplerScale;
 	vec3_t		origin;			// only use if fixed_origin is set
 	qboolean	fixed_origin;	// use origin instead of fetching entnum's origin
-	sfx_t		*thesfx;		// sfx structure
+	sfx_t	*	thesfx;		// sfx structure
 	qboolean	doppler;
 } channel_t;
 
@@ -127,17 +126,17 @@ typedef struct {
 */
 
 // initializes cycling through a DMA buffer and returns information on it
-qboolean SNDDMA_Init(void);
+qboolean SNDDMA_Init( void );
 
 // gets the current DMA position
-int		SNDDMA_GetDMAPos(void);
+int		SNDDMA_GetDMAPos( void );
 
 // shutdown the DMA xfer.
-void	SNDDMA_Shutdown(void);
+void	SNDDMA_Shutdown( void );
 
-void	SNDDMA_BeginPainting (void);
+void	SNDDMA_BeginPainting ( void );
 
-void	SNDDMA_Submit(void);
+void	SNDDMA_Submit( void );
 
 //====================================================================
 
@@ -157,33 +156,33 @@ extern	dma_t	dma;
 #define	MAX_RAW_SAMPLES	16384
 extern	portable_samplepair_t	s_rawsamples[MAX_RAW_SAMPLES];
 
-extern cvar_t	*s_volume;
-extern cvar_t	*s_nosound;
-extern cvar_t	*s_khz;
-extern cvar_t	*s_show;
-extern cvar_t	*s_mixahead;
+extern cvar_t	* s_volume;
+extern cvar_t	* s_nosound;
+extern cvar_t	* s_khz;
+extern cvar_t	* s_show;
+extern cvar_t	* s_mixahead;
 
-extern cvar_t	*s_testsound;
-extern cvar_t	*s_separation;
+extern cvar_t	* s_testsound;
+extern cvar_t	* s_separation;
 
 qboolean S_LoadSound( sfx_t *sfx );
 
-void		SND_free(sndBuffer *v);
-sndBuffer*	SND_malloc();
+void		SND_free( sndBuffer *v );
+sndBuffer	* SND_malloc();
 void		SND_setup();
 
-void S_PaintChannels(int endtime);
+void S_PaintChannels( int endtime );
 
-void S_memoryLoad(sfx_t *sfx);
-portable_samplepair_t *S_GetRawSamplePointer();
+void S_memoryLoad( sfx_t *sfx );
+portable_samplepair_t * S_GetRawSamplePointer();
 
 // spatializes a channel
-void S_Spatialize(channel_t *ch);
+void S_Spatialize( channel_t * ch );
 
 // adpcm functions
-int  S_AdpcmMemoryNeeded( const wavinfo_t *info );
-void S_AdpcmEncodeSound( sfx_t *sfx, short *samples );
-void S_AdpcmGetSamples(sndBuffer *chunk, short *to);
+int  S_AdpcmMemoryNeeded( const wavinfo_t * info );
+void S_AdpcmEncodeSound( sfx_t *sfx, short * samples );
+void S_AdpcmGetSamples( sndBuffer *chunk, short * to );
 
 // wavelet function
 
@@ -194,14 +193,14 @@ void S_FreeOldestSound();
 
 #define	NXStream byte
 
-void encodeWavelet(sfx_t *sfx, short *packets);
-void decodeWavelet( sndBuffer *stream, short *packets);
+void encodeWavelet( sfx_t *sfx, short * packets );
+void decodeWavelet( sndBuffer *stream, short * packets );
 
-void encodeMuLaw( sfx_t *sfx, short *packets);
+void encodeMuLaw( sfx_t *sfx, short * packets );
 extern short mulawToShort[256];
 
-extern short *sfxScratchBuffer;
-extern sfx_t *sfxScratchPointer;
+extern short * sfxScratchBuffer;
+extern sfx_t * sfxScratchPointer;
 extern int	   sfxScratchIndex;
 
 #endif /* !SND_LOCAL_H */

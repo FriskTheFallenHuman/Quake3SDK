@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -71,10 +71,10 @@ typedef struct {
 
 static playersettings_t	s_playersettings;
 
-static int gamecodetoui[] = {4,2,3,0,5,1,6};
-static int uitogamecode[] = {4,6,2,3,1,5,7};
+static int gamecodetoui[] = {4, 2, 3, 0, 5, 1, 6};
+static int uitogamecode[] = {4, 6, 2, 3, 1, 5, 7};
 
-static const char *handicap_items[] = {
+static const char * handicap_items[] = {
 	"None",
 	"95",
 	"90",
@@ -104,25 +104,25 @@ static const char *handicap_items[] = {
 PlayerSettings_DrawName
 =================
 */
-static void PlayerSettings_DrawName( void *self ) {
+static void PlayerSettings_DrawName( void * self ) {
 	menufield_s		*f;
 	qboolean		focus;
 	int				style;
-	char			*txt;
+	char		*	txt;
 	char			c;
-	float			*color;
+	float		*	color;
 	int				n;
 	int				basex, x, y;
 	char			name[32];
 
-	f = (menufield_s*)self;
+	f = ( menufield_s * )self;
 	basex = f->generic.x;
 	y = f->generic.y;
-	focus = (qboolean)(f->generic.parent->cursor == f->generic.menuPosition);
+	focus = ( qboolean )( f->generic.parent->cursor == f->generic.menuPosition );
 
-	style = UI_LEFT|UI_SMALLFONT;
+	style = UI_LEFT | UI_SMALLFONT;
 	color = text_color_normal;
-	if( focus ) {
+	if ( focus ) {
 		style |= UI_PULSE;
 		color = text_color_highlight;
 	}
@@ -133,12 +133,12 @@ static void PlayerSettings_DrawName( void *self ) {
 	basex += 64;
 	y += PROP_HEIGHT;
 	txt = f->field.buffer;
-	color = g_color_table[ColorIndex(COLOR_WHITE)];
+	color = g_color_table[ColorIndex( COLOR_WHITE )];
 	x = basex;
-	while ( (c = *txt) != 0 ) {
+	while ( ( c = *txt ) != 0 ) {
 		if ( !focus && Q_IsColorString( txt ) ) {
-			n = ColorIndex( *(txt+1) );
-			if( n == 0 ) {
+			n = ColorIndex( *( txt + 1 ) );
+			if ( n == 0 ) {
 				n = 7;
 			}
 			color = g_color_table[n];
@@ -151,7 +151,7 @@ static void PlayerSettings_DrawName( void *self ) {
 	}
 
 	// draw cursor if we have focus
-	if( focus ) {
+	if ( focus ) {
 		if ( trap_Key_GetOverstrikeMode() ) {
 			c = 11;
 		} else {
@@ -165,9 +165,9 @@ static void PlayerSettings_DrawName( void *self ) {
 	}
 
 	// draw at bottom also using proportional font
-	Q_strncpyz( name, f->field.buffer, sizeof(name) );
+	Q_strncpyz( name, f->field.buffer, sizeof( name ) );
 	Q_CleanStr( name );
-	UI_DrawProportionalString( 320, 440, name, UI_CENTER|UI_BIGFONT, text_color_normal );
+	UI_DrawProportionalString( 320, 440, name, UI_CENTER | UI_BIGFONT, text_color_normal );
 }
 
 
@@ -176,18 +176,18 @@ static void PlayerSettings_DrawName( void *self ) {
 PlayerSettings_DrawHandicap
 =================
 */
-static void PlayerSettings_DrawHandicap( void *self ) {
+static void PlayerSettings_DrawHandicap( void * self ) {
 	menulist_s		*item;
 	qboolean		focus;
 	int				style;
-	float			*color;
+	float		*	color;
 
-	item = (menulist_s *)self;
-	focus = (qboolean)(item->generic.parent->cursor == item->generic.menuPosition);
+	item = ( menulist_s * )self;
+	focus = ( qboolean )( item->generic.parent->cursor == item->generic.menuPosition );
 
-	style = UI_LEFT|UI_SMALLFONT;
+	style = UI_LEFT | UI_SMALLFONT;
 	color = text_color_normal;
-	if( focus ) {
+	if ( focus ) {
 		style |= UI_PULSE;
 		color = text_color_highlight;
 	}
@@ -202,18 +202,18 @@ static void PlayerSettings_DrawHandicap( void *self ) {
 PlayerSettings_DrawEffects
 =================
 */
-static void PlayerSettings_DrawEffects( void *self ) {
+static void PlayerSettings_DrawEffects( void * self ) {
 	menulist_s		*item;
 	qboolean		focus;
 	int				style;
-	float			*color;
+	float		*	color;
 
-	item = (menulist_s *)self;
-	focus = (qboolean)(item->generic.parent->cursor == item->generic.menuPosition);
+	item = ( menulist_s * )self;
+	focus = ( qboolean )( item->generic.parent->cursor == item->generic.menuPosition );
 
-	style = UI_LEFT|UI_SMALLFONT;
+	style = UI_LEFT | UI_SMALLFONT;
 	color = text_color_normal;
-	if( focus ) {
+	if ( focus ) {
 		style |= UI_PULSE;
 		color = text_color_highlight;
 	}
@@ -230,7 +230,7 @@ static void PlayerSettings_DrawEffects( void *self ) {
 PlayerSettings_DrawPlayer
 =================
 */
-static void PlayerSettings_DrawPlayer( void *self ) {
+static void PlayerSettings_DrawPlayer( void * self ) {
 	menubitmap_s	*b;
 	vec3_t			viewangles;
 	char			buf[MAX_QPATH];
@@ -246,8 +246,8 @@ static void PlayerSettings_DrawPlayer( void *self ) {
 		UI_PlayerInfo_SetInfo( &s_playersettings.playerinfo, LEGS_IDLE, TORSO_STAND, viewangles, vec3_origin, WP_MACHINEGUN, qfalse );
 	}
 
-	b = (menubitmap_s*) self;
-	UI_DrawPlayer( b->generic.x, b->generic.y, b->width, b->height, &s_playersettings.playerinfo, uis.realtime/2 );
+	b = ( menubitmap_s * ) self;
+	UI_DrawPlayer( b->generic.x, b->generic.y, b->width, b->height, &s_playersettings.playerinfo, uis.realtime / 2 );
 }
 
 
@@ -274,7 +274,7 @@ PlayerSettings_MenuKey
 =================
 */
 static sfxHandle_t PlayerSettings_MenuKey( int key ) {
-	if( key == K_MOUSE2 || key == K_ESCAPE ) {
+	if ( key == K_MOUSE2 || key == K_ESCAPE ) {
 		PlayerSettings_SaveChanges();
 	}
 	return Menu_DefaultKey( &s_playersettings.menu, key );
@@ -292,18 +292,18 @@ static void PlayerSettings_SetMenuItems( void ) {
 	int		h;
 
 	// name
-	Q_strncpyz( s_playersettings.name.field.buffer, UI_Cvar_VariableString("name"), sizeof(s_playersettings.name.field.buffer) );
+	Q_strncpyz( s_playersettings.name.field.buffer, UI_Cvar_VariableString( "name" ), sizeof( s_playersettings.name.field.buffer ) );
 
 	// effects color
 	c = trap_Cvar_VariableValue( "color1" ) - 1;
-	if( c < 0 || c > 6 ) {
+	if ( c < 0 || c > 6 ) {
 		c = 6;
 	}
 	s_playersettings.effects.curvalue = gamecodetoui[c];
 
 	// model/skin
-	memset( &s_playersettings.playerinfo, 0, sizeof(playerInfo_t) );
-	
+	memset( &s_playersettings.playerinfo, 0, sizeof( playerInfo_t ) );
+
 	viewangles[YAW]   = 180 - 30;
 	viewangles[PITCH] = 0;
 	viewangles[ROLL]  = 0;
@@ -312,7 +312,7 @@ static void PlayerSettings_SetMenuItems( void ) {
 	UI_PlayerInfo_SetInfo( &s_playersettings.playerinfo, LEGS_IDLE, TORSO_STAND, viewangles, vec3_origin, WP_MACHINEGUN, qfalse );
 
 	// handicap
-	h = Com_Clamp( 5, 100, trap_Cvar_VariableValue("handicap") );
+	h = Com_Clamp( 5, 100, trap_Cvar_VariableValue( "handicap" ) );
 	s_playersettings.handicap.curvalue = 20 - h / 5;
 }
 
@@ -322,25 +322,25 @@ static void PlayerSettings_SetMenuItems( void ) {
 PlayerSettings_MenuEvent
 =================
 */
-static void PlayerSettings_MenuEvent( void* ptr, int event ) {
-	if( event != QM_ACTIVATED ) {
+static void PlayerSettings_MenuEvent( void * ptr, int event ) {
+	if ( event != QM_ACTIVATED ) {
 		return;
 	}
 
-	switch( ((menucommon_s*)ptr)->id ) {
-	case ID_HANDICAP:
-		trap_Cvar_Set( "handicap", va( "%i", 100 - 25 * s_playersettings.handicap.curvalue ) );
-		break;
+	switch ( ( ( menucommon_s * )ptr )->id ) {
+		case ID_HANDICAP:
+			trap_Cvar_Set( "handicap", va( "%i", 100 - 25 * s_playersettings.handicap.curvalue ) );
+			break;
 
-	case ID_MODEL:
-		PlayerSettings_SaveChanges();
-		UI_PlayerModelMenu();
-		break;
+		case ID_MODEL:
+			PlayerSettings_SaveChanges();
+			UI_PlayerModelMenu();
+			break;
 
-	case ID_BACK:
-		PlayerSettings_SaveChanges();
-		UI_PopMenu();
-		break;
+		case ID_BACK:
+			PlayerSettings_SaveChanges();
+			UI_PopMenu();
+			break;
 	}
 }
 
@@ -353,7 +353,7 @@ PlayerSettings_MenuInit
 static void PlayerSettings_MenuInit( void ) {
 	int		y;
 
-	memset(&s_playersettings,0,sizeof(playersettings_t));
+	memset( &s_playersettings, 0, sizeof( playersettings_t ) );
 
 	PlayerSettings_Cache();
 
@@ -370,7 +370,7 @@ static void PlayerSettings_MenuInit( void ) {
 
 	s_playersettings.framel.generic.type  = MTYPE_BITMAP;
 	s_playersettings.framel.generic.name  = ART_FRAMEL;
-	s_playersettings.framel.generic.flags = QMF_LEFT_JUSTIFY|QMF_INACTIVE;
+	s_playersettings.framel.generic.flags = QMF_LEFT_JUSTIFY | QMF_INACTIVE;
 	s_playersettings.framel.generic.x     = 0;
 	s_playersettings.framel.generic.y     = 78;
 	s_playersettings.framel.width         = 256;
@@ -378,7 +378,7 @@ static void PlayerSettings_MenuInit( void ) {
 
 	s_playersettings.framer.generic.type  = MTYPE_BITMAP;
 	s_playersettings.framer.generic.name  = ART_FRAMER;
-	s_playersettings.framer.generic.flags = QMF_LEFT_JUSTIFY|QMF_INACTIVE;
+	s_playersettings.framer.generic.flags = QMF_LEFT_JUSTIFY | QMF_INACTIVE;
 	s_playersettings.framer.generic.x     = 376;
 	s_playersettings.framer.generic.y     = 76;
 	s_playersettings.framer.width         = 256;
@@ -420,16 +420,16 @@ static void PlayerSettings_MenuInit( void ) {
 	s_playersettings.effects.generic.left		= 192 - 8;
 	s_playersettings.effects.generic.top		= y - 8;
 	s_playersettings.effects.generic.right		= 192 + 200;
-	s_playersettings.effects.generic.bottom		= y + 2* PROP_HEIGHT;
+	s_playersettings.effects.generic.bottom		= y + 2 * PROP_HEIGHT;
 	s_playersettings.effects.numitems			= 7;
 
 	s_playersettings.model.generic.type			= MTYPE_BITMAP;
 	s_playersettings.model.generic.name			= ART_MODEL0;
-	s_playersettings.model.generic.flags		= QMF_RIGHT_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_playersettings.model.generic.flags		= QMF_RIGHT_JUSTIFY | QMF_PULSEIFFOCUS;
 	s_playersettings.model.generic.id			= ID_MODEL;
 	s_playersettings.model.generic.callback		= PlayerSettings_MenuEvent;
 	s_playersettings.model.generic.x			= 640;
-	s_playersettings.model.generic.y			= 480-64;
+	s_playersettings.model.generic.y			= 480 - 64;
 	s_playersettings.model.width				= 128;
 	s_playersettings.model.height				= 64;
 	s_playersettings.model.focuspic				= ART_MODEL1;
@@ -439,22 +439,22 @@ static void PlayerSettings_MenuInit( void ) {
 	s_playersettings.player.generic.ownerdraw	= PlayerSettings_DrawPlayer;
 	s_playersettings.player.generic.x			= 400;
 	s_playersettings.player.generic.y			= -40;
-	s_playersettings.player.width				= 32*10;
-	s_playersettings.player.height				= 56*10;
+	s_playersettings.player.width				= 32 * 10;
+	s_playersettings.player.height				= 56 * 10;
 
 	s_playersettings.back.generic.type			= MTYPE_BITMAP;
 	s_playersettings.back.generic.name			= ART_BACK0;
-	s_playersettings.back.generic.flags			= QMF_LEFT_JUSTIFY|QMF_PULSEIFFOCUS;
+	s_playersettings.back.generic.flags			= QMF_LEFT_JUSTIFY | QMF_PULSEIFFOCUS;
 	s_playersettings.back.generic.id			= ID_BACK;
 	s_playersettings.back.generic.callback		= PlayerSettings_MenuEvent;
 	s_playersettings.back.generic.x				= 0;
-	s_playersettings.back.generic.y				= 480-64;
+	s_playersettings.back.generic.y				= 480 - 64;
 	s_playersettings.back.width					= 128;
 	s_playersettings.back.height				= 64;
 	s_playersettings.back.focuspic				= ART_BACK1;
 
 	s_playersettings.item_null.generic.type		= MTYPE_BITMAP;
-	s_playersettings.item_null.generic.flags	= QMF_LEFT_JUSTIFY|QMF_MOUSEONLY|QMF_SILENT;
+	s_playersettings.item_null.generic.flags	= QMF_LEFT_JUSTIFY | QMF_MOUSEONLY | QMF_SILENT;
 	s_playersettings.item_null.generic.x		= 0;
 	s_playersettings.item_null.generic.y		= 0;
 	s_playersettings.item_null.width			= 640;

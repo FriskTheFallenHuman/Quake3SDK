@@ -15,13 +15,13 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
 #include "tr_local.h"
 
-volatile renderCommandList_t	*renderCommandList;
+volatile renderCommandList_t	* renderCommandList;
 
 volatile qboolean	renderThreadActive;
 
@@ -39,35 +39,31 @@ void R_PerformanceCounters( void ) {
 		return;
 	}
 
-	if (r_speeds->integer == 1) {
-		ri.Printf (PRINT_ALL, "%i/%i shaders/surfs %i leafs %i verts %i/%i tris %.2f mtex %.2f dc\n",
-			backEnd.pc.c_shaders, backEnd.pc.c_surfaces, tr.pc.c_leafs, backEnd.pc.c_vertexes, 
-			backEnd.pc.c_indexes/3, backEnd.pc.c_totalIndexes/3, 
-			R_SumOfUsedImages()/(1000000.0f), backEnd.pc.c_overDraw / (float)(glConfig.vidWidth * glConfig.vidHeight) ); 
-	} else if (r_speeds->integer == 2) {
-		ri.Printf (PRINT_ALL, "(patch) %i sin %i sclip  %i sout %i bin %i bclip %i bout\n",
-			tr.pc.c_sphere_cull_patch_in, tr.pc.c_sphere_cull_patch_clip, tr.pc.c_sphere_cull_patch_out, 
-			tr.pc.c_box_cull_patch_in, tr.pc.c_box_cull_patch_clip, tr.pc.c_box_cull_patch_out );
-		ri.Printf (PRINT_ALL, "(md3) %i sin %i sclip  %i sout %i bin %i bclip %i bout\n",
-			tr.pc.c_sphere_cull_md3_in, tr.pc.c_sphere_cull_md3_clip, tr.pc.c_sphere_cull_md3_out, 
-			tr.pc.c_box_cull_md3_in, tr.pc.c_box_cull_md3_clip, tr.pc.c_box_cull_md3_out );
-	} else if (r_speeds->integer == 3) {
-		ri.Printf (PRINT_ALL, "viewcluster: %i\n", tr.viewCluster );
-	} else if (r_speeds->integer == 4) {
+	if ( r_speeds->integer == 1 ) {
+		ri.Printf( PRINT_ALL, "%i/%i shaders/surfs %i leafs %i verts %i/%i tris %.2f mtex %.2f dc\n",
+				   backEnd.pc.c_shaders, backEnd.pc.c_surfaces, tr.pc.c_leafs, backEnd.pc.c_vertexes,
+				   backEnd.pc.c_indexes / 3, backEnd.pc.c_totalIndexes / 3,
+				   R_SumOfUsedImages() / ( 1000000.0f ), backEnd.pc.c_overDraw / ( float )( glConfig.vidWidth * glConfig.vidHeight ) );
+	} else if ( r_speeds->integer == 2 ) {
+		ri.Printf( PRINT_ALL, "(patch) %i sin %i sclip  %i sout %i bin %i bclip %i bout\n",
+				   tr.pc.c_sphere_cull_patch_in, tr.pc.c_sphere_cull_patch_clip, tr.pc.c_sphere_cull_patch_out,
+				   tr.pc.c_box_cull_patch_in, tr.pc.c_box_cull_patch_clip, tr.pc.c_box_cull_patch_out );
+		ri.Printf( PRINT_ALL, "(md3) %i sin %i sclip  %i sout %i bin %i bclip %i bout\n",
+				   tr.pc.c_sphere_cull_md3_in, tr.pc.c_sphere_cull_md3_clip, tr.pc.c_sphere_cull_md3_out,
+				   tr.pc.c_box_cull_md3_in, tr.pc.c_box_cull_md3_clip, tr.pc.c_box_cull_md3_out );
+	} else if ( r_speeds->integer == 3 ) {
+		ri.Printf( PRINT_ALL, "viewcluster: %i\n", tr.viewCluster );
+	} else if ( r_speeds->integer == 4 ) {
 		if ( backEnd.pc.c_dlightVertexes ) {
-			ri.Printf (PRINT_ALL, "dlight srf:%i  culled:%i  verts:%i  tris:%i\n", 
-				tr.pc.c_dlightSurfaces, tr.pc.c_dlightSurfacesCulled,
-				backEnd.pc.c_dlightVertexes, backEnd.pc.c_dlightIndexes / 3 );
+			ri.Printf( PRINT_ALL, "dlight srf:%i  culled:%i  verts:%i  tris:%i\n",
+					   tr.pc.c_dlightSurfaces, tr.pc.c_dlightSurfacesCulled,
+					   backEnd.pc.c_dlightVertexes, backEnd.pc.c_dlightIndexes / 3 );
 		}
-	} 
-	else if (r_speeds->integer == 5 )
-	{
+	} else if ( r_speeds->integer == 5 ) {
 		ri.Printf( PRINT_ALL, "zFar: %.0f\n", tr.viewParms.zFar );
-	}
-	else if (r_speeds->integer == 6 )
-	{
-		ri.Printf( PRINT_ALL, "flare adds:%i tests:%i renders:%i\n", 
-			backEnd.pc.c_flareAdds, backEnd.pc.c_flareTests, backEnd.pc.c_flareRenders );
+	} else if ( r_speeds->integer == 6 ) {
+		ri.Printf( PRINT_ALL, "flare adds:%i tests:%i renders:%i\n",
+				   backEnd.pc.c_flareAdds, backEnd.pc.c_flareTests, backEnd.pc.c_flareRenders );
 	}
 
 	Com_Memset( &tr.pc, 0, sizeof( tr.pc ) );
@@ -115,12 +111,12 @@ int	c_blockedOnRender;
 int	c_blockedOnMain;
 
 void R_IssueRenderCommands( qboolean runPerformanceCounters ) {
-	renderCommandList_t	*cmdList;
+	renderCommandList_t	* cmdList;
 
 	cmdList = &backEndData[tr.smpFrame]->commands;
-	assert(cmdList); // bk001205
+	assert( cmdList ); // bk001205
 	// add an end-of-list command
-	*(int *)(cmdList->cmds + cmdList->used) = RC_END_OF_LIST;
+	*( int * )( cmdList->cmds + cmdList->used ) = RC_END_OF_LIST;
 
 	// clear it out, in case this is a sync and not a buffer flip
 	cmdList->used = 0;
@@ -191,8 +187,8 @@ make sure there is enough command space, waiting on the
 render thread if needed.
 ============
 */
-void *R_GetCommandBuffer( int bytes ) {
-	renderCommandList_t	*cmdList;
+void * R_GetCommandBuffer( int bytes ) {
+	renderCommandList_t	* cmdList;
 
 	cmdList = &backEndData[tr.smpFrame]->commands;
 
@@ -217,10 +213,10 @@ R_AddDrawSurfCmd
 
 =============
 */
-void	R_AddDrawSurfCmd( drawSurf_t *drawSurfs, int numDrawSurfs ) {
-	drawSurfsCommand_t	*cmd;
+void	R_AddDrawSurfCmd( drawSurf_t * drawSurfs, int numDrawSurfs ) {
+	drawSurfsCommand_t	* cmd;
 
-	cmd = (drawSurfsCommand_t *)R_GetCommandBuffer( sizeof( *cmd ) );
+	cmd = ( drawSurfsCommand_t * )R_GetCommandBuffer( sizeof( *cmd ) );
 	if ( !cmd ) {
 		return;
 	}
@@ -241,13 +237,13 @@ RE_SetColor
 Passing NULL will set the color to white
 =============
 */
-void	RE_SetColor( const float *rgba ) {
-	setColorCommand_t	*cmd;
+void	RE_SetColor( const float * rgba ) {
+	setColorCommand_t	* cmd;
 
-  if ( !tr.registered ) {
-	return;
-  }
-	cmd = (setColorCommand_t *)R_GetCommandBuffer( sizeof( *cmd ) );
+	if ( !tr.registered ) {
+		return;
+	}
+	cmd = ( setColorCommand_t * )R_GetCommandBuffer( sizeof( *cmd ) );
 	if ( !cmd ) {
 		return;
 	}
@@ -270,14 +266,14 @@ void	RE_SetColor( const float *rgba ) {
 RE_StretchPic
 =============
 */
-void RE_StretchPic ( float x, float y, float w, float h, 
-					  float s1, float t1, float s2, float t2, qhandle_t hShader ) {
-	stretchPicCommand_t	*cmd;
+void RE_StretchPic( float x, float y, float w, float h,
+					float s1, float t1, float s2, float t2, qhandle_t hShader ) {
+	stretchPicCommand_t	* cmd;
 
-  if (!tr.registered) {
-	return;
-  }
-	cmd = (stretchPicCommand_t *)R_GetCommandBuffer( sizeof( *cmd ) );
+	if ( !tr.registered ) {
+		return;
+	}
+	cmd = ( stretchPicCommand_t * )R_GetCommandBuffer( sizeof( *cmd ) );
 	if ( !cmd ) {
 		return;
 	}
@@ -303,7 +299,7 @@ for each RE_EndFrame
 ====================
 */
 void RE_BeginFrame( stereoFrame_t stereoFrame ) {
-	drawBufferCommand_t	*cmd;
+	drawBufferCommand_t	* cmd;
 
 	if ( !tr.registered ) {
 		return;
@@ -316,22 +312,16 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	//
 	// do overdraw measurement
 	//
-	if ( r_measureOverdraw->integer )
-	{
-		if ( glConfig.stencilBits < 4 )
-		{
+	if ( r_measureOverdraw->integer ) {
+		if ( glConfig.stencilBits < 4 ) {
 			ri.Printf( PRINT_ALL, "Warning: not enough stencil bits to measure overdraw: %d\n", glConfig.stencilBits );
 			ri.Cvar_Set( "r_measureOverdraw", "0" );
 			r_measureOverdraw->modified = qfalse;
-		}
-		else if ( r_shadows->integer == 2 )
-		{
+		} else if ( r_shadows->integer == 2 ) {
 			ri.Printf( PRINT_ALL, "Warning: stencil shadows and overdraw measurement are mutually exclusive\n" );
 			ri.Cvar_Set( "r_measureOverdraw", "0" );
 			r_measureOverdraw->modified = qfalse;
-		}
-		else
-		{
+		} else {
 			R_SyncRenderThread();
 			glEnable( GL_STENCIL_TEST );
 			glStencilMask( ~0U );
@@ -340,9 +330,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			glStencilOp( GL_KEEP, GL_INCR, GL_INCR );
 		}
 		r_measureOverdraw->modified = qfalse;
-	}
-	else
-	{
+	} else {
 		// this is only reached if it was on and is now off
 		if ( r_measureOverdraw->modified ) {
 			R_SyncRenderThread();
@@ -383,7 +371,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	//
 	// draw buffer stuff
 	//
-	cmd = (drawBufferCommand_t *)R_GetCommandBuffer( sizeof( *cmd ) );
+	cmd = ( drawBufferCommand_t * )R_GetCommandBuffer( sizeof( *cmd ) );
 	if ( !cmd ) {
 		return;
 	}
@@ -391,9 +379,9 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 
 	if ( glConfig.stereoEnabled ) {
 		if ( stereoFrame == STEREO_LEFT ) {
-			cmd->buffer = (int)GL_BACK_LEFT;
+			cmd->buffer = ( int )GL_BACK_LEFT;
 		} else if ( stereoFrame == STEREO_RIGHT ) {
-			cmd->buffer = (int)GL_BACK_RIGHT;
+			cmd->buffer = ( int )GL_BACK_RIGHT;
 		} else {
 			ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is enabled, but stereoFrame was %i", stereoFrame );
 		}
@@ -402,9 +390,9 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			ri.Error( ERR_FATAL, "RE_BeginFrame: Stereo is disabled, but stereoFrame was %i", stereoFrame );
 		}
 		if ( !Q_stricmp( r_drawBuffer->string, "GL_FRONT" ) ) {
-			cmd->buffer = (int)GL_FRONT;
+			cmd->buffer = ( int )GL_FRONT;
 		} else {
-			cmd->buffer = (int)GL_BACK;
+			cmd->buffer = ( int )GL_BACK;
 		}
 	}
 }
@@ -417,13 +405,13 @@ RE_EndFrame
 Returns the number of msec spent in the back end
 =============
 */
-void RE_EndFrame( int *frontEndMsec, int *backEndMsec ) {
-	swapBuffersCommand_t	*cmd;
+void RE_EndFrame( int * frontEndMsec, int * backEndMsec ) {
+	swapBuffersCommand_t	* cmd;
 
 	if ( !tr.registered ) {
 		return;
 	}
-	cmd = (swapBuffersCommand_t *)R_GetCommandBuffer( sizeof( *cmd ) );
+	cmd = ( swapBuffersCommand_t * )R_GetCommandBuffer( sizeof( *cmd ) );
 	if ( !cmd ) {
 		return;
 	}

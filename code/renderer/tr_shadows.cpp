@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -43,7 +43,7 @@ typedef struct {
 
 static	edgeDef_t	edgeDefs[SHADER_MAX_VERTEXES][MAX_EDGE_DEFS];
 static	int			numEdgeDefs[SHADER_MAX_VERTEXES];
-static	int			facing[SHADER_MAX_INDEXES/3];
+static	int			facing[SHADER_MAX_INDEXES / 3];
 
 void R_AddEdgeDef( int i1, int i2, int facing ) {
 	int		c;
@@ -74,9 +74,9 @@ void R_RenderShadowEdges( void ) {
 			continue;
 		}
 
-		i1 = tess.indexes[ i*3 + 0 ];
-		i2 = tess.indexes[ i*3 + 1 ];
-		i3 = tess.indexes[ i*3 + 2 ];
+		i1 = tess.indexes[ i * 3 + 0 ];
+		i2 = tess.indexes[ i * 3 + 1 ];
+		i3 = tess.indexes[ i * 3 + 2 ];
 
 		glBegin( GL_TRIANGLE_STRIP );
 		glVertex3fv( tess.xyz[ i1 ] );
@@ -169,7 +169,7 @@ void RB_ShadowTessEnd( void ) {
 
 	// project vertexes away from light direction
 	for ( i = 0 ; i < tess.numVertexes ; i++ ) {
-		VectorMA( tess.xyz[i], -512, lightDir, tess.xyz[i+tess.numVertexes] );
+		VectorMA( tess.xyz[i], -512, lightDir, tess.xyz[i + tess.numVertexes] );
 	}
 
 	// decide which triangles face the light
@@ -179,12 +179,12 @@ void RB_ShadowTessEnd( void ) {
 	for ( i = 0 ; i < numTris ; i++ ) {
 		int		i1, i2, i3;
 		vec3_t	d1, d2, normal;
-		float	*v1, *v2, *v3;
+		float	* v1, * v2, * v3;
 		float	d;
 
-		i1 = tess.indexes[ i*3 + 0 ];
-		i2 = tess.indexes[ i*3 + 1 ];
-		i3 = tess.indexes[ i*3 + 2 ];
+		i1 = tess.indexes[ i * 3 + 0 ];
+		i2 = tess.indexes[ i * 3 + 1 ];
+		i3 = tess.indexes[ i * 3 + 2 ];
 
 		v1 = tess.xyz[ i1 ];
 		v2 = tess.xyz[ i2 ];
@@ -269,8 +269,8 @@ void RB_ShadowFinish( void ) {
 	glEnable( GL_STENCIL_TEST );
 	glStencilFunc( GL_NOTEQUAL, 0, 255 );
 
-	glDisable (GL_CLIP_PLANE0);
-	glDisable (GL_CULL_FACE);
+	glDisable ( GL_CLIP_PLANE0 );
+	glDisable ( GL_CULL_FACE );
 
 	GL_Bind( tr.whiteImage );
 
@@ -289,7 +289,7 @@ void RB_ShadowFinish( void ) {
 	glVertex3f( -100, -100, -10 );
 	glEnd ();
 
-	glColor4f(1,1,1,1);
+	glColor4f( 1, 1, 1, 1 );
 	glDisable( GL_STENCIL_TEST );
 }
 
@@ -301,7 +301,7 @@ RB_ProjectionShadowDeform
 =================
 */
 void RB_ProjectionShadowDeform( void ) {
-	float	*xyz;
+	float	* xyz;
 	int		i;
 	float	h;
 	vec3_t	ground;
@@ -322,7 +322,7 @@ void RB_ProjectionShadowDeform( void ) {
 	d = DotProduct( lightDir, ground );
 	// don't let the shadows get too long or go negative
 	if ( d < 0.5 ) {
-		VectorMA( lightDir, (0.5 - d), ground, lightDir );
+		VectorMA( lightDir, ( 0.5 - d ), ground, lightDir );
 		d = DotProduct( lightDir, ground );
 	}
 	d = 1.0 / d;

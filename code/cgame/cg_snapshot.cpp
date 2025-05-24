@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -32,7 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 CG_ResetEntity
 ==================
 */
-static void CG_ResetEntity( centity_t *cent ) {
+static void CG_ResetEntity( centity_t * cent ) {
 	// if the previous snapshot this entity was updated in is at least
 	// an event window back in time then we can reset the previous event
 	if ( cent->snapShotTime < cg.time - EVENT_VALID_MSEC ) {
@@ -41,8 +41,8 @@ static void CG_ResetEntity( centity_t *cent ) {
 
 	cent->trailTime = cg.snap->serverTime;
 
-	VectorCopy (cent->currentState.origin, cent->lerpOrigin);
-	VectorCopy (cent->currentState.angles, cent->lerpAngles);
+	VectorCopy( cent->currentState.origin, cent->lerpOrigin );
+	VectorCopy( cent->currentState.angles, cent->lerpAngles );
 	if ( cent->currentState.eType == ET_PLAYER ) {
 		CG_ResetPlayerEntity( cent );
 	}
@@ -55,7 +55,7 @@ CG_TransitionEntity
 cent->nextState is moved to cent->currentState and events are fired
 ===============
 */
-static void CG_TransitionEntity( centity_t *cent ) {
+static void CG_TransitionEntity( centity_t * cent ) {
 	cent->currentState = cent->nextState;
 	cent->currentValid = qtrue;
 
@@ -77,16 +77,16 @@ static void CG_TransitionEntity( centity_t *cent ) {
 CG_SetInitialSnapshot
 
 This will only happen on the very first snapshot, or
-on tourney restarts.  All other times will use 
+on tourney restarts.  All other times will use
 CG_TransitionSnapshot instead.
 
 FIXME: Also called by map_restart?
 ==================
 */
-void CG_SetInitialSnapshot( snapshot_t *snap ) {
+void CG_SetInitialSnapshot( snapshot_t * snap ) {
 	int				i;
-	centity_t		*cent;
-	entityState_t	*state;
+	centity_t	*	cent;
+	entityState_t	* state;
 
 	cg.snap = snap;
 
@@ -105,7 +105,7 @@ void CG_SetInitialSnapshot( snapshot_t *snap ) {
 		state = &cg.snap->entities[ i ];
 		cent = &cg_entities[ state->number ];
 
-		memcpy(&cent->currentState, state, sizeof(entityState_t));
+		memcpy( &cent->currentState, state, sizeof( entityState_t ) );
 		//cent->currentState = *state;
 		cent->interpolate = qfalse;
 		cent->currentValid = qtrue;
@@ -126,8 +126,8 @@ The transition point from snap to nextSnap has passed
 ===================
 */
 static void CG_TransitionSnapshot( void ) {
-	centity_t			*cent;
-	snapshot_t			*oldFrame;
+	centity_t		*	cent;
+	snapshot_t		*	oldFrame;
 	int					i;
 
 	if ( !cg.snap ) {
@@ -169,7 +169,7 @@ static void CG_TransitionSnapshot( void ) {
 
 	// check for playerstate transition events
 	if ( oldFrame ) {
-		playerState_t	*ops, *ps;
+		playerState_t	* ops, * ps;
 
 		ops = &oldFrame->ps;
 		ps = &cg.snap->ps;
@@ -180,8 +180,8 @@ static void CG_TransitionSnapshot( void ) {
 
 		// if we are not doing client side movement prediction for any
 		// reason, then the client events and view changes will be issued now
-		if ( cg.demoPlayback || (cg.snap->ps.pm_flags & PMF_FOLLOW)
-			|| cg_nopredict.integer || cg_synchronousClients.integer ) {
+		if ( cg.demoPlayback || ( cg.snap->ps.pm_flags & PMF_FOLLOW )
+				|| cg_nopredict.integer || cg_synchronousClients.integer ) {
 			CG_TransitionPlayerState( ps, ops );
 		}
 	}
@@ -196,10 +196,10 @@ CG_SetNextSnap
 A new snapshot has just been read in from the client system.
 ===================
 */
-static void CG_SetNextSnap( snapshot_t *snap ) {
+static void CG_SetNextSnap( snapshot_t * snap ) {
 	int					num;
-	entityState_t		*es;
-	centity_t			*cent;
+	entityState_t	*	es;
+	centity_t		*	cent;
 
 	cg.nextSnap = snap;
 
@@ -211,12 +211,12 @@ static void CG_SetNextSnap( snapshot_t *snap ) {
 		es = &snap->entities[num];
 		cent = &cg_entities[ es->number ];
 
-		memcpy(&cent->nextState, es, sizeof(entityState_t));
+		memcpy( &cent->nextState, es, sizeof( entityState_t ) );
 		//cent->nextState = *es;
 
 		// if this frame is a teleport, or the entity wasn't in the
 		// previous frame, don't interpolate
-		if ( !cent->currentValid || ( ( cent->currentState.eFlags ^ es->eFlags ) & EF_TELEPORT_BIT )  ) {
+		if ( !cent->currentValid || ( ( cent->currentState.eFlags ^ es->eFlags ) & EF_TELEPORT_BIT ) ) {
 			cent->interpolate = qfalse;
 		} else {
 			cent->interpolate = qtrue;
@@ -256,13 +256,13 @@ times if the client system fails to return a
 valid snapshot.
 ========================
 */
-static snapshot_t *CG_ReadNextSnapshot( void ) {
+static snapshot_t * CG_ReadNextSnapshot( void ) {
 	qboolean	r;
-	snapshot_t	*dest;
+	snapshot_t	* dest;
 
 	if ( cg.latestSnapshotNum > cgs.processedSnapshotNum + 1000 ) {
-		CG_Printf( "WARNING: CG_ReadNextSnapshot: way out of range, %i > %i", 
-			cg.latestSnapshotNum, cgs.processedSnapshotNum );
+		CG_Printf( "WARNING: CG_ReadNextSnapshot: way out of range, %i > %i",
+				   cg.latestSnapshotNum, cgs.processedSnapshotNum );
 	}
 
 	while ( cgs.processedSnapshotNum < cg.latestSnapshotNum ) {
@@ -325,7 +325,7 @@ of an interpolating one)
 ============
 */
 void CG_ProcessSnapshots( void ) {
-	snapshot_t		*snap;
+	snapshot_t	*	snap;
 	int				n;
 
 	// see what the latest snapshot the client system has is

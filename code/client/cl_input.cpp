@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -65,17 +65,17 @@ void IN_MLookDown( void ) {
 void IN_MLookUp( void ) {
 	in_mlooking = qfalse;
 	if ( !cl_freelook->integer ) {
-		IN_CenterView ();
+		IN_CenterView();
 	}
 }
 
-void IN_KeyDown( kbutton_t *b ) {
+void IN_KeyDown( kbutton_t * b ) {
 	int		k;
-	char	*c;
-	
-	c = Cmd_Argv(1);
+	char	* c;
+
+	c = Cmd_Argv( 1 );
 	if ( c[0] ) {
-		k = atoi(c);
+		k = atoi( c );
 	} else {
 		k = -1;		// typed manually at the console for continuous down
 	}
@@ -83,36 +83,36 @@ void IN_KeyDown( kbutton_t *b ) {
 	if ( k == b->down[0] || k == b->down[1] ) {
 		return;		// repeating key
 	}
-	
+
 	if ( !b->down[0] ) {
 		b->down[0] = k;
 	} else if ( !b->down[1] ) {
 		b->down[1] = k;
 	} else {
-		Com_Printf ("Three keys down for a button!\n");
+		Com_Printf( "Three keys down for a button!\n" );
 		return;
 	}
-	
+
 	if ( b->active ) {
 		return;		// still down
 	}
 
 	// save timestamp for partial frame summing
-	c = Cmd_Argv(2);
-	b->downtime = atoi(c);
+	c = Cmd_Argv( 2 );
+	b->downtime = atoi( c );
 
 	b->active = qtrue;
 	b->wasPressed = qtrue;
 }
 
-void IN_KeyUp( kbutton_t *b ) {
+void IN_KeyUp( kbutton_t * b ) {
 	int		k;
-	char	*c;
+	char	* c;
 	unsigned	uptime;
 
-	c = Cmd_Argv(1);
+	c = Cmd_Argv( 1 );
 	if ( c[0] ) {
-		k = atoi(c);
+		k = atoi( c );
 	} else {
 		// typed manually at the console, assume for unsticking, so clear all
 		b->down[0] = b->down[1] = 0;
@@ -134,8 +134,8 @@ void IN_KeyUp( kbutton_t *b ) {
 	b->active = qfalse;
 
 	// save timestamp for partial frame summing
-	c = Cmd_Argv(2);
-	uptime = atoi(c);
+	c = Cmd_Argv( 2 );
+	uptime = atoi( c );
 	if ( uptime ) {
 		b->msec += uptime - b->downtime;
 	} else {
@@ -154,7 +154,7 @@ CL_KeyState
 Returns the fraction of the frame that the key was down
 ===============
 */
-float CL_KeyState( kbutton_t *key ) {
+float CL_KeyState( kbutton_t * key ) {
 	float		val;
 	int			msec;
 
@@ -172,12 +172,12 @@ float CL_KeyState( kbutton_t *key ) {
 	}
 
 #if 0
-	if (msec) {
-		Com_Printf ("%i ", msec);
+	if ( msec ) {
+		Com_Printf( "%i ", msec );
 	}
 #endif
 
-	val = (float)msec / frame_msec;
+	val = ( float )msec / frame_msec;
 	if ( val < 0 ) {
 		val = 0;
 	}
@@ -190,87 +190,201 @@ float CL_KeyState( kbutton_t *key ) {
 
 
 
-void IN_UpDown(void) {IN_KeyDown(&in_up);}
-void IN_UpUp(void) {IN_KeyUp(&in_up);}
-void IN_DownDown(void) {IN_KeyDown(&in_down);}
-void IN_DownUp(void) {IN_KeyUp(&in_down);}
-void IN_LeftDown(void) {IN_KeyDown(&in_left);}
-void IN_LeftUp(void) {IN_KeyUp(&in_left);}
-void IN_RightDown(void) {IN_KeyDown(&in_right);}
-void IN_RightUp(void) {IN_KeyUp(&in_right);}
-void IN_ForwardDown(void) {IN_KeyDown(&in_forward);}
-void IN_ForwardUp(void) {IN_KeyUp(&in_forward);}
-void IN_BackDown(void) {IN_KeyDown(&in_back);}
-void IN_BackUp(void) {IN_KeyUp(&in_back);}
-void IN_LookupDown(void) {IN_KeyDown(&in_lookup);}
-void IN_LookupUp(void) {IN_KeyUp(&in_lookup);}
-void IN_LookdownDown(void) {IN_KeyDown(&in_lookdown);}
-void IN_LookdownUp(void) {IN_KeyUp(&in_lookdown);}
-void IN_MoveleftDown(void) {IN_KeyDown(&in_moveleft);}
-void IN_MoveleftUp(void) {IN_KeyUp(&in_moveleft);}
-void IN_MoverightDown(void) {IN_KeyDown(&in_moveright);}
-void IN_MoverightUp(void) {IN_KeyUp(&in_moveright);}
+void IN_UpDown( void ) {
+	IN_KeyDown( &in_up );
+}
+void IN_UpUp( void ) {
+	IN_KeyUp( &in_up );
+}
+void IN_DownDown( void ) {
+	IN_KeyDown( &in_down );
+}
+void IN_DownUp( void ) {
+	IN_KeyUp( &in_down );
+}
+void IN_LeftDown( void ) {
+	IN_KeyDown( &in_left );
+}
+void IN_LeftUp( void ) {
+	IN_KeyUp( &in_left );
+}
+void IN_RightDown( void ) {
+	IN_KeyDown( &in_right );
+}
+void IN_RightUp( void ) {
+	IN_KeyUp( &in_right );
+}
+void IN_ForwardDown( void ) {
+	IN_KeyDown( &in_forward );
+}
+void IN_ForwardUp( void ) {
+	IN_KeyUp( &in_forward );
+}
+void IN_BackDown( void ) {
+	IN_KeyDown( &in_back );
+}
+void IN_BackUp( void ) {
+	IN_KeyUp( &in_back );
+}
+void IN_LookupDown( void ) {
+	IN_KeyDown( &in_lookup );
+}
+void IN_LookupUp( void ) {
+	IN_KeyUp( &in_lookup );
+}
+void IN_LookdownDown( void ) {
+	IN_KeyDown( &in_lookdown );
+}
+void IN_LookdownUp( void ) {
+	IN_KeyUp( &in_lookdown );
+}
+void IN_MoveleftDown( void ) {
+	IN_KeyDown( &in_moveleft );
+}
+void IN_MoveleftUp( void ) {
+	IN_KeyUp( &in_moveleft );
+}
+void IN_MoverightDown( void ) {
+	IN_KeyDown( &in_moveright );
+}
+void IN_MoverightUp( void ) {
+	IN_KeyUp( &in_moveright );
+}
 
-void IN_SpeedDown(void) {IN_KeyDown(&in_speed);}
-void IN_SpeedUp(void) {IN_KeyUp(&in_speed);}
-void IN_StrafeDown(void) {IN_KeyDown(&in_strafe);}
-void IN_StrafeUp(void) {IN_KeyUp(&in_strafe);}
+void IN_SpeedDown( void ) {
+	IN_KeyDown( &in_speed );
+}
+void IN_SpeedUp( void ) {
+	IN_KeyUp( &in_speed );
+}
+void IN_StrafeDown( void ) {
+	IN_KeyDown( &in_strafe );
+}
+void IN_StrafeUp( void ) {
+	IN_KeyUp( &in_strafe );
+}
 
-void IN_Button0Down(void) {IN_KeyDown(&in_buttons[0]);}
-void IN_Button0Up(void) {IN_KeyUp(&in_buttons[0]);}
-void IN_Button1Down(void) {IN_KeyDown(&in_buttons[1]);}
-void IN_Button1Up(void) {IN_KeyUp(&in_buttons[1]);}
-void IN_Button2Down(void) {IN_KeyDown(&in_buttons[2]);}
-void IN_Button2Up(void) {IN_KeyUp(&in_buttons[2]);}
-void IN_Button3Down(void) {IN_KeyDown(&in_buttons[3]);}
-void IN_Button3Up(void) {IN_KeyUp(&in_buttons[3]);}
-void IN_Button4Down(void) {IN_KeyDown(&in_buttons[4]);}
-void IN_Button4Up(void) {IN_KeyUp(&in_buttons[4]);}
-void IN_Button5Down(void) {IN_KeyDown(&in_buttons[5]);}
-void IN_Button5Up(void) {IN_KeyUp(&in_buttons[5]);}
-void IN_Button6Down(void) {IN_KeyDown(&in_buttons[6]);}
-void IN_Button6Up(void) {IN_KeyUp(&in_buttons[6]);}
-void IN_Button7Down(void) {IN_KeyDown(&in_buttons[7]);}
-void IN_Button7Up(void) {IN_KeyUp(&in_buttons[7]);}
-void IN_Button8Down(void) {IN_KeyDown(&in_buttons[8]);}
-void IN_Button8Up(void) {IN_KeyUp(&in_buttons[8]);}
-void IN_Button9Down(void) {IN_KeyDown(&in_buttons[9]);}
-void IN_Button9Up(void) {IN_KeyUp(&in_buttons[9]);}
-void IN_Button10Down(void) {IN_KeyDown(&in_buttons[10]);}
-void IN_Button10Up(void) {IN_KeyUp(&in_buttons[10]);}
-void IN_Button11Down(void) {IN_KeyDown(&in_buttons[11]);}
-void IN_Button11Up(void) {IN_KeyUp(&in_buttons[11]);}
-void IN_Button12Down(void) {IN_KeyDown(&in_buttons[12]);}
-void IN_Button12Up(void) {IN_KeyUp(&in_buttons[12]);}
-void IN_Button13Down(void) {IN_KeyDown(&in_buttons[13]);}
-void IN_Button13Up(void) {IN_KeyUp(&in_buttons[13]);}
-void IN_Button14Down(void) {IN_KeyDown(&in_buttons[14]);}
-void IN_Button14Up(void) {IN_KeyUp(&in_buttons[14]);}
-void IN_Button15Down(void) {IN_KeyDown(&in_buttons[15]);}
-void IN_Button15Up(void) {IN_KeyUp(&in_buttons[15]);}
+void IN_Button0Down( void ) {
+	IN_KeyDown( &in_buttons[0] );
+}
+void IN_Button0Up( void ) {
+	IN_KeyUp( &in_buttons[0] );
+}
+void IN_Button1Down( void ) {
+	IN_KeyDown( &in_buttons[1] );
+}
+void IN_Button1Up( void ) {
+	IN_KeyUp( &in_buttons[1] );
+}
+void IN_Button2Down( void ) {
+	IN_KeyDown( &in_buttons[2] );
+}
+void IN_Button2Up( void ) {
+	IN_KeyUp( &in_buttons[2] );
+}
+void IN_Button3Down( void ) {
+	IN_KeyDown( &in_buttons[3] );
+}
+void IN_Button3Up( void ) {
+	IN_KeyUp( &in_buttons[3] );
+}
+void IN_Button4Down( void ) {
+	IN_KeyDown( &in_buttons[4] );
+}
+void IN_Button4Up( void ) {
+	IN_KeyUp( &in_buttons[4] );
+}
+void IN_Button5Down( void ) {
+	IN_KeyDown( &in_buttons[5] );
+}
+void IN_Button5Up( void ) {
+	IN_KeyUp( &in_buttons[5] );
+}
+void IN_Button6Down( void ) {
+	IN_KeyDown( &in_buttons[6] );
+}
+void IN_Button6Up( void ) {
+	IN_KeyUp( &in_buttons[6] );
+}
+void IN_Button7Down( void ) {
+	IN_KeyDown( &in_buttons[7] );
+}
+void IN_Button7Up( void ) {
+	IN_KeyUp( &in_buttons[7] );
+}
+void IN_Button8Down( void ) {
+	IN_KeyDown( &in_buttons[8] );
+}
+void IN_Button8Up( void ) {
+	IN_KeyUp( &in_buttons[8] );
+}
+void IN_Button9Down( void ) {
+	IN_KeyDown( &in_buttons[9] );
+}
+void IN_Button9Up( void ) {
+	IN_KeyUp( &in_buttons[9] );
+}
+void IN_Button10Down( void ) {
+	IN_KeyDown( &in_buttons[10] );
+}
+void IN_Button10Up( void ) {
+	IN_KeyUp( &in_buttons[10] );
+}
+void IN_Button11Down( void ) {
+	IN_KeyDown( &in_buttons[11] );
+}
+void IN_Button11Up( void ) {
+	IN_KeyUp( &in_buttons[11] );
+}
+void IN_Button12Down( void ) {
+	IN_KeyDown( &in_buttons[12] );
+}
+void IN_Button12Up( void ) {
+	IN_KeyUp( &in_buttons[12] );
+}
+void IN_Button13Down( void ) {
+	IN_KeyDown( &in_buttons[13] );
+}
+void IN_Button13Up( void ) {
+	IN_KeyUp( &in_buttons[13] );
+}
+void IN_Button14Down( void ) {
+	IN_KeyDown( &in_buttons[14] );
+}
+void IN_Button14Up( void ) {
+	IN_KeyUp( &in_buttons[14] );
+}
+void IN_Button15Down( void ) {
+	IN_KeyDown( &in_buttons[15] );
+}
+void IN_Button15Up( void ) {
+	IN_KeyUp( &in_buttons[15] );
+}
 
-void IN_ButtonDown (void) {
-	IN_KeyDown(&in_buttons[1]);}
-void IN_ButtonUp (void) {
-	IN_KeyUp(&in_buttons[1]);}
+void IN_ButtonDown( void ) {
+	IN_KeyDown( &in_buttons[1] );
+}
+void IN_ButtonUp( void ) {
+	IN_KeyUp( &in_buttons[1] );
+}
 
-void IN_CenterView (void) {
-	cl.viewangles[PITCH] = -SHORT2ANGLE(cl.snap.ps.delta_angles[PITCH]);
+void IN_CenterView( void ) {
+	cl.viewangles[PITCH] = -SHORT2ANGLE( cl.snap.ps.delta_angles[PITCH] );
 }
 
 
 //==========================================================================
 
-cvar_t	*cl_upspeed;
-cvar_t	*cl_forwardspeed;
-cvar_t	*cl_sidespeed;
+cvar_t	* cl_upspeed;
+cvar_t	* cl_forwardspeed;
+cvar_t	* cl_sidespeed;
 
-cvar_t	*cl_yawspeed;
-cvar_t	*cl_pitchspeed;
+cvar_t	* cl_yawspeed;
+cvar_t	* cl_pitchspeed;
 
-cvar_t	*cl_run;
+cvar_t	* cl_run;
 
-cvar_t	*cl_anglespeedkey;
+cvar_t	* cl_anglespeedkey;
 
 
 /*
@@ -282,7 +396,7 @@ Moves the local angle positions
 */
 void CL_AdjustAngles( void ) {
 	float	speed;
-	
+
 	if ( in_speed.active ) {
 		speed = 0.001 * cls.frametime * cl_anglespeedkey->value;
 	} else {
@@ -290,12 +404,12 @@ void CL_AdjustAngles( void ) {
 	}
 
 	if ( !in_strafe.active ) {
-		cl.viewangles[YAW] -= speed*cl_yawspeed->value*CL_KeyState (&in_right);
-		cl.viewangles[YAW] += speed*cl_yawspeed->value*CL_KeyState (&in_left);
+		cl.viewangles[YAW] -= speed * cl_yawspeed->value * CL_KeyState( &in_right );
+		cl.viewangles[YAW] += speed * cl_yawspeed->value * CL_KeyState( &in_left );
 	}
 
-	cl.viewangles[PITCH] -= speed*cl_pitchspeed->value * CL_KeyState (&in_lookup);
-	cl.viewangles[PITCH] += speed*cl_pitchspeed->value * CL_KeyState (&in_lookdown);
+	cl.viewangles[PITCH] -= speed * cl_pitchspeed->value * CL_KeyState( &in_lookup );
+	cl.viewangles[PITCH] += speed * cl_pitchspeed->value * CL_KeyState( &in_lookdown );
 }
 
 /*
@@ -305,7 +419,7 @@ CL_KeyMove
 Sets the usercmd_t based on key states
 ================
 */
-void CL_KeyMove( usercmd_t *cmd ) {
+void CL_KeyMove( usercmd_t * cmd ) {
 	int		movespeed;
 	int		forward, side, up;
 
@@ -326,19 +440,19 @@ void CL_KeyMove( usercmd_t *cmd ) {
 	side = 0;
 	up = 0;
 	if ( in_strafe.active ) {
-		side += movespeed * CL_KeyState (&in_right);
-		side -= movespeed * CL_KeyState (&in_left);
+		side += movespeed * CL_KeyState( &in_right );
+		side -= movespeed * CL_KeyState( &in_left );
 	}
 
-	side += movespeed * CL_KeyState (&in_moveright);
-	side -= movespeed * CL_KeyState (&in_moveleft);
+	side += movespeed * CL_KeyState( &in_moveright );
+	side -= movespeed * CL_KeyState( &in_moveleft );
 
 
-	up += movespeed * CL_KeyState (&in_up);
-	up -= movespeed * CL_KeyState (&in_down);
+	up += movespeed * CL_KeyState( &in_up );
+	up -= movespeed * CL_KeyState( &in_down );
 
-	forward += movespeed * CL_KeyState (&in_forward);
-	forward -= movespeed * CL_KeyState (&in_back);
+	forward += movespeed * CL_KeyState( &in_forward );
+	forward -= movespeed * CL_KeyState( &in_back );
 
 	cmd->forwardmove = ClampChar( forward );
 	cmd->rightmove = ClampChar( side );
@@ -352,9 +466,9 @@ CL_MouseEvent
 */
 void CL_MouseEvent( int dx, int dy, int time ) {
 	if ( cls.keyCatchers & KEYCATCH_UI ) {
-		ui->UI_MouseEvent(dx, dy);
-	} else if (cls.keyCatchers & KEYCATCH_CGAME) {
-		cgame->CG_MouseEvent(dx, dy);
+		ui->UI_MouseEvent( dx, dy );
+	} else if ( cls.keyCatchers & KEYCATCH_CGAME ) {
+		cgame->CG_MouseEvent( dx, dy );
 	} else {
 		cl.mouseDx[cl.mouseIndex] += dx;
 		cl.mouseDy[cl.mouseIndex] += dy;
@@ -380,7 +494,7 @@ void CL_JoystickEvent( int axis, int value, int time ) {
 CL_JoystickMove
 =================
 */
-void CL_JoystickMove( usercmd_t *cmd ) {
+void CL_JoystickMove( usercmd_t * cmd ) {
 	int		movespeed;
 	float	anglespeed;
 
@@ -417,7 +531,7 @@ void CL_JoystickMove( usercmd_t *cmd ) {
 CL_MouseMove
 =================
 */
-void CL_MouseMove( usercmd_t *cmd ) {
+void CL_MouseMove( usercmd_t * cmd ) {
 	float	mx, my;
 	float	accelSensitivity;
 	float	rate;
@@ -434,7 +548,7 @@ void CL_MouseMove( usercmd_t *cmd ) {
 	cl.mouseDx[cl.mouseIndex] = 0;
 	cl.mouseDy[cl.mouseIndex] = 0;
 
-	rate = sqrt( mx * mx + my * my ) / (float)frame_msec;
+	rate = sqrt( mx * mx + my * my ) / ( float )frame_msec;
 	accelSensitivity = cl_sensitivity->value + rate * cl_mouseAccel->value;
 
 	// scale by FOV
@@ -447,7 +561,7 @@ void CL_MouseMove( usercmd_t *cmd ) {
 	mx *= accelSensitivity;
 	my *= accelSensitivity;
 
-	if (!mx && !my) {
+	if ( !mx && !my ) {
 		return;
 	}
 
@@ -458,7 +572,7 @@ void CL_MouseMove( usercmd_t *cmd ) {
 		cl.viewangles[YAW] -= m_yaw->value * mx;
 	}
 
-	if ( (in_mlooking || cl_freelook->integer) && !in_strafe.active ) {
+	if ( ( in_mlooking || cl_freelook->integer ) && !in_strafe.active ) {
 		cl.viewangles[PITCH] += m_pitch->value * my;
 	} else {
 		cmd->forwardmove = ClampChar( cmd->forwardmove - m_forward->value * my );
@@ -471,15 +585,15 @@ void CL_MouseMove( usercmd_t *cmd ) {
 CL_CmdButtons
 ==============
 */
-void CL_CmdButtons( usercmd_t *cmd ) {
+void CL_CmdButtons( usercmd_t * cmd ) {
 	int		i;
 
 	//
 	// figure button bits
 	// send a button bit even if the key was pressed and released in
 	// less than a frame
-	//	
-	for (i = 0 ; i < 15 ; i++) {
+	//
+	for ( i = 0 ; i < 15 ; i++ ) {
 		if ( in_buttons[i].active || in_buttons[i].wasPressed ) {
 			cmd->buttons |= 1 << i;
 		}
@@ -503,7 +617,7 @@ void CL_CmdButtons( usercmd_t *cmd ) {
 CL_FinishMove
 ==============
 */
-void CL_FinishMove( usercmd_t *cmd ) {
+void CL_FinishMove( usercmd_t * cmd ) {
 	int		i;
 
 	// copy the state that the cgame is currently sending
@@ -513,8 +627,8 @@ void CL_FinishMove( usercmd_t *cmd ) {
 	// can be determined without allowing cheating
 	cmd->serverTime = cl.serverTime;
 
-	for (i=0 ; i<3 ; i++) {
-		cmd->angles[i] = ANGLE2SHORT(cl.viewangles[i]);
+	for ( i = 0 ; i < 3 ; i++ ) {
+		cmd->angles[i] = ANGLE2SHORT( cl.viewangles[i] );
 	}
 }
 
@@ -531,8 +645,8 @@ usercmd_t CL_CreateCmd( void ) {
 	VectorCopy( cl.viewangles, oldAngles );
 
 	// keyboard angle adjustment
-	CL_AdjustAngles ();
-	
+	CL_AdjustAngles();
+
 	Com_Memset( &cmd, 0, sizeof( cmd ) );
 
 	CL_CmdButtons( &cmd );
@@ -551,7 +665,7 @@ usercmd_t CL_CreateCmd( void ) {
 		cl.viewangles[PITCH] = oldAngles[PITCH] + 90;
 	} else if ( oldAngles[PITCH] - cl.viewangles[PITCH] > 90 ) {
 		cl.viewangles[PITCH] = oldAngles[PITCH] - 90;
-	} 
+	}
 
 	// store out the final values
 	CL_FinishMove( &cmd );
@@ -559,10 +673,10 @@ usercmd_t CL_CreateCmd( void ) {
 	// draw debug graphs of turning for mouse testing
 	if ( cl_debugMove->integer ) {
 		if ( cl_debugMove->integer == 1 ) {
-			SCR_DebugGraph( abs((int)cl.viewangles[YAW] - (int)oldAngles[YAW]), 0 );
+			SCR_DebugGraph( abs( ( int )cl.viewangles[YAW] - ( int )oldAngles[YAW] ), 0 );
 		}
 		if ( cl_debugMove->integer == 2 ) {
-			SCR_DebugGraph( abs((int)cl.viewangles[PITCH] - (int)oldAngles[PITCH]), 0 );
+			SCR_DebugGraph( abs( ( int )cl.viewangles[PITCH] - ( int )oldAngles[PITCH] ), 0 );
 		}
 	}
 
@@ -578,7 +692,7 @@ Create a new usercmd_t structure for this frame
 =================
 */
 void CL_CreateNewCommands( void ) {
-	usercmd_t	*cmd;
+	usercmd_t	* cmd;
 	int			cmdNum;
 
 	// no need to create usercmds until we have a gamestate
@@ -599,7 +713,7 @@ void CL_CreateNewCommands( void ) {
 	// generate a command for this frame
 	cl.cmdNumber++;
 	cmdNum = cl.cmdNumber & CMD_MASK;
-	cl.cmds[cmdNum] = CL_CreateCmd ();
+	cl.cmds[cmdNum] = CL_CreateCmd();
 	cmd = &cl.cmds[cmdNum];
 }
 
@@ -625,16 +739,16 @@ qboolean CL_ReadyToSendPacket( void ) {
 
 	// If we are downloading, we send no less than 50ms between packets
 	if ( *clc.downloadTempName &&
-		cls.realtime - clc.lastPacketSentTime < 50 ) {
+			cls.realtime - clc.lastPacketSentTime < 50 ) {
 		return qfalse;
 	}
 
 	// if we don't have a valid gamestate yet, only send
 	// one packet a second
-	if ( cls.state != CA_ACTIVE && 
-		cls.state != CA_PRIMED && 
-		!*clc.downloadTempName &&
-		cls.realtime - clc.lastPacketSentTime < 1000 ) {
+	if ( cls.state != CA_ACTIVE &&
+			cls.state != CA_PRIMED &&
+			!*clc.downloadTempName &&
+			cls.realtime - clc.lastPacketSentTime < 1000 ) {
 		return qfalse;
 	}
 
@@ -654,7 +768,7 @@ qboolean CL_ReadyToSendPacket( void ) {
 	} else if ( cl_maxpackets->integer > 125 ) {
 		Cvar_Set( "cl_maxpackets", "125" );
 	}
-	oldPacketNum = (clc.netchan.outgoingSequence - 1) & PACKET_MASK;
+	oldPacketNum = ( clc.netchan.outgoingSequence - 1 ) & PACKET_MASK;
 	delta = cls.realtime -  cl.outPackets[ oldPacketNum ].p_realtime;
 	if ( delta < 1000 / cl_maxpackets->integer ) {
 		// the accumulated commands will go out in the next packet
@@ -689,7 +803,7 @@ void CL_WritePacket( void ) {
 	msg_t		buf;
 	byte		data[MAX_MSGLEN];
 	int			i, j;
-	usercmd_t	*cmd, *oldcmd;
+	usercmd_t	* cmd, * oldcmd;
 	usercmd_t	nullcmd;
 	int			packetNum;
 	int			oldPacketNum;
@@ -700,10 +814,10 @@ void CL_WritePacket( void ) {
 		return;
 	}
 
-	Com_Memset( &nullcmd, 0, sizeof(nullcmd) );
+	Com_Memset( &nullcmd, 0, sizeof( nullcmd ) );
 	oldcmd = &nullcmd;
 
-	MSG_Init( &buf, data, sizeof(data) );
+	MSG_Init( &buf, data, sizeof( data ) );
 
 	MSG_Bitstream( &buf );
 	// write the current serverId so the server
@@ -722,7 +836,7 @@ void CL_WritePacket( void ) {
 	for ( i = clc.reliableAcknowledge + 1 ; i <= clc.reliableSequence ; i++ ) {
 		MSG_WriteByte( &buf, clc_clientCommand );
 		MSG_WriteLong( &buf, i );
-		MSG_WriteString( &buf, clc.reliableCommands[ i & (MAX_RELIABLE_COMMANDS-1) ] );
+		MSG_WriteString( &buf, clc.reliableCommands[ i & ( MAX_RELIABLE_COMMANDS - 1 ) ] );
 	}
 
 	// we want to send all the usercmds that were generated in the last
@@ -733,11 +847,11 @@ void CL_WritePacket( void ) {
 	} else if ( cl_packetdup->integer > 5 ) {
 		Cvar_Set( "cl_packetdup", "5" );
 	}
-	oldPacketNum = (clc.netchan.outgoingSequence - 1 - cl_packetdup->integer) & PACKET_MASK;
+	oldPacketNum = ( clc.netchan.outgoingSequence - 1 - cl_packetdup->integer ) & PACKET_MASK;
 	count = cl.cmdNumber - cl.outPackets[ oldPacketNum ].p_cmdNumber;
 	if ( count > MAX_PACKET_USERCMDS ) {
 		count = MAX_PACKET_USERCMDS;
-		Com_Printf("MAX_PACKET_USERCMDS\n");
+		Com_Printf( "MAX_PACKET_USERCMDS\n" );
 	}
 	if ( count >= 1 ) {
 		if ( cl_showSend->integer ) {
@@ -746,10 +860,10 @@ void CL_WritePacket( void ) {
 
 		// begin a client move command
 		if ( cl_nodelta->integer || !cl.snap.valid || clc.demowaiting
-			|| clc.serverMessageSequence != cl.snap.messageNum ) {
-			MSG_WriteByte (&buf, clc_moveNoDelta);
+				|| clc.serverMessageSequence != cl.snap.messageNum ) {
+			MSG_WriteByte( &buf, clc_moveNoDelta );
 		} else {
-			MSG_WriteByte (&buf, clc_move);
+			MSG_WriteByte( &buf, clc_move );
 		}
 
 		// write the command count
@@ -760,13 +874,13 @@ void CL_WritePacket( void ) {
 		// also use the message acknowledge
 		key ^= clc.serverMessageSequence;
 		// also use the last acknowledged server command in the key
-		key ^= Com_HashKey(clc.serverCommands[ clc.serverCommandSequence & (MAX_RELIABLE_COMMANDS-1) ], 32);
+		key ^= Com_HashKey( clc.serverCommands[ clc.serverCommandSequence & ( MAX_RELIABLE_COMMANDS - 1 ) ], 32 );
 
 		// write all the commands, including the predicted command
 		for ( i = 0 ; i < count ; i++ ) {
-			j = (cl.cmdNumber - count + i + 1) & CMD_MASK;
+			j = ( cl.cmdNumber - count + i + 1 ) & CMD_MASK;
 			cmd = &cl.cmds[j];
-			MSG_WriteDeltaUsercmdKey (&buf, key, oldcmd, cmd);
+			MSG_WriteDeltaUsercmdKey( &buf, key, oldcmd, cmd );
 			oldcmd = cmd;
 		}
 	}
@@ -784,7 +898,7 @@ void CL_WritePacket( void ) {
 		Com_Printf( "%i ", buf.cursize );
 	}
 
-	CL_Netchan_Transmit (&clc.netchan, &buf);	
+	CL_Netchan_Transmit( &clc.netchan, &buf );
 
 	// clients never really should have messages large enough
 	// to fragment, but in case they do, fire them all off
@@ -835,67 +949,67 @@ CL_InitInput
 ============
 */
 void CL_InitInput( void ) {
-	Cmd_AddCommand ("centerview",IN_CenterView);
+	Cmd_AddCommand( "centerview", IN_CenterView );
 
-	Cmd_AddCommand ("+moveup",IN_UpDown);
-	Cmd_AddCommand ("-moveup",IN_UpUp);
-	Cmd_AddCommand ("+movedown",IN_DownDown);
-	Cmd_AddCommand ("-movedown",IN_DownUp);
-	Cmd_AddCommand ("+left",IN_LeftDown);
-	Cmd_AddCommand ("-left",IN_LeftUp);
-	Cmd_AddCommand ("+right",IN_RightDown);
-	Cmd_AddCommand ("-right",IN_RightUp);
-	Cmd_AddCommand ("+forward",IN_ForwardDown);
-	Cmd_AddCommand ("-forward",IN_ForwardUp);
-	Cmd_AddCommand ("+back",IN_BackDown);
-	Cmd_AddCommand ("-back",IN_BackUp);
-	Cmd_AddCommand ("+lookup", IN_LookupDown);
-	Cmd_AddCommand ("-lookup", IN_LookupUp);
-	Cmd_AddCommand ("+lookdown", IN_LookdownDown);
-	Cmd_AddCommand ("-lookdown", IN_LookdownUp);
-	Cmd_AddCommand ("+strafe", IN_StrafeDown);
-	Cmd_AddCommand ("-strafe", IN_StrafeUp);
-	Cmd_AddCommand ("+moveleft", IN_MoveleftDown);
-	Cmd_AddCommand ("-moveleft", IN_MoveleftUp);
-	Cmd_AddCommand ("+moveright", IN_MoverightDown);
-	Cmd_AddCommand ("-moveright", IN_MoverightUp);
-	Cmd_AddCommand ("+speed", IN_SpeedDown);
-	Cmd_AddCommand ("-speed", IN_SpeedUp);
-	Cmd_AddCommand ("+attack", IN_Button0Down);
-	Cmd_AddCommand ("-attack", IN_Button0Up);
-	Cmd_AddCommand ("+button0", IN_Button0Down);
-	Cmd_AddCommand ("-button0", IN_Button0Up);
-	Cmd_AddCommand ("+button1", IN_Button1Down);
-	Cmd_AddCommand ("-button1", IN_Button1Up);
-	Cmd_AddCommand ("+button2", IN_Button2Down);
-	Cmd_AddCommand ("-button2", IN_Button2Up);
-	Cmd_AddCommand ("+button3", IN_Button3Down);
-	Cmd_AddCommand ("-button3", IN_Button3Up);
-	Cmd_AddCommand ("+button4", IN_Button4Down);
-	Cmd_AddCommand ("-button4", IN_Button4Up);
-	Cmd_AddCommand ("+button5", IN_Button5Down);
-	Cmd_AddCommand ("-button5", IN_Button5Up);
-	Cmd_AddCommand ("+button6", IN_Button6Down);
-	Cmd_AddCommand ("-button6", IN_Button6Up);
-	Cmd_AddCommand ("+button7", IN_Button7Down);
-	Cmd_AddCommand ("-button7", IN_Button7Up);
-	Cmd_AddCommand ("+button8", IN_Button8Down);
-	Cmd_AddCommand ("-button8", IN_Button8Up);
-	Cmd_AddCommand ("+button9", IN_Button9Down);
-	Cmd_AddCommand ("-button9", IN_Button9Up);
-	Cmd_AddCommand ("+button10", IN_Button10Down);
-	Cmd_AddCommand ("-button10", IN_Button10Up);
-	Cmd_AddCommand ("+button11", IN_Button11Down);
-	Cmd_AddCommand ("-button11", IN_Button11Up);
-	Cmd_AddCommand ("+button12", IN_Button12Down);
-	Cmd_AddCommand ("-button12", IN_Button12Up);
-	Cmd_AddCommand ("+button13", IN_Button13Down);
-	Cmd_AddCommand ("-button13", IN_Button13Up);
-	Cmd_AddCommand ("+button14", IN_Button14Down);
-	Cmd_AddCommand ("-button14", IN_Button14Up);
-	Cmd_AddCommand ("+mlook", IN_MLookDown);
-	Cmd_AddCommand ("-mlook", IN_MLookUp);
+	Cmd_AddCommand( "+moveup", IN_UpDown );
+	Cmd_AddCommand( "-moveup", IN_UpUp );
+	Cmd_AddCommand( "+movedown", IN_DownDown );
+	Cmd_AddCommand( "-movedown", IN_DownUp );
+	Cmd_AddCommand( "+left", IN_LeftDown );
+	Cmd_AddCommand( "-left", IN_LeftUp );
+	Cmd_AddCommand( "+right", IN_RightDown );
+	Cmd_AddCommand( "-right", IN_RightUp );
+	Cmd_AddCommand( "+forward", IN_ForwardDown );
+	Cmd_AddCommand( "-forward", IN_ForwardUp );
+	Cmd_AddCommand( "+back", IN_BackDown );
+	Cmd_AddCommand( "-back", IN_BackUp );
+	Cmd_AddCommand( "+lookup", IN_LookupDown );
+	Cmd_AddCommand( "-lookup", IN_LookupUp );
+	Cmd_AddCommand( "+lookdown", IN_LookdownDown );
+	Cmd_AddCommand( "-lookdown", IN_LookdownUp );
+	Cmd_AddCommand( "+strafe", IN_StrafeDown );
+	Cmd_AddCommand( "-strafe", IN_StrafeUp );
+	Cmd_AddCommand( "+moveleft", IN_MoveleftDown );
+	Cmd_AddCommand( "-moveleft", IN_MoveleftUp );
+	Cmd_AddCommand( "+moveright", IN_MoverightDown );
+	Cmd_AddCommand( "-moveright", IN_MoverightUp );
+	Cmd_AddCommand( "+speed", IN_SpeedDown );
+	Cmd_AddCommand( "-speed", IN_SpeedUp );
+	Cmd_AddCommand( "+attack", IN_Button0Down );
+	Cmd_AddCommand( "-attack", IN_Button0Up );
+	Cmd_AddCommand( "+button0", IN_Button0Down );
+	Cmd_AddCommand( "-button0", IN_Button0Up );
+	Cmd_AddCommand( "+button1", IN_Button1Down );
+	Cmd_AddCommand( "-button1", IN_Button1Up );
+	Cmd_AddCommand( "+button2", IN_Button2Down );
+	Cmd_AddCommand( "-button2", IN_Button2Up );
+	Cmd_AddCommand( "+button3", IN_Button3Down );
+	Cmd_AddCommand( "-button3", IN_Button3Up );
+	Cmd_AddCommand( "+button4", IN_Button4Down );
+	Cmd_AddCommand( "-button4", IN_Button4Up );
+	Cmd_AddCommand( "+button5", IN_Button5Down );
+	Cmd_AddCommand( "-button5", IN_Button5Up );
+	Cmd_AddCommand( "+button6", IN_Button6Down );
+	Cmd_AddCommand( "-button6", IN_Button6Up );
+	Cmd_AddCommand( "+button7", IN_Button7Down );
+	Cmd_AddCommand( "-button7", IN_Button7Up );
+	Cmd_AddCommand( "+button8", IN_Button8Down );
+	Cmd_AddCommand( "-button8", IN_Button8Up );
+	Cmd_AddCommand( "+button9", IN_Button9Down );
+	Cmd_AddCommand( "-button9", IN_Button9Up );
+	Cmd_AddCommand( "+button10", IN_Button10Down );
+	Cmd_AddCommand( "-button10", IN_Button10Up );
+	Cmd_AddCommand( "+button11", IN_Button11Down );
+	Cmd_AddCommand( "-button11", IN_Button11Up );
+	Cmd_AddCommand( "+button12", IN_Button12Down );
+	Cmd_AddCommand( "-button12", IN_Button12Up );
+	Cmd_AddCommand( "+button13", IN_Button13Down );
+	Cmd_AddCommand( "-button13", IN_Button13Up );
+	Cmd_AddCommand( "+button14", IN_Button14Down );
+	Cmd_AddCommand( "-button14", IN_Button14Up );
+	Cmd_AddCommand( "+mlook", IN_MLookDown );
+	Cmd_AddCommand( "-mlook", IN_MLookUp );
 
-	cl_nodelta = Cvar_Get ("cl_nodelta", "0", 0);
-	cl_debugMove = Cvar_Get ("cl_debugMove", "0", 0);
+	cl_nodelta = Cvar_Get( "cl_nodelta", "0", 0 );
+	cl_debugMove = Cvar_Get( "cl_debugMove", "0", 0 );
 }

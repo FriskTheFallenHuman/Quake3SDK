@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -38,9 +38,9 @@ cvars
 */
 
 typedef struct {
-	vmCvar_t	*vmCvar;
-	char		*cvarName;
-	char		*defaultString;
+	vmCvar_t	* vmCvar;
+	char	*	cvarName;
+	char	*	defaultString;
 	int			cvarFlags;
 } cvarTable_t;
 
@@ -106,7 +106,7 @@ static cvarTable_t		cvarTable[] = {
 	{ &ui_ctf_timelimit, "ui_ctf_timelimit", "30", CVAR_ARCHIVE },
 	{ &ui_ctf_friendly, "ui_ctf_friendly",  "0", CVAR_ARCHIVE },
 
-	{ &ui_arenasFile, "g_arenasFile", "", CVAR_INIT|CVAR_ROM },
+	{ &ui_arenasFile, "g_arenasFile", "", CVAR_INIT | CVAR_ROM },
 
 	{ &ui_browserMaster, "ui_browserMaster", "0", CVAR_ARCHIVE },
 	{ &ui_browserGameType, "ui_browserGameType", "0", CVAR_ARCHIVE },
@@ -140,7 +140,7 @@ static cvarTable_t		cvarTable[] = {
 };
 
 // bk001129 - made static to avoid aliasing
-static int cvarTableSize = sizeof(cvarTable) / sizeof(cvarTable[0]);
+static int cvarTableSize = sizeof( cvarTable ) / sizeof( cvarTable[0] );
 
 
 /*
@@ -150,7 +150,7 @@ UI_RegisterCvars
 */
 void UI_RegisterCvars( void ) {
 	int			i;
-	cvarTable_t	*cv;
+	cvarTable_t	* cv;
 
 	for ( i = 0, cv = cvarTable ; i < cvarTableSize ; i++, cv++ ) {
 		trap_Cvar_Register( cv->vmCvar, cv->cvarName, cv->defaultString, cv->cvarFlags );
@@ -164,7 +164,7 @@ UI_UpdateCvars
 */
 void UI_UpdateCvars( void ) {
 	int			i;
-	cvarTable_t	*cv;
+	cvarTable_t	* cv;
 
 	for ( i = 0, cv = cvarTable ; i < cvarTableSize ; i++, cv++ ) {
 		trap_Cvar_Update( cv->vmCvar );

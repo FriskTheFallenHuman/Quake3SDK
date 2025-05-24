@@ -15,7 +15,7 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with Foobar; if not, write to the Free Software
+along with Quake III Arena source code; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 ===========================================================================
 */
@@ -26,8 +26,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __GLW_WIN_H__
 #define __GLW_WIN_H__
 
-typedef struct
-{
+typedef struct {
 	WNDPROC		wndproc;
 
 	HDC     hDC;			// handle to device context
@@ -43,7 +42,7 @@ typedef struct
 
 	qboolean	cdsFullscreen;
 
-	FILE *log_fp;
+	FILE * log_fp;
 } glwstate_t;
 
 extern glwstate_t glw_state;
