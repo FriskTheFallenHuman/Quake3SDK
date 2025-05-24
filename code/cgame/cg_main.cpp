@@ -782,12 +782,6 @@ static void CG_RegisterGraphics( void ) {
 		cgs.media.numberShaders[i] = trap_R_RegisterShader( sb_nums[i] );
 	}
 
-	cgs.media.botSkillShaders[0] = trap_R_RegisterShader( "menu/art/skill1.tga" );
-	cgs.media.botSkillShaders[1] = trap_R_RegisterShader( "menu/art/skill2.tga" );
-	cgs.media.botSkillShaders[2] = trap_R_RegisterShader( "menu/art/skill3.tga" );
-	cgs.media.botSkillShaders[3] = trap_R_RegisterShader( "menu/art/skill4.tga" );
-	cgs.media.botSkillShaders[4] = trap_R_RegisterShader( "menu/art/skill5.tga" );
-
 	cgs.media.viewBloodShader = trap_R_RegisterShader( "viewBloodBlend" );
 
 	cgs.media.deferShader = trap_R_RegisterShaderNoMip( "gfx/2d/defer.tga" );
@@ -1565,10 +1559,8 @@ static const char *CG_FeederItemText(float feederID, int index, int column, qhan
 					item = BG_FindItemForPowerup( PW_BLUEFLAG );
 					*handle = cg_items[ ITEM_INDEX(item) ].icon;
 				} else {
-					if ( info->botSkill > 0 && info->botSkill <= 5 ) {
-						*handle = cgs.media.botSkillShaders[ info->botSkill - 1 ];
-					} else if ( info->handicap < 100 ) {
-					return va("%i", info->handicap );
+					if ( info->handicap < 100 ) {
+						return va("%i", info->handicap );
 					}
 				}
 			break;

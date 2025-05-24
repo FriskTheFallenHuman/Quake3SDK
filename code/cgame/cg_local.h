@@ -320,8 +320,6 @@ typedef struct {
 	char			name[MAX_QPATH];
 	team_t			team;
 
-	int				botSkill;		// 0 = not bot, 1-5 = bot
-
 	vec3_t			color1;
 	vec3_t			color2;
 
@@ -753,8 +751,6 @@ typedef struct {
 	qhandle_t	numberShaders[11];
 
 	qhandle_t	shadowMarkShader;
-
-	qhandle_t	botSkillShaders[5];
 
 	// wall mark shaders
 	qhandle_t	wakeMarkShader;
