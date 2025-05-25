@@ -152,7 +152,7 @@ static void UpdateIPBans ( void ) {
 		if ( strlen( iplist_final ) + strlen( ip ) < MAX_CVAR_VALUE_STRING ) {
 			Q_strcat( iplist_final, sizeof( iplist_final ), ip );
 		} else {
-			Com_Printf( "g_banIPs overflowed at MAX_CVAR_VALUE_STRING\n" );
+			G_Warning( "g_banIPs overflowed at MAX_CVAR_VALUE_STRING\n" );
 			break;
 		}
 	}
@@ -209,7 +209,7 @@ static void AddIP( char * str ) {
 		}
 	if ( i == numIPFilters ) {
 		if ( numIPFilters == MAX_IPFILTERS ) {
-			G_Printf ( "IP filter list is full\n" );
+			G_Warning( "IP filter list is full\n" );
 			return;
 		}
 		numIPFilters++;
@@ -376,7 +376,7 @@ gclient_t	* ClientForString( const char * s ) {
 	if ( s[0] >= '0' && s[0] <= '9' ) {
 		idnum = atoi( s );
 		if ( idnum < 0 || idnum >= level.maxclients ) {
-			Com_Printf( "Bad client slot: %i\n", idnum );
+			G_Warning( "Bad client slot: %i\n", idnum );
 			return NULL;
 		}
 

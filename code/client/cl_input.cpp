@@ -89,7 +89,7 @@ void IN_KeyDown( kbutton_t * b ) {
 	} else if ( !b->down[1] ) {
 		b->down[1] = k;
 	} else {
-		Com_Printf( "Three keys down for a button!\n" );
+		Com_Warning( "Three keys down for a button!\n" );
 		return;
 	}
 
@@ -851,7 +851,7 @@ void CL_WritePacket( void ) {
 	count = cl.cmdNumber - cl.outPackets[ oldPacketNum ].p_cmdNumber;
 	if ( count > MAX_PACKET_USERCMDS ) {
 		count = MAX_PACKET_USERCMDS;
-		Com_Printf( "MAX_PACKET_USERCMDS\n" );
+		Com_Warning( "MAX_PACKET_USERCMDS\n" );
 	}
 	if ( count >= 1 ) {
 		if ( cl_showSend->integer ) {

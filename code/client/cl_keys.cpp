@@ -846,7 +846,7 @@ void Key_Unbind_f ( void ) {
 
 	b = Key_StringToKeynum ( Cmd_Argv( 1 ) );
 	if ( b == -1 ) {
-		Com_Printf ( "\"%s\" isn't a valid key\n", Cmd_Argv( 1 ) );
+		Com_Warning( "\"%s\" isn't a valid key\n", Cmd_Argv( 1 ) );
 		return;
 	}
 
@@ -885,7 +885,7 @@ void Key_Bind_f ( void ) {
 	}
 	b = Key_StringToKeynum ( Cmd_Argv( 1 ) );
 	if ( b == -1 ) {
-		Com_Printf ( "\"%s\" isn't a valid key\n", Cmd_Argv( 1 ) );
+		Com_Warning( "\"%s\" isn't a valid key\n", Cmd_Argv( 1 ) );
 		return;
 	}
 
@@ -893,7 +893,7 @@ void Key_Bind_f ( void ) {
 		if ( keys[b].binding ) {
 			Com_Printf ( "\"%s\" = \"%s\"\n", Cmd_Argv( 1 ), keys[b].binding );
 		} else {
-			Com_Printf ( "\"%s\" is not bound\n", Cmd_Argv( 1 ) );
+			Com_Warning( "\"%s\" is not bound\n", Cmd_Argv( 1 ) );
 		}
 		return;
 	}
@@ -1142,7 +1142,7 @@ void CL_KeyEvent ( int key, qboolean down, unsigned time ) {
 		kb = keys[key].binding;
 		if ( !kb ) {
 			if ( key >= 200 ) {
-				Com_Printf ( "%s is unbound, use controls menu to set.\n"
+				Com_Warning( "%s is unbound, use controls menu to set.\n"
 							 , Key_KeynumToString( key ) );
 			}
 		} else if ( kb[0] == '+' ) {

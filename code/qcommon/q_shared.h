@@ -32,72 +32,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define MAX_TEAMNAME 32
 
-#ifdef _WIN32
-
-#pragma warning(disable : 4996)
-#pragma warning(disable : 4018)     // signed/unsigned mismatch
-#pragma warning(disable : 4032)
-#pragma warning(disable : 4051)
-#pragma warning(disable : 4057)		// slightly different base types
-#pragma warning(disable : 4100)		// unreferenced formal parameter
-#pragma warning(disable : 4115)
-#pragma warning(disable : 4125)		// decimal digit terminates octal escape sequence
-#pragma warning(disable : 4127)		// conditional expression is constant
-#pragma warning(disable : 4136)
-#pragma warning(disable : 4152)		// nonstandard extension, function/data pointer conversion in expression
-//#pragma warning(disable : 4201)
-//#pragma warning(disable : 4214)
-#pragma warning(disable : 4244)
-#pragma warning(disable : 4142)		// benign redefinition
-//#pragma warning(disable : 4305)		// truncation from const double to float
-//#pragma warning(disable : 4310)		// cast truncates constant value
-//#pragma warning(disable:  4505) 	// unreferenced local function has been removed
-#pragma warning(disable : 4514)
-#pragma warning(disable : 4702)		// unreachable code
-#pragma warning(disable : 4711)		// selected for automatic inline expansion
-#pragma warning(disable : 4220)		// varargs matches remaining parameters
-#endif
-
-/**********************************************************************
-  VM Considerations
-
-  The VM can not use the standard system headers because we aren't really
-  using the compiler they were meant for.  We use bg_lib.h which contains
-  prototypes for the functions we define for our own use in bg_lib.c.
-
-  When writing mods, please add needed headers HERE, do not start including
-  stuff like <stdio.h> in the various .c files that make up each of the VMs
-  since you will be including system headers files can will have issues.
-
-  Remember, if you use a C library function that is not defined in bg_lib.c,
-  you will have to add your own version for support in the VM.
-
- **********************************************************************/
-
-#ifdef Q3_VM
-
-#include "bg_lib.h"
-
-#else
-
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
+#include <cassert>
+#include <cmath>
+#include <cstdio>
+#include <cstdarg>
+#include <cstring>
+#include <cstdlib>
+#include <ctime>
 #include <ctype.h>
-#include <limits.h>
-
-#endif
-
-#ifdef _WIN32
-
-//#pragma intrinsic( memset, memcpy )
-
-#endif
-
+#include <climits>
+#include <exception>
 
 // this is the define for determining if we have an asm version of a C function
 #if (defined _M_IX86 || defined __i386__) && !defined __sun__  && !defined __LCC__
@@ -127,6 +71,16 @@ int		LongSwap( int l );
 float	FloatSwap( const float * f );
 
 //======================= GLOBAL DEFINES =================================
+
+// TTimo
+// vsnprintf is ISO/IEC 9899:1999
+// abstracting this to make it portable
+#ifdef WIN32
+#	define Q_vsnprintf _vsnprintf
+#	define Q_vsnprintf _vsnprintf
+#else
+#	define Q_vsnprintf vsnprintf
+#endif
 
 // buildstring will be incorporated into the version string
 #ifdef _DEBUG
@@ -441,10 +395,9 @@ typedef enum {
 #define	MAX_MAP_AREA_BYTES		32		// bit vector of area visibility
 
 
-// print levels from renderer (FIXME: set up for game / cgame?)
+// print levels
 typedef enum {
 	PRINT_ALL,
-	PRINT_DEVELOPER,		// only print when "developer 1"
 	PRINT_WARNING,
 	PRINT_ERROR
 } printParm_t;
@@ -593,7 +546,7 @@ extern	vec4_t		colorDkGrey;
 #define COLOR_WHITE		'7'
 #define ColorIndex(c)	( ( (c) - '0' ) & 7 )
 
-#define S_COLOR_BLACK	"^0"
+#define S_COLOR_DEFAULT	"^0"
 #define S_COLOR_RED		"^1"
 #define S_COLOR_GREEN	"^2"
 #define S_COLOR_YELLOW	"^3"
@@ -601,6 +554,8 @@ extern	vec4_t		colorDkGrey;
 #define S_COLOR_CYAN	"^5"
 #define S_COLOR_MAGENTA	"^6"
 #define S_COLOR_WHITE	"^7"
+#define S_COLOR_GRAY	"^8"
+#define S_COLOR_BLACK	"^9"
 
 extern vec4_t	g_color_table[8];
 
@@ -975,9 +930,12 @@ qboolean Info_Validate( const char * s );
 void Info_NextPair( const char ** s, char * key, char * value );
 
 // this is only here so the functions in q_shared.c and bg_*.c can link
+void	QDECL Com_VPrintf( const char * fmt, va_list args );
+void	QDECL Com_Printf( const char * fmt, ... );
+void	QDECL Com_DPrintf( const char * fmt, ... );
+void	QDECL Com_DWarning( const char * fmt, ... );
+void	QDECL Com_Warning( const char * fmt, ... );
 void	QDECL Com_Error( int level, const char * error, ... );
-void	QDECL Com_Printf( const char * msg, ... );
-
 
 /*
 ==========================================================

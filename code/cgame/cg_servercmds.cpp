@@ -519,11 +519,11 @@ int CG_ParseVoiceChats( const char * filename, voiceChatList_t * voiceChatList, 
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
 	if ( !f ) {
-		trap_Print( va( S_COLOR_RED "voice chat file not found: %s\n", filename ) );
+		CG_Warning( va( "voice chat file not found: %s\n", filename ) );
 		return qfalse;
 	}
 	if ( len >= MAX_VOICEFILESIZE ) {
-		trap_Print( va( S_COLOR_RED "voice chat file too large: %s is %i, max allowed is %i", filename, len, MAX_VOICEFILESIZE ) );
+		CG_Warning( va( "voice chat file too large: %s is %i, max allowed is %i", filename, len, MAX_VOICEFILESIZE ) );
 		trap_FS_FCloseFile( f );
 		return qfalse;
 	}
@@ -551,7 +551,7 @@ int CG_ParseVoiceChats( const char * filename, voiceChatList_t * voiceChatList, 
 	} else if ( !Q_stricmp( token, "neuter" ) ) {
 		voiceChatList->gender = GENDER_NEUTER;
 	} else {
-		trap_Print( va( S_COLOR_RED "expected gender not found in voice chat file: %s\n", filename ) );
+		CG_Warning( va( "expected gender not found in voice chat file: %s\n", filename ) );
 		return qfalse;
 	}
 
@@ -564,7 +564,7 @@ int CG_ParseVoiceChats( const char * filename, voiceChatList_t * voiceChatList, 
 		Com_sprintf( voiceChats[voiceChatList->numVoiceChats].id, sizeof( voiceChats[voiceChatList->numVoiceChats].id ), "%s", token );
 		token = COM_ParseExt( p, qtrue );
 		if ( Q_stricmp( token, "{" ) ) {
-			trap_Print( va( S_COLOR_RED "expected { found %s in voice chat file: %s\n", token, filename ) );
+			CG_Warning( va( "expected { found %s in voice chat file: %s\n", token, filename ) );
 			return qfalse;
 		}
 		voiceChats[voiceChatList->numVoiceChats].numSounds = 0;
@@ -637,7 +637,7 @@ int CG_HeadModelVoiceChats( char * filename ) {
 		return -1;
 	}
 	if ( len >= MAX_VOICEFILESIZE ) {
-		trap_Print( va( S_COLOR_RED "voice chat file too large: %s is %i, max allowed is %i", filename, len, MAX_VOICEFILESIZE ) );
+		CG_Warning( va( "voice chat file too large: %s is %i, max allowed is %i", filename, len, MAX_VOICEFILESIZE ) );
 		trap_FS_FCloseFile( f );
 		return -1;
 	}

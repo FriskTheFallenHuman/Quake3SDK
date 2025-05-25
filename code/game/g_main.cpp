@@ -189,24 +189,36 @@ void G_RunFrame( int levelTime );
 void G_ShutdownGame( int restart );
 void CheckExitRules( void );
 
-void QDECL G_Printf( const char * fmt, ... ) {
+void QDECL G_Printf( const char * msg, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
-	va_start ( argptr, fmt );
-	vsprintf ( text, fmt, argptr );
+	va_start ( argptr, msg );
+	Q_vsnprintf ( text, sizeof( text ), msg, argptr );
 	va_end ( argptr );
 
-	trap_Printf( text );
+	trap_Print( text );
 }
 
-void QDECL G_Error( const char * fmt, ... ) {
+void QDECL G_Warning( const char * msg, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
-	va_start ( argptr, fmt );
-	vsprintf ( text, fmt, argptr );
+	va_start ( argptr, msg );
+	Q_vsnprintf ( text, sizeof( text ), msg, argptr );
 	va_end ( argptr );
+
+	trap_Warning( text );
+}
+
+void QDECL G_Error( const char * msg, ... ) {
+	va_list		argptr;
+	char		text[1024];
+
+	va_start ( argptr, msg );
+	Q_vsnprintf ( text, sizeof( text ), msg, argptr );
+	va_end ( argptr );
+	text[sizeof( text ) - 1] = 0;
 
 	trap_Error( text );
 }
@@ -390,7 +402,7 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 			trap_FS_FOpenFile( g_log.string, &level.logFile, FS_APPEND );
 		}
 		if ( !level.logFile ) {
-			G_Printf( "WARNING: Couldn't open logfile: %s\n", g_log.string );
+			G_Warning( "Couldn't open logfile: %s\n", g_log.string );
 		} else {
 			char	serverinfo[MAX_INFO_STRING];
 
@@ -483,28 +495,42 @@ void G_ShutdownGame( int restart ) {
 //===================================================================
 
 #ifndef GAME_HARD_LINKED
-// this is only here so the functions in q_shared.c and bg_*.c can link
+// this is only here so the functions in q_shared.c and bg_*.c can link (FIXME)
 
 void QDECL Com_Error ( int level, const char * error, ... ) {
 	va_list		argptr;
-	char		text[1024];
+	char		msg[1024];
 
 	va_start ( argptr, error );
-	vsprintf ( text, error, argptr );
+	Q_vsnprintf ( msg, sizeof( msg ), error, argptr );
 	va_end ( argptr );
+	msg[sizeof( msg ) - 1] = 0;
 
-	G_Error( "%s", text );
+	G_Error( S_COLOR_RED "ERROR: %s\n", msg );
 }
 
-void QDECL Com_Printf( const char * msg, ... ) {
+void QDECL Com_Warning( const char * fmt, ... ) {
 	va_list		argptr;
-	char		text[1024];
+	char		msg[1024];
 
-	va_start ( argptr, msg );
-	vsprintf ( text, msg, argptr );
+	va_start ( argptr, fmt );
+	Q_vsnprintf ( msg, sizeof( msg ), fmt, argptr );
 	va_end ( argptr );
+	msg[sizeof( msg ) -1] = 0;
 
-	G_Printf ( "%s", text );
+	G_Warning( S_COLOR_YELLOW "WARNING: " S_COLOR_RED "%s\n", msg );
+}
+
+void QDECL Com_Printf( const char * fmt, ... ) {
+	va_list		argptr;
+	char		msg[1024];
+
+	va_start ( argptr, fmt );
+	Q_vsnprintf ( msg, sizeof( msg ), fmt, argptr );
+	va_end ( argptr );
+	msg[sizeof( msg ) -1] = 0;
+
+	G_Printf ( "%s", fmt );
 }
 
 #endif

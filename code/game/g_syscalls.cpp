@@ -48,11 +48,15 @@ gameExport_t * dllEntry( gameImport_t * gameAPI ) {
 
 	return &exports;
 }
-void trap_Printf( const char * fmt ) {
+void trap_Print( const char * fmt, ... ) {
 	gameSyscall->Print( fmt );
 }
 
-void trap_Error( const char * fmt ) {
+void trap_Warning( const char * fmt, ... ) {
+	gameSyscall->Warning( fmt );
+}
+
+void trap_Error( const char * fmt, ... ) {
 	gameSyscall->Error( ERR_DROP, fmt );
 }
 

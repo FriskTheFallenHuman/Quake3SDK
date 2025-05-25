@@ -197,8 +197,8 @@ DIRECT INPUT MOUSE CONTROL
 #undef DEFINE_GUID
 
 #define DEFINE_GUID(name, l, w1, w2, b1, b2, b3, b4, b5, b6, b7, b8) \
-        EXTERN_C const GUID name \
-                = { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } }
+		EXTERN_C const GUID name \
+				= { l, w1, w2, { b1, b2,  b3,  b4,  b5,  b6,  b7,  b8 } }
 
 DEFINE_GUID( GUID_SysMouse,   0x6F1D2B60, 0xD5A0, 0x11CF, 0xBF, 0xC7, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00 );
 DEFINE_GUID( GUID_XAxis,   0xA36D02E0, 0xC9F3, 0x11CF, 0xBF, 0xC7, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00 );
@@ -1038,7 +1038,7 @@ static void IN_StartupMIDI( void ) {
 					 ( unsigned long ) MidiInProc,
 					 ( unsigned long ) NULL,
 					 CALLBACK_FUNCTION ) != MMSYSERR_NOERROR ) {
-		Com_Printf( "WARNING: could not open MIDI device %d: '%s'\n", in_mididevice->integer, s_midiInfo.caps[( int ) in_mididevice->value] );
+		Com_Warning( "could not open MIDI device %d: '%s'\n", in_mididevice->integer, s_midiInfo.caps[( int ) in_mididevice->value] );
 		return;
 	}
 

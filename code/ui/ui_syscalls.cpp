@@ -44,12 +44,16 @@ uiExport_t * dllEntry( uiImport_t * imports ) {
 	return &exports;
 }
 
-void trap_Print( const char * string ) {
-	uiSyscalls->Com_Printf( string );
+void trap_Print( const char * fmt, ... ) {
+	uiSyscalls->Print( fmt );
 }
 
-void trap_Error( const char * string ) {
-	uiSyscalls->Com_Error( ERR_DROP, "%s", string );
+void trap_Warning( const char * fmt, ... ) {
+	uiSyscalls->Warning( fmt );
+}
+
+void trap_Error( const char * fmt, ... ) {
+	uiSyscalls->Error( ERR_DROP, fmt );
 }
 
 int trap_Milliseconds( void ) {

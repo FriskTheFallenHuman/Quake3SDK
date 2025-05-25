@@ -205,7 +205,7 @@ static	void R_LoadLightmaps( lump_t * l ) {
 	}
 
 	if ( r_lightmap->integer == 2 )	{
-		ri.Printf( PRINT_ALL, "Brightest lightmap value: %d\n", ( int )( maxIntensity * 255 ) );
+		ri.Printf( "Brightest lightmap value: %d\n", ( int )( maxIntensity * 255 ) );
 	}
 }
 
@@ -319,7 +319,7 @@ static void ParseFace( dsurface_t * ds, drawVert_t * verts, msurface_t * surf, i
 
 	numPoints = LittleLong( ds->numVerts );
 	if ( numPoints > MAX_FACE_POINTS ) {
-		ri.Printf( PRINT_WARNING, "WARNING: MAX_FACE_POINTS exceeded: %i\n", numPoints );
+		ri.Warning( "MAX_FACE_POINTS exceeded: %i\n", numPoints );
 		numPoints = MAX_FACE_POINTS;
 		surf->shader = tr.defaultShader;
 	}
@@ -1401,7 +1401,7 @@ void R_StitchAllPatches( void ) {
 			numstitches += R_TryStitchingPatch( i );
 		}
 	} while ( stitched );
-	ri.Printf( PRINT_ALL, "stitched %d LoD cracks\n", numstitches );
+	ri.Printf( "stitched %d LoD cracks\n", numstitches );
 }
 
 /*
@@ -1510,7 +1510,7 @@ static	void R_LoadSurfaces( lump_t * surfs, lump_t * verts, lump_t * indexLump )
 	R_MovePatchSurfacesToHunk();
 #endif
 
-	ri.Printf( PRINT_ALL, "...loaded %d faces, %i meshes, %i trisurfs, %i flares\n",
+	ri.Printf( "...loaded %d faces, %i meshes, %i trisurfs, %i flares\n",
 			   numFaces, numMeshes, numTriSurfs, numFlares );
 }
 
@@ -1885,7 +1885,7 @@ void R_LoadLightGrid( lump_t * l ) {
 	numGridPoints = w->lightGridBounds[0] * w->lightGridBounds[1] * w->lightGridBounds[2];
 
 	if ( l->filelen != numGridPoints * 8 ) {
-		ri.Printf( PRINT_WARNING, "WARNING: light grid mismatch\n" );
+		ri.Warning( "light grid mismatch\n" );
 		w->lightGridData = NULL;
 		return;
 	}
@@ -1951,7 +1951,7 @@ void R_LoadEntities( lump_t * l ) {
 		if ( !Q_strncmp( keyname, s, strlen( s ) ) ) {
 			s = strchr( value, ';' );
 			if ( !s ) {
-				ri.Printf( PRINT_WARNING, "WARNING: no semi colon in vertexshaderremap '%s'\n", value );
+				ri.Warning( "no semi colon in vertexshaderremap '%s'\n", value );
 				break;
 			}
 			*s++ = 0;
@@ -1965,7 +1965,7 @@ void R_LoadEntities( lump_t * l ) {
 		if ( !Q_strncmp( keyname, s, strlen( s ) ) ) {
 			s = strchr( value, ';' );
 			if ( !s ) {
-				ri.Printf( PRINT_WARNING, "WARNING: no semi colon in shaderremap '%s'\n", value );
+				ri.Warning( "no semi colon in shaderremap '%s'\n", value );
 				break;
 			}
 			*s++ = 0;

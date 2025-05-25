@@ -1514,9 +1514,9 @@ void SV_ExecuteClientMessage( client_t * cl, msg_t *msg ) {
 	} else if ( c == clc_moveNoDelta ) {
 		SV_UserMove( cl, msg, qfalse );
 	} else if ( c != clc_EOF ) {
-		Com_Printf( "WARNING: bad command byte for client %i\n", cl - svs.clients );
+		Com_Warning( "bad command byte for client %i\n", cl - svs.clients );
 	}
 //	if ( msg->readcount != msg->cursize ) {
-//		Com_Printf( "WARNING: Junk at end of packet for client %i\n", cl - svs.clients );
+//		Com_Warning( "Junk at end of packet for client %i\n", cl - svs.clients );
 //	}
 }

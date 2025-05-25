@@ -182,7 +182,7 @@ void QDECL ScriptError( script_t * script, char * str, ... ) {
 	vsprintf( text, str, ap );
 	va_end( ap );
 
-	Com_Printf( "error: file %s, line %d: %s\n", script->filename, script->line, text );
+	Com_Error( ERR_DROP, "file %s, line %d: %s\n", script->filename, script->line, text );
 } //end of the function ScriptError
 //===========================================================================
 //
@@ -202,7 +202,7 @@ void QDECL ScriptWarning( script_t * script, char * str, ... ) {
 	vsprintf( text, str, ap );
 	va_end( ap );
 
-	Com_Printf( "warning: file %s, line %d: %s\n", script->filename, script->line, text );
+	Com_Warning( "file %s, line %d: %s\n", script->filename, script->line, text );
 } //end of the function ScriptWarning
 //===========================================================================
 //

@@ -42,7 +42,7 @@ void GL_Bind( image_t * image ) {
 	int texnum;
 
 	if ( !image ) {
-		ri.Printf( PRINT_WARNING, "GL_Bind: NULL image\n" );
+		ri.Warning( "GL_Bind: NULL image\n" );
 		texnum = tr.defaultImage->texnum;
 	} else {
 		texnum = image->texnum;
@@ -715,7 +715,7 @@ void RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte *
 
 	if ( r_speeds->integer ) {
 		end = ri.Milliseconds();
-		ri.Printf( PRINT_ALL, "glTexSubImage2D %i, %i: %i msec\n", cols, rows, end - start );
+		ri.Printf( "glTexSubImage2D %i, %i: %i msec\n", cols, rows, end - start );
 	}
 
 	RB_SetGL2D();
@@ -955,7 +955,7 @@ void RB_ShowImages( void ) {
 	glFinish();
 
 	end = ri.Milliseconds();
-	ri.Printf( PRINT_ALL, "%i msec to draw all images\n", end - start );
+	ri.Printf( "%i msec to draw all images\n", end - start );
 
 }
 

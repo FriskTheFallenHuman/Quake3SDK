@@ -197,7 +197,7 @@ gentity_t * G_PickTarget ( char * targetname ) {
 	gentity_t	* choice[MAXCHOICES];
 
 	if ( !targetname ) {
-		G_Printf( "G_PickTarget called with NULL targetname\n" );
+		G_Warning( "G_PickTarget called with NULL targetname\n" );
 		return NULL;
 	}
 
@@ -213,7 +213,7 @@ gentity_t * G_PickTarget ( char * targetname ) {
 	}
 
 	if ( !num_choices ) {
-		G_Printf( "G_PickTarget: target %s not found\n", targetname );
+		G_Warning( "G_PickTarget: target %s not found\n", targetname );
 		return NULL;
 	}
 
@@ -252,14 +252,14 @@ void G_UseTargets( gentity_t * ent, gentity_t * activator ) {
 	t = NULL;
 	while ( ( t = G_Find ( t, FOFS( targetname ), ent->target ) ) != NULL ) {
 		if ( t == ent ) {
-			G_Printf ( "WARNING: Entity used itself.\n" );
+			G_Warning ( "Entity used itself.\n" );
 		} else {
 			if ( t->use ) {
 				t->use ( t, ent, activator );
 			}
 		}
 		if ( !ent->inuse ) {
-			G_Printf( "entity was removed while using targets\n" );
+			G_Warning( "entity was removed while using targets\n" );
 			return;
 		}
 	}
@@ -575,7 +575,7 @@ void G_AddEvent( gentity_t * ent, int event, int eventParm ) {
 	int		bits;
 
 	if ( !event ) {
-		G_Printf( "G_AddEvent: zero event added for entity %i\n", ent->s.number );
+		G_Warning( "G_AddEvent: zero event added for entity %i\n", ent->s.number );
 		return;
 	}
 

@@ -58,7 +58,7 @@ void WG_CheckHardwareGamma( void ) {
 					( HIBYTE( s_oldHardwareGamma[1][255] ) <= HIBYTE( s_oldHardwareGamma[1][0] ) ) ||
 					( HIBYTE( s_oldHardwareGamma[2][255] ) <= HIBYTE( s_oldHardwareGamma[2][0] ) ) ) {
 				glConfig.deviceSupportsGamma = qfalse;
-				ri.Printf( PRINT_WARNING, "WARNING: device has broken gamma support, generated gamma.dat\n" );
+				ri.Warning( "device has broken gamma support, generated gamma.dat\n" );
 			}
 
 			//
@@ -68,7 +68,7 @@ void WG_CheckHardwareGamma( void ) {
 			if ( ( HIBYTE( s_oldHardwareGamma[0][181] ) == 255 ) ) {
 				int g;
 
-				ri.Printf( PRINT_WARNING, "WARNING: suspicious gamma tables, using linear ramp for restoration\n" );
+				ri.Warning( "suspicious gamma tables, using linear ramp for restoration\n" );
 
 				for ( g = 0; g < 255; g++ ) {
 					s_oldHardwareGamma[0][g] = g << 8;
@@ -161,7 +161,7 @@ void GLimp_SetGamma( unsigned char red[256], unsigned char green[256], unsigned 
 
 	ret = SetDeviceGammaRamp( glw_state.hDC, table );
 	if ( !ret ) {
-		Com_Printf( "SetDeviceGammaRamp failed.\n" );
+		Com_Warning( "SetDeviceGammaRamp failed.\n" );
 	}
 }
 

@@ -1337,8 +1337,8 @@ void Think_SetupTrainTargets( gentity_t * ent ) {
 
 	ent->nextTrain = G_Find( NULL, FOFS( targetname ), ent->target );
 	if ( !ent->nextTrain ) {
-		G_Printf( "func_train at %s with an unfound target\n",
-				  vtos( ent->r.absmin ) );
+		G_Warning ( "func_train at %s with an unfound target\n",
+					vtos( ent->r.absmin ) );
 		return;
 	}
 
@@ -1349,8 +1349,8 @@ void Think_SetupTrainTargets( gentity_t * ent ) {
 		}
 
 		if ( !path->target ) {
-			G_Printf( "Train corner at %s without a target\n",
-					  vtos( path->s.origin ) );
+			G_Warning ( "Train corner at %s without a target\n",
+						vtos( path->s.origin ) );
 			return;
 		}
 
@@ -1361,8 +1361,8 @@ void Think_SetupTrainTargets( gentity_t * ent ) {
 		do {
 			next = G_Find( next, FOFS( targetname ), path->target );
 			if ( !next ) {
-				G_Printf( "Train corner at %s without a target path_corner\n",
-						  vtos( path->s.origin ) );
+				G_Warning ( "Train corner at %s without a target path_corner\n",
+							vtos( path->s.origin ) );
 				return;
 			}
 		} while ( strcmp( next->classname, "path_corner" ) );
@@ -1384,7 +1384,7 @@ Target: next path corner and other targets to fire
 */
 void SP_path_corner( gentity_t * self ) {
 	if ( !self->targetname ) {
-		G_Printf ( "path_corner with no targetname at %s\n", vtos( self->s.origin ) );
+		G_Warning ( "path_corner with no targetname at %s\n", vtos( self->s.origin ) );
 		G_FreeEntity( self );
 		return;
 	}
@@ -1421,7 +1421,7 @@ void SP_func_train ( gentity_t * self ) {
 	}
 
 	if ( !self->target ) {
-		G_Printf ( "func_train without a target at %s\n", vtos( self->r.absmin ) );
+		G_Warning ( "func_train without a target at %s\n", vtos( self->r.absmin ) );
 		G_FreeEntity( self );
 		return;
 	}

@@ -35,8 +35,9 @@ typedef struct {
 } uiClientState_t;
 
 typedef struct {
-	void ( *Com_Error )( int code, const char * fmt, ... );
-	void ( *Com_Printf )( const char * fmt, ... );
+	void ( *Print )( const char *, ... );
+	void ( *Warning )( const char *, ... );
+	void ( *Error )( int, const char *, ... );
 	int ( *Sys_Milliseconds )( void );
 	void ( *Cvar_Register )( vmCvar_t * cvar, const char * varName, const char * defaultValue, int flags );
 	void ( *Cvar_Update )( vmCvar_t * cvar );

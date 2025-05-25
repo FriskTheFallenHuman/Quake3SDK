@@ -87,12 +87,12 @@ qhandle_t RE_RegisterModel( const char * name ) {
 	int			numLoaded;
 
 	if ( !name || !name[0] ) {
-		ri.Printf( PRINT_ALL, "RE_RegisterModel: NULL name\n" );
+		ri.Warning( "RE_RegisterModel: NULL name\n" );
 		return 0;
 	}
 
 	if ( strlen( name ) >= MAX_QPATH ) {
-		Com_Printf( "Model name exceeds MAX_QPATH\n" );
+		ri.Warning( "Model name exceeds MAX_QPATH\n" );
 		return 0;
 	}
 
@@ -112,7 +112,7 @@ qhandle_t RE_RegisterModel( const char * name ) {
 	// allocate a new model_t
 
 	if ( ( mod = R_AllocModel() ) == NULL ) {
-		ri.Printf( PRINT_WARNING, "RE_RegisterModel: R_AllocModel() failed for '%s'\n", name );
+		ri.Warning( "RE_RegisterModel: R_AllocModel() failed for '%s'\n", name );
 		return 0;
 	}
 
@@ -154,7 +154,7 @@ qhandle_t RE_RegisterModel( const char * name ) {
 
 		ident = LittleLong( *( unsigned * )buf );
 		if ( ident != MD3_IDENT ) {
-			ri.Printf( PRINT_WARNING, "RE_RegisterModel: unknown fileid for %s\n", name );
+			ri.Warning( "RE_RegisterModel: unknown fileid for %s\n", name );
 			goto fail;
 		}
 
@@ -192,7 +192,7 @@ qhandle_t RE_RegisterModel( const char * name ) {
 	}
 #ifdef _DEBUG
 	else {
-		ri.Printf( PRINT_WARNING, "RE_RegisterModel: couldn't load %s\n", name );
+		ri.Warning( "RE_RegisterModel: couldn't load %s\n", name );
 	}
 #endif
 
@@ -226,8 +226,8 @@ static qboolean R_LoadMD3( model_t * mod, int lod, void * buffer, const char * m
 
 	version = LittleLong( pinmodel->version );
 	if ( version != MD3_VERSION ) {
-		ri.Printf( PRINT_WARNING, "R_LoadMD3: %s has wrong version (%i should be %i)\n",
-				   mod_name, version, MD3_VERSION );
+		ri.Warning( "R_LoadMD3: %s has wrong version (%i should be %i)\n",
+					mod_name, version, MD3_VERSION );
 		return qfalse;
 	}
 
@@ -249,7 +249,7 @@ static qboolean R_LoadMD3( model_t * mod, int lod, void * buffer, const char * m
 	LL( mod->md3[lod]->ofsEnd );
 
 	if ( mod->md3[lod]->numFrames < 1 ) {
-		ri.Printf( PRINT_WARNING, "R_LoadMD3: %s has no frames\n", mod_name );
+		ri.Warning( "R_LoadMD3: %s has no frames\n", mod_name );
 		return qfalse;
 	}
 
@@ -422,14 +422,14 @@ void R_Modellist_f( void ) {
 				lods++;
 			}
 		}
-		ri.Printf( PRINT_ALL, "%8i : (%i) %s\n", mod->dataSize, lods, mod->name );
+		ri.Printf( "%8i : (%i) %s\n", mod->dataSize, lods, mod->name );
 		total += mod->dataSize;
 	}
-	ri.Printf( PRINT_ALL, "%8i : Total models\n", total );
+	ri.Printf( "%8i : Total models\n", total );
 
 #if	0		// not working right with new hunk
 	if ( tr.world ) {
-		ri.Printf( PRINT_ALL, "\n%8i : %s\n", tr.world->dataSize, tr.world->name );
+		ri.Printf( "\n%8i : %s\n", tr.world->dataSize, tr.world->name );
 	}
 #endif
 }

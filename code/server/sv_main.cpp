@@ -244,7 +244,7 @@ void SV_MasterHeartbeat( void ) {
 			if ( !NET_StringToAdr( sv_master[i]->string, &adr[i] ) ) {
 				// if the address failed to resolve, clear it
 				// so we don't take repeated dns hits
-				Com_Printf( "Couldn't resolve address: %s\n", sv_master[i]->string );
+				Com_Warning( "Couldn't resolve address: %s\n", sv_master[i]->string );
 				Cvar_Set( sv_master[i]->name, "" );
 				sv_master[i]->modified = qfalse;
 				continue;
@@ -449,7 +449,7 @@ void SVC_RemoteCommand( netadr_t from, msg_t *msg ) {
 	if ( !strlen( sv_rconPassword->string ) ||
 			strcmp( Cmd_Argv( 1 ), sv_rconPassword->string ) ) {
 		valid = qfalse;
-		Com_Printf( "Bad rcon from %s:\n%s\n", NET_AdrToString( from ), Cmd_Argv( 2 ) );
+		Com_Warning( "Bad rcon from %s:\n%s\n", NET_AdrToString( from ), Cmd_Argv( 2 ) );
 	} else {
 		valid = qtrue;
 		Com_Printf( "Rcon from %s:\n%s\n", NET_AdrToString( from ), Cmd_Argv( 2 ) );

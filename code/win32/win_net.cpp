@@ -513,20 +513,20 @@ int NET_IPSocket( char * net_interface, int port ) {
 	if ( ( newsocket = socket( AF_INET, SOCK_DGRAM, IPPROTO_UDP ) ) == INVALID_SOCKET ) {
 		err = WSAGetLastError();
 		if ( err != WSAEAFNOSUPPORT ) {
-			Com_Printf( "WARNING: UDP_OpenSocket: socket: %s\n", NET_ErrorString() );
+			Com_Warning( "UDP_OpenSocket: socket: %s\n", NET_ErrorString() );
 		}
 		return 0;
 	}
 
 	// make it non-blocking
 	if ( ioctlsocket( newsocket, FIONBIO, &_true ) == SOCKET_ERROR ) {
-		Com_Printf( "WARNING: UDP_OpenSocket: ioctl FIONBIO: %s\n", NET_ErrorString() );
+		Com_Warning( "UDP_OpenSocket: ioctl FIONBIO: %s\n", NET_ErrorString() );
 		return 0;
 	}
 
 	// make it broadcast capable
 	if ( setsockopt( newsocket, SOL_SOCKET, SO_BROADCAST, ( char * )&i, sizeof( i ) ) == SOCKET_ERROR ) {
-		Com_Printf( "WARNING: UDP_OpenSocket: setsockopt SO_BROADCAST: %s\n", NET_ErrorString() );
+		Com_Warning( "UDP_OpenSocket: setsockopt SO_BROADCAST: %s\n", NET_ErrorString() );
 		return 0;
 	}
 
@@ -545,7 +545,7 @@ int NET_IPSocket( char * net_interface, int port ) {
 	address.sin_family = AF_INET;
 
 	if ( bind( newsocket, ( const sockaddr * )&address, sizeof( address ) ) == SOCKET_ERROR ) {
-		Com_Printf( "WARNING: UDP_OpenSocket: bind: %s\n", NET_ErrorString() );
+		Com_Warning( "UDP_OpenSocket: bind: %s\n", NET_ErrorString() );
 		closesocket( newsocket );
 		return 0;
 	}
@@ -573,18 +573,18 @@ void NET_OpenSocks( int port ) {
 
 	if ( ( socks_socket = socket( AF_INET, SOCK_STREAM, IPPROTO_TCP ) ) == INVALID_SOCKET ) {
 		err = WSAGetLastError();
-		Com_Printf( "WARNING: NET_OpenSocks: socket: %s\n", NET_ErrorString() );
+		Com_Warning( "NET_OpenSocks: socket: %s\n", NET_ErrorString() );
 		return;
 	}
 
 	h = gethostbyname( net_socksServer->string );
 	if ( h == NULL ) {
 		err = WSAGetLastError();
-		Com_Printf( "WARNING: NET_OpenSocks: gethostbyname: %s\n", NET_ErrorString() );
+		Com_Warning( "NET_OpenSocks: gethostbyname: %s\n", NET_ErrorString() );
 		return;
 	}
 	if ( h->h_addrtype != AF_INET ) {
-		Com_Printf( "WARNING: NET_OpenSocks: gethostbyname: address type was not AF_INET\n" );
+		Com_Warning( "NET_OpenSocks: gethostbyname: address type was not AF_INET\n" );
 		return;
 	}
 	address.sin_family = AF_INET;
@@ -802,7 +802,7 @@ void NET_OpenIP( void ) {
 			return;
 		}
 	}
-	Com_Printf( "WARNING: Couldn't allocate IP port\n" );
+	Com_Warning( "Couldn't allocate IP port\n" );
 }
 
 
@@ -820,20 +820,20 @@ int NET_IPXSocket( int port ) {
 	if ( ( newsocket = socket( AF_IPX, SOCK_DGRAM, NSPROTO_IPX ) ) == INVALID_SOCKET ) {
 		err = WSAGetLastError();
 		if ( err != WSAEAFNOSUPPORT ) {
-			Com_Printf( "WARNING: IPX_Socket: socket: %s\n", NET_ErrorString() );
+			Com_Warning( "IPX_Socket: socket: %s\n", NET_ErrorString() );
 		}
 		return 0;
 	}
 
 	// make it non-blocking
 	if ( ioctlsocket( newsocket, FIONBIO, &_true ) == SOCKET_ERROR ) {
-		Com_Printf( "WARNING: IPX_Socket: ioctl FIONBIO: %s\n", NET_ErrorString() );
+		Com_Warning( "IPX_Socket: ioctl FIONBIO: %s\n", NET_ErrorString() );
 		return 0;
 	}
 
 	// make it broadcast capable
 	if ( setsockopt( newsocket, SOL_SOCKET, SO_BROADCAST, ( char * )&_true, sizeof( _true ) ) == SOCKET_ERROR ) {
-		Com_Printf( "WARNING: IPX_Socket: setsockopt SO_BROADCAST: %s\n", NET_ErrorString() );
+		Com_Warning( "IPX_Socket: setsockopt SO_BROADCAST: %s\n", NET_ErrorString() );
 		return 0;
 	}
 
@@ -847,7 +847,7 @@ int NET_IPXSocket( int port ) {
 	}
 
 	if ( bind( newsocket, ( const sockaddr * )&address, sizeof( address ) ) == SOCKET_ERROR ) {
-		Com_Printf( "WARNING: IPX_Socket: bind: %s\n", NET_ErrorString() );
+		Com_Warning( "IPX_Socket: bind: %s\n", NET_ErrorString() );
 		closesocket( newsocket );
 		return 0;
 	}
@@ -1003,7 +1003,7 @@ void NET_Init( void ) {
 
 	r = WSAStartup( MAKEWORD( 1, 1 ), &winsockdata );
 	if ( r ) {
-		Com_Printf( "WARNING: Winsock initialization failed, returned %d\n", r );
+		Com_Warning( "Winsock initialization failed, returned %d\n", r );
 		return;
 	}
 

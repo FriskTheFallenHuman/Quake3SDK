@@ -626,8 +626,9 @@ void CheckTeamLeader( int team );
 void G_RunThink ( gentity_t * ent );
 void QDECL G_LogPrintf( const char * fmt, ... );
 void SendScoreboardMessageToAllClients( void );
-void QDECL G_Printf( const char * fmt, ... );
-void QDECL G_Error( const char * fmt, ... );
+void QDECL G_Printf( const char * msg, ... );
+void QDECL G_Warning( const char * msg, ... );
+void QDECL G_Error( const char * msg, ... );
 
 //
 // g_client.c
@@ -733,8 +734,6 @@ extern	vmCvar_t	g_enableBreath;
 extern	vmCvar_t	g_singlePlayer;
 extern	vmCvar_t	g_proxMineTimeout;
 
-void	trap_Printf( const char * fmt );
-void	trap_Error( const char * fmt );
 int		trap_Milliseconds( void );
 int		trap_Argc( void );
 void	trap_Argv( int n, char * buffer, int bufferLength );

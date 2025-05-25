@@ -50,11 +50,15 @@ cgameExport_t * dllEntry( cgameImport_t * imports ) {
 	return &exports;
 }
 
-void trap_Print( const char * fmt ) {
+void trap_Print( const char * fmt, ... ) {
 	cgSyscall->Print( fmt );
 }
 
-void trap_Error( const char * fmt ) {
+void trap_Warning( const char * fmt, ... ) {
+	cgSyscall->Warning( fmt );
+}
+
+void trap_Error( const char * fmt, ... ) {
 	cgSyscall->Error( ERR_DROP, fmt );
 }
 

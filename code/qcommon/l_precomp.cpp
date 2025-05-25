@@ -69,7 +69,7 @@ void QDECL SourceError( source_t * source, char * str, ... ) {
 	vsprintf( text, str, ap );
 	va_end( ap );
 
-	Com_Printf( "error: file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text );
+	Com_Error( ERR_DROP, "file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text );
 } //end of the function SourceError
 //===========================================================================
 //
@@ -85,7 +85,7 @@ void QDECL SourceWarning( source_t * source, char * str, ... ) {
 	vsprintf( text, str, ap );
 	va_end( ap );
 
-	Com_Printf( "warning: file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text );
+	Com_Warning( "file %s, line %d: %s\n", source->scriptstack->filename, source->scriptstack->line, text );
 } //end of the function ScriptWarning
 //============================================================================
 //
@@ -3058,7 +3058,7 @@ void PC_CheckOpenSourceHandles( void ) {
 
 	for ( i = 1; i < MAX_SOURCEFILES; i++ ) {
 		if ( sourceFiles[i] ) {
-			Com_Printf( "error: file %s still open in precompiler\n", sourceFiles[i]->scriptstack->filename );
+			Com_Warning( "file %s still open in precompiler\n", sourceFiles[i]->scriptstack->filename );
 		} //end if
 	} //end for
 } //end of the function PC_CheckOpenSourceHandles

@@ -561,14 +561,15 @@ extern char		*	UI_Argv( int arg );
 extern char		*	UI_Cvar_VariableString( const char * var_name );
 extern void			UI_Refresh( int time );
 extern void			UI_StartDemoLoop( void );
+extern void QDECL	UI_Printf( const char * msg, ... );
+extern void QDECL	UI_Warning( const char * msg, ... );
+extern void QDECL	UI_Error( const char * msg, ... );
 extern qboolean		m_entersound;
 extern uiStatic_t	uis;
 
 //
 // ui_syscalls.c
 //
-void			trap_Print( const char * string );
-void			trap_Error( const char * string );
 int				trap_Milliseconds( void );
 void			trap_Cvar_Register( vmCvar_t * vmCvar, const char * varName, const char * defaultValue, int flags );
 void			trap_Cvar_Update( vmCvar_t * vmCvar );

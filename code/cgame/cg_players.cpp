@@ -184,7 +184,7 @@ static qboolean	CG_ParseAnimationFile( const char * filename, clientInfo_t * ci 
 			text_p = prev;	// unget the token
 			break;
 		}
-		Com_Printf( "unknown token '%s' is %s\n", token, filename );
+		CG_Warning( "unknown token '%s' is %s\n", token, filename );
 	}
 
 	// read information for each frame
@@ -459,7 +459,7 @@ static qboolean	CG_RegisterClientSkin( clientInfo_t * ci, const char * teamName,
 		Com_sprintf( filename, sizeof( filename ), "models/players/characters/%s/%slower_%s.skin", modelName, teamName, skinName );
 		ci->legsSkin = trap_R_RegisterSkin( filename );
 		if (!ci->legsSkin) {
-			Com_Printf( "Leg skin load failure: %s\n", filename );
+			CG_Warning( "Leg skin load failure: %s\n", filename );
 		}
 	}
 
@@ -470,7 +470,7 @@ static qboolean	CG_RegisterClientSkin( clientInfo_t * ci, const char * teamName,
 		Com_sprintf( filename, sizeof( filename ), "models/players/characters/%s/%supper_%s.skin", modelName, teamName, skinName );
 		ci->torsoSkin = trap_R_RegisterSkin( filename );
 		if (!ci->torsoSkin) {
-			Com_Printf( "Torso skin load failure: %s\n", filename );
+			CG_Warning( "Torso skin load failure: %s\n", filename );
 		}
 	}
 	*/
@@ -478,21 +478,21 @@ static qboolean	CG_RegisterClientSkin( clientInfo_t * ci, const char * teamName,
 		ci->legsSkin = trap_R_RegisterSkin( filename );
 	}
 	if ( !ci->legsSkin ) {
-		Com_Printf( "Leg skin load failure: %s\n", filename );
+		CG_Warning( "Leg skin load failure: %s\n", filename );
 	}
 
 	if ( CG_FindClientModelFile( filename, sizeof( filename ), ci, teamName, modelName, skinName, "upper", "skin" ) ) {
 		ci->torsoSkin = trap_R_RegisterSkin( filename );
 	}
 	if ( !ci->torsoSkin ) {
-		Com_Printf( "Torso skin load failure: %s\n", filename );
+		CG_Warning( "Torso skin load failure: %s\n", filename );
 	}
 
 	if ( CG_FindClientHeadFile( filename, sizeof( filename ), ci, teamName, headModelName, headSkinName, "head", "skin" ) ) {
 		ci->headSkin = trap_R_RegisterSkin( filename );
 	}
 	if ( !ci->headSkin ) {
-		Com_Printf( "Head skin load failure: %s\n", filename );
+		CG_Warning( "Head skin load failure: %s\n", filename );
 	}
 
 	// if any skins failed to load
@@ -523,7 +523,7 @@ static qboolean CG_RegisterClientModelname( clientInfo_t * ci, const char * mode
 		Com_sprintf( filename, sizeof( filename ), "models/players/characters/%s/lower.md3", modelName );
 		ci->legsModel = trap_R_RegisterModel( filename );
 		if ( !ci->legsModel ) {
-			Com_Printf( "Failed to load model file %s\n", filename );
+			CG_Warning( "Failed to load model file %s\n", filename );
 			return qfalse;
 		}
 	}
@@ -534,7 +534,7 @@ static qboolean CG_RegisterClientModelname( clientInfo_t * ci, const char * mode
 		Com_sprintf( filename, sizeof( filename ), "models/players/characters/%s/upper.md3", modelName );
 		ci->torsoModel = trap_R_RegisterModel( filename );
 		if ( !ci->torsoModel ) {
-			Com_Printf( "Failed to load model file %s\n", filename );
+			CG_Warning( "Failed to load model file %s\n", filename );
 			return qfalse;
 		}
 	}
@@ -551,25 +551,25 @@ static qboolean CG_RegisterClientModelname( clientInfo_t * ci, const char * mode
 		ci->headModel = trap_R_RegisterModel( filename );
 	}
 	if ( !ci->headModel ) {
-		Com_Printf( "Failed to load model file %s\n", filename );
+		CG_Warning( "Failed to load model file %s\n", filename );
 		return qfalse;
 	}
 
 	// if any skins failed to load, return failure
 	if ( !CG_RegisterClientSkin( ci, teamName, modelName, skinName, headName, headSkinName ) ) {
 		if ( teamName && *teamName ) {
-			Com_Printf( "Failed to load skin file: %s : %s : %s, %s : %s\n", teamName, modelName, skinName, headName, headSkinName );
+			CG_Warning( "Failed to load skin file: %s : %s : %s, %s : %s\n", teamName, modelName, skinName, headName, headSkinName );
 			if ( ci->team == TEAM_BLUE ) {
 				Com_sprintf( newTeamName, sizeof( newTeamName ), "%s/", DEFAULT_BLUETEAM_NAME );
 			} else {
 				Com_sprintf( newTeamName, sizeof( newTeamName ), "%s/", DEFAULT_REDTEAM_NAME );
 			}
 			if ( !CG_RegisterClientSkin( ci, newTeamName, modelName, skinName, headName, headSkinName ) ) {
-				Com_Printf( "Failed to load skin file: %s : %s : %s, %s : %s\n", newTeamName, modelName, skinName, headName, headSkinName );
+				CG_Warning( "Failed to load skin file: %s : %s : %s, %s : %s\n", newTeamName, modelName, skinName, headName, headSkinName );
 				return qfalse;
 			}
 		} else {
-			Com_Printf( "Failed to load skin file: %s : %s, %s : %s\n", modelName, skinName, headName, headSkinName );
+			CG_Warning( "Failed to load skin file: %s : %s, %s : %s\n", modelName, skinName, headName, headSkinName );
 			return qfalse;
 		}
 	}
@@ -579,7 +579,7 @@ static qboolean CG_RegisterClientModelname( clientInfo_t * ci, const char * mode
 	if ( !CG_ParseAnimationFile( filename, ci ) ) {
 		Com_sprintf( filename, sizeof( filename ), "models/players/characters/%s/animation.cfg", modelName );
 		if ( !CG_ParseAnimationFile( filename, ci ) ) {
-			Com_Printf( "Failed to load animation file %s\n", filename );
+			CG_Warning( "Failed to load animation file %s\n", filename );
 			return qfalse;
 		}
 	}

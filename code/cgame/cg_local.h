@@ -1187,6 +1187,7 @@ const char * CG_ConfigString( int index );
 const char * CG_Argv( int arg );
 
 void QDECL CG_Printf( const char * msg, ... );
+void QDECL CG_Warning( const char * msg, ... );
 void QDECL CG_Error( const char * msg, ... );
 
 void CG_StartMusic( void );
@@ -1464,12 +1465,6 @@ void CG_CheckChangedPredictableEvents( playerState_t * ps );
 // system traps
 // These functions are how the cgame communicates with the main game system
 //
-
-// print message on the local console
-void		trap_Print( const char * fmt );
-
-// abort the game
-void		trap_Error( const char * fmt );
 
 // milliseconds should only be used for performance tuning, never
 // for anything game related.  Get time from the CG_DrawActiveFrame parameter

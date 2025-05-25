@@ -276,7 +276,7 @@ void CL_Record_f( void ) {
 
 	// sync 0 doesn't prevent recording, so not forcing it off .. everyone does g_sync 1 ; record ; g_sync 0 ..
 	if ( !Cvar_VariableValue( "g_synchronousClients" ) ) {
-		Com_Printf ( S_COLOR_YELLOW "WARNING: You should set 'g_synchronousClients 1' for smoother demo recording\n" );
+		Com_Printf ( "You should set 'g_synchronousClients 1' for smoother demo recording\n" );
 	}
 
 	if ( Cmd_Argc() == 2 ) {
@@ -303,7 +303,7 @@ void CL_Record_f( void ) {
 	Com_Printf ( "recording to %s.\n", name );
 	clc.demofile = FS_FOpenFileWrite( name );
 	if ( !clc.demofile ) {
-		Com_Printf ( "ERROR: couldn't open.\n" );
+		Com_Warning ( "couldn't open demo file.\n" );
 		return;
 	}
 	clc.demorecording = qtrue;
@@ -439,7 +439,7 @@ void CL_ReadDemoMessage( void ) {
 	}
 	r = FS_Read( buf.data, buf.cursize, clc.demofile );
 	if ( r != buf.cursize ) {
-		Com_Printf( "Demo file was truncated.\n" );
+		Com_Warning( "Demo file was truncated.\n" );
 		CL_DemoCompleted ();
 		return;
 	}
@@ -461,10 +461,10 @@ static void CL_WalkDemoExt( char * arg, char * name, int * demofile ) {
 		Com_sprintf ( name, MAX_OSPATH, "demos/%s.dm_%d", arg, demo_protocols[i] );
 		FS_FOpenFileRead( name, demofile, qtrue );
 		if ( *demofile ) {
-			Com_Printf( "Demo file: %s\n", name );
+			Com_Warning( "Demo file: %s\n", name );
 			break;
 		} else {
-			Com_Printf( "Not found: %s\n", name );
+			Com_Warning( "Not found: %s\n", name );
 		}
 		i++;
 	}
@@ -512,7 +512,7 @@ void CL_PlayDemo_f( void ) {
 			Com_sprintf ( name, sizeof( name ), "demos/%s", arg );
 			FS_FOpenFileRead( name, &clc.demofile, qtrue );
 		} else {
-			Com_Printf( "Protocol %d not supported for demos\n", protocol );
+			Com_Error( ERR_DROP, "Protocol %d not supported for demos\n", protocol );
 			Q_strncpyz( retry, arg, sizeof( retry ) );
 			retry[strlen( retry ) -6] = 0;
 			CL_WalkDemoExt( retry, name, &clc.demofile );
@@ -802,7 +802,7 @@ void CL_RequestMotd( void ) {
 	}
 	Com_Printf( "Resolving %s\n", UPDATE_SERVER_NAME );
 	if ( !NET_StringToAdr( UPDATE_SERVER_NAME, &cls.updateServer ) ) {
-		Com_Printf( "Couldn't resolve address\n" );
+		Com_Warning( "Couldn't resolve address\n" );
 		return;
 	}
 	cls.updateServer.port = BigShort( PORT_UPDATE );
@@ -872,7 +872,7 @@ void CL_RequestAuthorization( void ) {
 	if ( !cls.authorizeServer.port ) {
 		Com_Printf( "Resolving %s\n", AUTHORIZE_SERVER_NAME );
 		if ( !NET_StringToAdr( AUTHORIZE_SERVER_NAME, &cls.authorizeServer ) ) {
-			Com_Printf( "Couldn't resolve address\n" );
+			Com_Warning( "Couldn't resolve address\n" );
 			return;
 		}
 
@@ -993,7 +993,7 @@ CL_Reconnect_f
 */
 void CL_Reconnect_f( void ) {
 	if ( !strlen( cls.servername ) || !strcmp( cls.servername, "localhost" ) ) {
-		Com_Printf( "Can't reconnect to localhost.\n" );
+		Com_Warning( "Can't reconnect to localhost.\n" );
 		return;
 	}
 	Cbuf_AddText( va( "connect %s\n", cls.servername ) );
@@ -1257,7 +1257,7 @@ void CL_Configstrings_f( void ) {
 	int		ofs;
 
 	if ( cls.state != CA_ACTIVE ) {
-		Com_Printf( "Not connected to a server.\n" );
+		Com_Warning( "Not connected to a server.\n" );
 		return;
 	}
 
@@ -1439,13 +1439,13 @@ void CL_InitDownloads( void ) {
 		if ( FS_ComparePaks( missingfiles, sizeof( missingfiles ), qfalse ) ) {
 			// NOTE TTimo I would rather have that printed as a modal message box
 			//   but at this point while joining the game we don't know wether we will successfully join or not
-			Com_Printf( "\nWARNING: You are missing some files referenced by the server:\n%s"
-						"You might not be able to join the game\n"
-						"Go to the setting menu to turn on autodownload, or get the file elsewhere\n\n", missingfiles );
+			Com_Warning( "\nYou are missing some files referenced by the server:\n%s"
+						 "You might not be able to join the game\n"
+						 "Go to the setting menu to turn on autodownload, or get the file elsewhere\n\n", missingfiles );
 		}
 	} else if ( FS_ComparePaks( clc.downloadList, sizeof( clc.downloadList ), qtrue ) ) {
 
-		Com_Printf( "Need paks: %s\n", clc.downloadList );
+		Com_Warning( "Need paks: %s\n", clc.downloadList );
 
 		if ( *clc.downloadList ) {
 			// if autodownloading is not enabled on the server
@@ -1557,7 +1557,7 @@ void CL_DisconnectPacket( netadr_t from ) {
 	}
 
 	// drop the connection
-	Com_Printf( "Server disconnected for unknown reason\n" );
+	Com_Warning( "Server disconnected for unknown reason\n" );
 	Cvar_Set( "com_errorMessage", "Server disconnected for unknown reason\n" );
 	CL_Disconnect( qtrue );
 }
@@ -2046,32 +2046,6 @@ void CL_Frame ( int msec ) {
 //============================================================================
 
 /*
-================
-CL_RefPrintf
-
-DLL glue
-================
-*/
-void QDECL CL_RefPrintf( int print_level, const char * fmt, ... ) {
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-
-	va_start ( argptr, fmt );
-	Q_vsnprintf ( msg, sizeof( msg ), fmt, argptr );
-	va_end ( argptr );
-
-	if ( print_level == PRINT_ALL ) {
-		Com_Printf ( "%s", msg );
-	} else if ( print_level == PRINT_WARNING ) {
-		Com_Printf ( S_COLOR_YELLOW "%s", msg );		// yellow
-	} else if ( print_level == PRINT_DEVELOPER ) {
-		Com_DPrintf ( S_COLOR_RED "%s", msg );		// red
-	}
-}
-
-
-
-/*
 ============
 CL_ShutdownRef
 ============
@@ -2168,7 +2142,8 @@ void CL_InitRef( void ) {
 	ri.Cmd_Argc = Cmd_Argc;
 	ri.Cmd_Argv = Cmd_Argv;
 	ri.Cmd_ExecuteText = Cbuf_ExecuteText;
-	ri.Printf = CL_RefPrintf;
+	ri.Printf = Com_Printf;
+	ri.Warning = Com_Warning;
 	ri.Error = Com_Error;
 	ri.Milliseconds = CL_ScaledMilliseconds;
 	ri.Malloc = CL_RefMalloc;

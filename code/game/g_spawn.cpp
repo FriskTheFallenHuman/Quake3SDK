@@ -279,7 +279,7 @@ qboolean G_CallSpawn( gentity_t * ent ) {
 	gitem_t	* item;
 
 	if ( !ent->classname ) {
-		G_Printf ( "G_CallSpawn: NULL classname\n" );
+		G_Warning ( "G_CallSpawn: NULL classname\n" );
 		return qfalse;
 	}
 
@@ -299,7 +299,7 @@ qboolean G_CallSpawn( gentity_t * ent ) {
 			return qtrue;
 		}
 	}
-	G_Printf ( "%s doesn't have a spawn function\n", ent->classname );
+	G_Warning ( "%s doesn't have a spawn function\n", ent->classname );
 	return qfalse;
 }
 

@@ -143,13 +143,13 @@ void GL_TextureMode( const char * string ) {
 	// hack to prevent trilinear from being set on voodoo,
 	// because their driver freaks...
 	if ( i == 5 && glConfig.hardwareType == GLHW_3DFX_2D3D ) {
-		ri.Printf( PRINT_ALL, "Refusing to set trilinear on a voodoo.\n" );
+		ri.Printf( "Refusing to set trilinear on a voodoo.\n" );
 		i = 3;
 	}
 
 
 	if ( i == 6 ) {
-		ri.Printf ( PRINT_ALL, "bad filter name\n" );
+		ri.Printf ( "bad filter name\n" );
 		return;
 	}
 
@@ -199,64 +199,64 @@ void R_ImageList_f( void ) {
 		"no ", "yes"
 	};
 
-	ri.Printf ( PRINT_ALL, "\n      -w-- -h-- -mm- -TMU- -if-- wrap --name-------\n" );
+	ri.Printf ( "\n      -w-- -h-- -mm- -TMU- -if-- wrap --name-------\n" );
 	texels = 0;
 
 	for ( i = 0 ; i < tr.numImages ; i++ ) {
 		image = tr.images[ i ];
 
 		texels += image->uploadWidth * image->uploadHeight;
-		ri.Printf ( PRINT_ALL,  "%4i: %4i %4i  %s   %d   ",
+		ri.Printf ( "%4i: %4i %4i  %s   %d   ",
 					i, image->uploadWidth, image->uploadHeight, yesno[image->mipmap], image->TMU );
 		switch ( image->internalFormat ) {
 			case 1:
-				ri.Printf( PRINT_ALL, "I    " );
+				ri.Printf( "I    " );
 				break;
 			case 2:
-				ri.Printf( PRINT_ALL, "IA   " );
+				ri.Printf( "IA   " );
 				break;
 			case 3:
-				ri.Printf( PRINT_ALL, "RGB  " );
+				ri.Printf( "RGB  " );
 				break;
 			case 4:
-				ri.Printf( PRINT_ALL, "RGBA " );
+				ri.Printf( "RGBA " );
 				break;
 			case GL_RGBA8:
-				ri.Printf( PRINT_ALL, "RGBA8" );
+				ri.Printf( "RGBA8" );
 				break;
 			case GL_RGB8:
-				ri.Printf( PRINT_ALL, "RGB8" );
+				ri.Printf( "RGB8" );
 				break;
 			case GL_RGB4_S3TC:
-				ri.Printf( PRINT_ALL, "S3TC " );
+				ri.Printf( "S3TC " );
 				break;
 			case GL_RGBA4:
-				ri.Printf( PRINT_ALL, "RGBA4" );
+				ri.Printf( "RGBA4" );
 				break;
 			case GL_RGB5:
-				ri.Printf( PRINT_ALL, "RGB5 " );
+				ri.Printf( "RGB5 " );
 				break;
 			default:
-				ri.Printf( PRINT_ALL, "???? " );
+				ri.Printf( "???? " );
 		}
 
 		switch ( image->wrapClampMode ) {
 			case GL_REPEAT:
-				ri.Printf( PRINT_ALL, "rept " );
+				ri.Printf( "rept " );
 				break;
 			case GL_CLAMP:
-				ri.Printf( PRINT_ALL, "clmp " );
+				ri.Printf( "clmp " );
 				break;
 			default:
-				ri.Printf( PRINT_ALL, "%4i ", image->wrapClampMode );
+				ri.Printf( "%4i ", image->wrapClampMode );
 				break;
 		}
 
-		ri.Printf( PRINT_ALL, " %s\n", image->imgName );
+		ri.Printf( " %s\n", image->imgName );
 	}
-	ri.Printf ( PRINT_ALL, " ---------\n" );
-	ri.Printf ( PRINT_ALL, " %i total texels (not including mipmaps)\n", texels );
-	ri.Printf ( PRINT_ALL, " %i total images\n\n", tr.numImages );
+	ri.Printf ( " ---------\n" );
+	ri.Printf ( " %i total texels (not including mipmaps)\n", texels );
+	ri.Printf ( " %i total images\n\n", tr.numImages );
 }
 
 //=======================================================================
@@ -1010,7 +1010,7 @@ static void LoadPCX ( const char * filename, byte ** pic, byte ** palette, int *
 			|| pcx->bits_per_pixel != 8
 			|| xmax >= 1024
 			|| ymax >= 1024 ) {
-		ri.Printf ( PRINT_ALL, "Bad pcx file %s (%i x %i) (%i x %i)\n", filename, xmax + 1, ymax + 1, pcx->xmax, pcx->ymax );
+		ri.Printf ( "Bad pcx file %s (%i x %i) (%i x %i)\n", filename, xmax + 1, ymax + 1, pcx->xmax, pcx->ymax );
 		return;
 	}
 
@@ -1052,7 +1052,7 @@ static void LoadPCX ( const char * filename, byte ** pic, byte ** palette, int *
 	}
 
 	if ( raw - ( byte * )pcx > len ) {
-		ri.Printf ( PRINT_DEVELOPER, "PCX file %s was malformed", filename );
+		ri.Warning( "PCX file %s was malformed", filename );
 		ri.Free ( *pic );
 		*pic = NULL;
 	}
@@ -1334,7 +1334,7 @@ breakOut:;
 #endif
 	// instead we just print a warning
 	if ( targa_header.attributes & 0x20 ) {
-		ri.Printf( PRINT_WARNING, "WARNING: '%s' TGA file header declares top-down image, ignoring\n", name );
+		ri.Warning( "'%s' TGA file header declares top-down image, ignoring\n", name );
 	}
 
 	ri.FS_FreeFile ( buffer );
@@ -1479,13 +1479,13 @@ image_t	* R_FindImageFile( const char * name, qboolean mipmap, qboolean allowPic
 			// the white image can be used with any set of parms, but other mismatches are errors
 			if ( strcmp( name, "*white" ) ) {
 				if ( image->mipmap != mipmap ) {
-					ri.Printf( PRINT_DEVELOPER, "WARNING: reused image %s with mixed mipmap parm\n", name );
+					ri.Warning( "reused image %s with mixed mipmap parm\n", name );
 				}
 				if ( image->allowPicmip != allowPicmip ) {
-					ri.Printf( PRINT_DEVELOPER, "WARNING: reused image %s with mixed allowPicmip parm\n", name );
+					ri.Warning( "reused image %s with mixed allowPicmip parm\n", name );
 				}
 				if ( image->wrapClampMode != glWrapClampMode ) {
-					ri.Printf( PRINT_ALL, "WARNING: reused image %s with mixed glWrapClampMode parm\n", name );
+					ri.Warning( "reused image %s with mixed glWrapClampMode parm\n", name );
 				}
 			}
 			return image;
@@ -1504,7 +1504,7 @@ image_t	* R_FindImageFile( const char * name, qboolean mipmap, qboolean allowPic
 		altname[len - 3] = toupper( altname[len - 3] );       // and try upper case extension for unix systems
 		altname[len - 2] = toupper( altname[len - 2] );       //
 		altname[len - 1] = toupper( altname[len - 1] );       //
-		ri.Printf( PRINT_ALL, "trying %s...\n", altname );    //
+		ri.Printf( "trying %s...\n", altname );    //
 		R_LoadImage( altname, &pic, &width, &height );        //
 		if ( pic == NULL ) {                                  // if that fails
 			return NULL;                                        // bail
@@ -1967,12 +1967,12 @@ qhandle_t RE_RegisterSkin( const char * name ) {
 	char		surfName[MAX_QPATH];
 
 	if ( !name || !name[0] ) {
-		Com_Printf( "Empty name passed to RE_RegisterSkin\n" );
+		ri.Warning( "Empty name passed to RE_RegisterSkin\n" );
 		return 0;
 	}
 
 	if ( strlen( name ) >= MAX_QPATH ) {
-		Com_Printf( "Skin name exceeds MAX_QPATH\n" );
+		ri.Warning( "Skin name exceeds MAX_QPATH\n" );
 		return 0;
 	}
 
@@ -1990,7 +1990,7 @@ qhandle_t RE_RegisterSkin( const char * name ) {
 
 	// allocate a new skin
 	if ( tr.numSkins == MAX_SKINS ) {
-		ri.Printf( PRINT_WARNING, "WARNING: RE_RegisterSkin( '%s' ) MAX_SKINS hit\n", name );
+		ri.Warning( "RE_RegisterSkin( '%s' ) MAX_SKINS hit\n", name );
 		return 0;
 	}
 	tr.numSkins++;
@@ -2096,17 +2096,17 @@ void	R_SkinList_f( void ) {
 	int			i, j;
 	skin_t	*	skin;
 
-	ri.Printf ( PRINT_ALL, "------------------\n" );
+	ri.Printf ( "------------------\n" );
 
 	for ( i = 0 ; i < tr.numSkins ; i++ ) {
 		skin = tr.skins[i];
 
-		ri.Printf( PRINT_ALL, "%3i:%s\n", i, skin->name );
+		ri.Printf( "%3i:%s\n", i, skin->name );
 		for ( j = 0 ; j < skin->numSurfaces ; j++ ) {
-			ri.Printf( PRINT_ALL, "       %s = %s\n",
+			ri.Printf( "       %s = %s\n",
 					   skin->surfaces[j]->name, skin->surfaces[j]->shader->name );
 		}
 	}
-	ri.Printf ( PRINT_ALL, "------------------\n" );
+	ri.Printf ( "------------------\n" );
 }
 

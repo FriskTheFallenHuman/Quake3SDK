@@ -240,7 +240,7 @@ LONG WINAPI InputLineWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam
 				strcat( s_wcd.consoleText, "\n" );
 				SetWindowText( s_wcd.hwndInputLine, "" );
 
-				Sys_Print( va( "]%s\n", inputBuffer ) );
+				Sys_Printf( "]%s\n", inputBuffer );
 
 				return 0;
 			}

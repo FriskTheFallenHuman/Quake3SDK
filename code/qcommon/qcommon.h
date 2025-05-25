@@ -608,16 +608,6 @@ MISC
 ==============================================================
 */
 
-// TTimo
-// vsnprintf is ISO/IEC 9899:1999
-// abstracting this to make it portable
-#ifdef WIN32
-#define Q_vsnprintf _vsnprintf
-#else
-// TODO: do we need Mac define?
-#define Q_vsnprintf vsnprintf
-#endif
-
 // centralizing the declarations for cl_cdkey
 // https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=470
 extern char cl_cdkey[34];
@@ -643,9 +633,6 @@ void		Info_Print( const char * s );
 
 void		Com_BeginRedirect ( char * buffer, int buffersize, void ( *flush )( char * ) );
 void		Com_EndRedirect( void );
-void 		QDECL Com_Printf( const char * fmt, ... );
-void 		QDECL Com_DPrintf( const char * fmt, ... );
-void 		QDECL Com_Error( int code, const char * fmt, ... );
 void 		Com_Quit_f( void );
 int			Com_EventLoop( void );
 int			Com_Milliseconds( void );	// will be journaled properly
@@ -903,7 +890,13 @@ void	QDECL Sys_Error( const char * error, ... );
 void	Sys_Quit ( void );
 char	* Sys_GetClipboardData( void );	// note that this isn't journaled...
 
-void	Sys_Print( const char * msg );
+// will go to the various text consoles
+// NOT thread safe - never use in the async paths
+void	Sys_Printf( const char * msg, ... );
+
+// guaranteed to be thread-safe
+void	Sys_DebugPrintf( const char * fmt, ... );
+void	Sys_DebugVPrintf( const char * fmt, va_list arg );
 
 // Sys_Milliseconds should only be used for profiling purposes,
 // any game related timing information should come from event timestamps

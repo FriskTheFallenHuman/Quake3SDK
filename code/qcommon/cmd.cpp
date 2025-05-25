@@ -90,7 +90,7 @@ void Cbuf_AddText( const char * text ) {
 	l = strlen ( text );
 
 	if ( cmd_text.cursize + l >= cmd_text.maxsize ) {
-		Com_Printf ( "Cbuf_AddText: overflow\n" );
+		Com_Warning( "Cbuf_AddText: overflow\n" );
 		return;
 	}
 	Com_Memcpy( &cmd_text.data[cmd_text.cursize], text, l );
@@ -112,7 +112,7 @@ void Cbuf_InsertText( const char * text ) {
 
 	len = strlen( text ) + 1;
 	if ( len + cmd_text.cursize > cmd_text.maxsize ) {
-		Com_Printf( "Cbuf_InsertText overflowed\n" );
+		Com_Warning( "Cbuf_InsertText overflowed\n" );
 		return;
 	}
 
@@ -245,7 +245,7 @@ void Cmd_Exec_f( void ) {
 	COM_DefaultExtension( filename, sizeof( filename ), ".cfg" );
 	len = FS_ReadFile( filename, ( void ** )&f );
 	if ( !f ) {
-		Com_Printf ( "couldn't exec %s\n", Cmd_Argv( 1 ) );
+		Com_Warning( "couldn't exec %s\n", Cmd_Argv( 1 ) );
 		return;
 	}
 	Com_Printf ( "execing %s\n", Cmd_Argv( 1 ) );

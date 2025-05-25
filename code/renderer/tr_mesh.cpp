@@ -277,9 +277,9 @@ void R_AddMD3Surfaces( trRefEntity_t * ent ) {
 			|| ( ent->e.frame < 0 )
 			|| ( ent->e.oldframe >= tr.currentModel->md3[0]->numFrames )
 			|| ( ent->e.oldframe < 0 ) ) {
-		ri.Printf( PRINT_DEVELOPER, "R_AddMD3Surfaces: no such frame %d to %d for '%s'\n",
-				   ent->e.oldframe, ent->e.frame,
-				   tr.currentModel->name );
+		ri.Warning( "R_AddMD3Surfaces: no such frame %d to %d for '%s'\n",
+					ent->e.oldframe, ent->e.frame,
+					tr.currentModel->name );
 		ent->e.frame = 0;
 		ent->e.oldframe = 0;
 	}
@@ -336,9 +336,9 @@ void R_AddMD3Surfaces( trRefEntity_t * ent ) {
 				}
 			}
 			if ( shader == tr.defaultShader ) {
-				ri.Printf( PRINT_DEVELOPER, "WARNING: no shader for surface %s in skin %s\n", surface->name, skin->name );
+				ri.Warning( "no shader for surface %s in skin %s\n", surface->name, skin->name );
 			} else if ( shader->defaultShader ) {
-				ri.Printf( PRINT_DEVELOPER, "WARNING: shader %s in skin %s not found\n", shader->name, skin->name );
+				ri.Warning( "shader %s in skin %s not found\n", shader->name, skin->name );
 			}
 		} else if ( surface->numShaders <= 0 ) {
 			shader = tr.defaultShader;

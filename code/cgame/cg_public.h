@@ -75,6 +75,7 @@ functions imported from the main executable
 
 typedef struct {
 	void ( *Print )( const char *, ... );
+	void ( *Warning )( const char *, ... );
 	void ( *Error )( int, const char *, ... );
 	int ( *Milliseconds )( void );
 	void ( *Cvar_Register )( vmCvar_t * vmCvar, const char * varName, const char * defaultValue, int flags );

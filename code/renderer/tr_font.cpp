@@ -138,7 +138,7 @@ FT_Bitmap * R_RenderGlyph( FT_GlyphSlot glyph, glyphInfo_t * glyphOut ) {
 
 		return bit2;
 	} else {
-		ri.Printf( PRINT_ALL, "Non-outline fonts are not supported\n" );
+		ri.Warning( "Non-outline fonts are not supported\n" );
 	}
 	return NULL;
 }
@@ -350,7 +350,7 @@ void RE_RegisterFont( const char * fontName, int pointSize, fontInfo_t * font ) 
 	R_SyncRenderThread();
 
 	if ( registeredFontCount >= MAX_FONTS ) {
-		ri.Printf( PRINT_ALL, "RE_RegisterFont: Too many fonts registered already.\n" );
+		ri.Warning( "RE_RegisterFont: Too many fonts registered already.\n" );
 		return;
 	}
 
@@ -396,28 +396,28 @@ void RE_RegisterFont( const char * fontName, int pointSize, fontInfo_t * font ) 
 	}
 
 #ifndef BUILD_FREETYPE
-	ri.Printf( PRINT_ALL, "RE_RegisterFont: FreeType code not available\n" );
+	ri.Warning( "RE_RegisterFont: FreeType code not available\n" );
 #else
 	if ( ftLibrary == NULL ) {
-		ri.Printf( PRINT_ALL, "RE_RegisterFont: FreeType not initialized.\n" );
+		ri.Warning( "RE_RegisterFont: FreeType not initialized.\n" );
 		return;
 	}
 
 	len = ri.FS_ReadFile( fontName, &faceData );
 	if ( len <= 0 ) {
-		ri.Printf( PRINT_ALL, "RE_RegisterFont: Unable to read font file\n" );
+		ri.Warning( "RE_RegisterFont: Unable to read font file\n" );
 		return;
 	}
 
 	// allocate on the stack first in case we fail
 	if ( FT_New_Memory_Face( ftLibrary, faceData, len, 0, &face ) ) {
-		ri.Printf( PRINT_ALL, "RE_RegisterFont: FreeType2, unable to allocate new face.\n" );
+		ri.Warning( "RE_RegisterFont: FreeType2, unable to allocate new face.\n" );
 		return;
 	}
 
 
 	if ( FT_Set_Char_Size( face, pointSize << 6, pointSize << 6, dpi, dpi ) ) {
-		ri.Printf( PRINT_ALL, "RE_RegisterFont: FreeType2, Unable to set face char size.\n" );
+		ri.Warning( "RE_RegisterFont: FreeType2, Unable to set face char size.\n" );
 		return;
 	}
 
@@ -428,7 +428,7 @@ void RE_RegisterFont( const char * fontName, int pointSize, fontInfo_t * font ) 
 
 	out = Z_Malloc( 1024 * 1024 );
 	if ( out == NULL ) {
-		ri.Printf( PRINT_ALL, "RE_RegisterFont: Z_Malloc failure during output image creation.\n" );
+		ri.Warning( "RE_RegisterFont: Z_Malloc failure during output image creation.\n" );
 		return;
 	}
 	Com_Memset( out, 0, 1024 * 1024 );
@@ -521,7 +521,7 @@ void RE_RegisterFont( const char * fontName, int pointSize, fontInfo_t * font ) 
 void R_InitFreeType() {
 #ifdef BUILD_FREETYPE
 	if ( FT_Init_FreeType( &ftLibrary ) ) {
-		ri.Printf( PRINT_ALL, "R_InitFreeType: Unable to initialize FreeType.\n" );
+		ri.Warning( "R_InitFreeType: Unable to initialize FreeType.\n" );
 	}
 #endif
 	registeredFontCount = 0;

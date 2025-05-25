@@ -138,7 +138,7 @@ static gentity_t * SpawnModelOnVictoryPad( gentity_t * pad, vec3_t offset, genti
 
 	body = G_Spawn();
 	if ( !body ) {
-		G_Printf( S_COLOR_RED "ERROR: out of gentities\n" );
+		G_Error( "out of gentities\n" );
 		return NULL;
 	}
 

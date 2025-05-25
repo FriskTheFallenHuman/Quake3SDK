@@ -195,13 +195,13 @@ cvar_t * Cvar_Get( const char * var_name, const char * var_value, int flags ) {
 	}
 
 	if ( !Cvar_ValidateString( var_name ) ) {
-		Com_Printf( "invalid cvar name string: %s\n", var_name );
+		Com_Warning( "invalid cvar name string: %s\n", var_name );
 		var_name = "BADNAME";
 	}
 
 #if 0		// FIXME: values with backslash happen
 	if ( !Cvar_ValidateString( var_value ) ) {
-		Com_Printf( "invalid cvar value string: %s\n", var_value );
+		Com_Warning( "invalid cvar value string: %s\n", var_value );
 		var_value = "BADVALUE";
 	}
 #endif
@@ -291,13 +291,13 @@ cvar_t * Cvar_Set2( const char * var_name, const char * value, qboolean force ) 
 	Com_DPrintf( "Cvar_Set2: %s %s\n", var_name, value );
 
 	if ( !Cvar_ValidateString( var_name ) ) {
-		Com_Printf( "invalid cvar name string: %s\n", var_name );
+		Com_Warning( "invalid cvar name string: %s\n", var_name );
 		var_name = "BADNAME";
 	}
 
 #if 0	// FIXME
 	if ( value && !Cvar_ValidateString( value ) ) {
-		Com_Printf( "invalid cvar value string: %s\n", value );
+		Com_Warning( "invalid cvar value string: %s\n", value );
 		var_value = "BADVALUE";
 	}
 #endif
@@ -327,12 +327,12 @@ cvar_t * Cvar_Set2( const char * var_name, const char * value, qboolean force ) 
 
 	if ( !force ) {
 		if ( var->flags & CVAR_ROM ) {
-			Com_Printf( "%s is read only.\n", var_name );
+			Com_Warning( "%s is read only.\n", var_name );
 			return var;
 		}
 
 		if ( var->flags & CVAR_INIT ) {
-			Com_Printf( "%s is write protected.\n", var_name );
+			Com_Warning( "%s is write protected.\n", var_name );
 			return var;
 		}
 
@@ -356,7 +356,7 @@ cvar_t * Cvar_Set2( const char * var_name, const char * value, qboolean force ) 
 		}
 
 		if ( ( var->flags & CVAR_CHEAT ) && !cvar_cheats->integer ) {
-			Com_Printf( "%s is cheat protected.\n", var_name );
+			Com_Warning( "%s is cheat protected.\n", var_name );
 			return var;
 		}
 

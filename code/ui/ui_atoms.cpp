@@ -30,29 +30,77 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 uiStatic_t		uis;
 qboolean		m_entersound;		// after a frame, so caching won't disrupt the sound
 
-// these are here so the functions in q_shared.c can link
-#ifndef UI_HARD_LINKED
-
-void QDECL Com_Error( int level, const char * error, ... ) {
-	va_list		argptr;
-	char		text[1024];
-
-	va_start( argptr, error );
-	vsprintf( text, error, argptr );
-	va_end( argptr );
-
-	trap_Error( va( "%s", text ) );
-}
-
-void QDECL Com_Printf( const char * msg, ... ) {
+void QDECL UI_Printf( const char * msg, ... ) {
 	va_list		argptr;
 	char		text[1024];
 
 	va_start( argptr, msg );
-	vsprintf( text, msg, argptr );
+	Q_vsnprintf( text, sizeof( text ), msg, argptr );
 	va_end( argptr );
 
-	trap_Print( va( "%s", text ) );
+	trap_Print( text );
+}
+
+void QDECL UI_Warning( const char * msg, ... ) {
+	va_list		argptr;
+	char		text[1024];
+
+	va_start( argptr, msg );
+	Q_vsnprintf( text, sizeof( text ), msg, argptr );
+	va_end( argptr );
+
+	trap_Warning( text );
+}
+
+void QDECL UI_Error( const char * msg, ... ) {
+	va_list		argptr;
+	char		text[1024];
+
+	va_start( argptr, msg );
+	Q_vsnprintf( text, sizeof( text ), msg, argptr );
+	va_end( argptr );
+	text[sizeof( text ) - 1] = 0;
+
+	trap_Error( text );
+}
+
+#ifndef UI_HARD_LINKED
+// this is only here so the functions in q_shared.c and bg_*.c can link (FIXME)
+
+void QDECL Com_Error( int level, const char * error, ... ) {
+	va_list		argptr;
+	char		msg[1024];
+
+	va_start( argptr, error );
+	Q_vsnprintf( msg, sizeof( msg ), error, argptr );
+	va_end( argptr );
+	msg[sizeof( msg ) - 1] = 0;
+
+	UI_Error( S_COLOR_RED "ERROR: %s\n", msg );
+}
+
+void QDECL Com_Warning( const char * fmt, ... ) {
+	va_list		argptr;
+	char		msg[1024];
+
+	va_start( argptr, fmt );
+	Q_vsnprintf( msg, sizeof( msg ), fmt, argptr );
+	va_end( argptr );
+	msg[sizeof( msg ) -1] = 0;
+
+	UI_Warning( S_COLOR_YELLOW "WARNING: " S_COLOR_RED "%s\n", msg );
+}
+
+void QDECL Com_Printf( const char * fmt, ... ) {
+	va_list		argptr;
+	char		msg[1024];
+
+	va_start( argptr, fmt );
+	Q_vsnprintf( msg, sizeof( msg ), fmt, argptr );
+	va_end( argptr );
+	msg[sizeof( msg ) -1] = 0;
+
+	UI_Printf( "%s", fmt );
 }
 
 #endif
@@ -814,7 +862,7 @@ void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 		case UIMENU_POSTGAME:
 		default:
 #ifndef NDEBUG
-			Com_Printf( "UI_SetActiveMenu: bad enum %d\n", menu );
+			UI_Warning( "UI_SetActiveMenu: bad enum %d\n", menu );
 #endif
 			break;
 	}

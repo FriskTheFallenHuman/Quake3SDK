@@ -365,10 +365,21 @@ void QDECL CG_Printf( const char * msg, ... ) {
 	char		text[1024];
 
 	va_start ( argptr, msg );
-	vsprintf ( text, msg, argptr );
+	Q_vsnprintf ( text, sizeof( text ), msg, argptr );
 	va_end ( argptr );
 
 	trap_Print( text );
+}
+
+void QDECL CG_Warning( const char * msg, ... ) {
+	va_list		argptr;
+	char		text[1024];
+
+	va_start ( argptr, msg );
+	Q_vsnprintf ( text, sizeof( text ), msg, argptr );
+	va_end ( argptr );
+
+	trap_Warning( text );
 }
 
 void QDECL CG_Error( const char * msg, ... ) {
@@ -376,8 +387,9 @@ void QDECL CG_Error( const char * msg, ... ) {
 	char		text[1024];
 
 	va_start ( argptr, msg );
-	vsprintf ( text, msg, argptr );
+	Q_vsnprintf ( text, sizeof( text ), msg, argptr );
 	va_end ( argptr );
+	text[sizeof( text ) - 1] = 0;
 
 	trap_Error( text );
 }
@@ -387,24 +399,38 @@ void QDECL CG_Error( const char * msg, ... ) {
 
 void QDECL Com_Error( int level, const char * error, ... ) {
 	va_list		argptr;
-	char		text[1024];
+	char		msg[1024];
 
 	va_start ( argptr, error );
-	vsprintf ( text, error, argptr );
+	Q_vsnprintf ( msg, sizeof( msg ), error, argptr );
 	va_end ( argptr );
+	msg[sizeof( msg ) - 1] = 0;
 
-	CG_Error( "%s", text );
+	CG_Error( S_COLOR_RED "ERROR: %s\n", msg );
 }
 
-void QDECL Com_Printf( const char * msg, ... ) {
+void QDECL Com_Warning( const char * fmt, ... ) {
 	va_list		argptr;
-	char		text[1024];
+	char		msg[1024];
 
-	va_start ( argptr, msg );
-	vsprintf ( text, msg, argptr );
+	va_start ( argptr, fmt );
+	Q_vsnprintf ( msg, sizeof( msg ), fmt, argptr );
 	va_end ( argptr );
+	msg[sizeof( msg ) -1] = 0;
 
-	CG_Printf ( "%s", text );
+	CG_Warning( S_COLOR_YELLOW "WARNING: " S_COLOR_RED "%s\n", msg );
+}
+
+void QDECL Com_Printf( const char * fmt, ... ) {
+	va_list		argptr;
+	char		msg[1024];
+
+	va_start ( argptr, fmt );
+	Q_vsnprintf ( msg, sizeof( msg ), fmt, argptr );
+	va_end ( argptr );
+	msg[sizeof( msg ) -1] = 0;
+
+	CG_Printf ( "%s", fmt );
 }
 
 #endif
@@ -1326,12 +1352,12 @@ void CG_ParseMenu( const char * menuFile ) {
 		}
 
 		//if ( Q_stricmp( token, "{" ) ) {
-		//	Com_Printf( "Missing { in menu file\n" );
+		//	trap_Print( "Missing { in menu file\n" );
 		//	break;
 		//}
 
 		//if ( menuCount == MAX_MENUS ) {
-		//	Com_Printf( "Too many menus!\n" );
+		//	trap_Print( "Too many menus!\n" );
 		//	break;
 		//}
 
@@ -1425,12 +1451,12 @@ void CG_LoadMenus( const char * menuFile ) {
 		}
 
 		//if ( Q_stricmp( token, "{" ) ) {
-		//	Com_Printf( "Missing { in menu file\n" );
+		//	trap_Print( "Missing { in menu file\n" );
 		//	break;
 		//}
 
 		//if ( menuCount == MAX_MENUS ) {
-		//	Com_Printf( "Too many menus!\n" );
+		//	trap_Print( "Too many menus!\n" );
 		//	break;
 		//}
 
@@ -1447,7 +1473,7 @@ void CG_LoadMenus( const char * menuFile ) {
 		}
 	}
 
-	Com_Printf( "UI menu load time = %d milli seconds\n", trap_Milliseconds() - start );
+	trap_Print( "UI menu load time = %d milli seconds\n", trap_Milliseconds() - start );
 
 }
 
@@ -1740,7 +1766,7 @@ void CG_LoadHudMenu() {
 	//cgDC.keynumToStringBuf = &trap_Key_KeynumToStringBuf;
 	//cgDC.executeText = &trap_Cmd_ExecuteText;
 	cgDC.Error = &Com_Error;
-	cgDC.Print = &Com_Printf;
+	cgDC.Print = &trap_Print;
 	cgDC.ownerDrawWidth = &CG_OwnerDrawWidth;
 	//cgDC.Pause = &CG_Pause;
 	cgDC.registerSound = &trap_S_RegisterSound;
@@ -1769,7 +1795,7 @@ void CG_AssetCache() {
 	//  trap_R_RegisterFont("fonts/arial.ttf", 72, &Assets.textFont);
 	//}
 	//Assets.background = trap_R_RegisterShaderNoMip( ASSET_BACKGROUND );
-	//Com_Printf("Menu Size: %i bytes\n", sizeof(Menus));
+	//trap_Print("Menu Size: %i bytes\n", sizeof(Menus));
 	cgDC.Assets.gradientBar = trap_R_RegisterShaderNoMip( ASSET_GRADIENTBAR );
 	cgDC.Assets.fxBasePic = trap_R_RegisterShaderNoMip( ART_FX_BASE );
 	cgDC.Assets.fxPic[0] = trap_R_RegisterShaderNoMip( ART_FX_RED );
@@ -1919,8 +1945,8 @@ void CG_Shutdown( void ) {
 CG_EventHandling
 ==================
  type 0 - no event handling
-      1 - team menu
-      2 - hud editor
+	  1 - team menu
+	  2 - hud editor
 
 */
 #ifndef MISSIONPACK

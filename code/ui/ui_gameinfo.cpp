@@ -89,12 +89,12 @@ int UI_ParseInfos( char * buf, int max, char * infos[] ) {
 			break;
 		}
 		if ( strcmp( token, "{" ) ) {
-			Com_Printf( "Missing { in info file\n" );
+			UI_Warning( "Missing { in info file\n" );
 			break;
 		}
 
 		if ( count == max ) {
-			Com_Printf( "Max infos exceeded\n" );
+			UI_Warning( "Max infos exceeded\n" );
 			break;
 		}
 
@@ -102,7 +102,7 @@ int UI_ParseInfos( char * buf, int max, char * infos[] ) {
 		while ( 1 ) {
 			token = COM_ParseExt( &buf, qtrue );
 			if ( !token[0] ) {
-				Com_Printf( "Unexpected end of info file\n" );
+				UI_Warning( "Unexpected end of info file\n" );
 				break;
 			}
 			if ( !strcmp( token, "}" ) ) {
@@ -138,11 +138,11 @@ static void UI_LoadArenasFromFile( char * filename ) {
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
 	if ( !f ) {
-		trap_Print( va( S_COLOR_RED "file not found: %s\n", filename ) );
+		UI_Error( va( "file not found: %s\n", filename ) );
 		return;
 	}
 	if ( len >= MAX_ARENAS_TEXT ) {
-		trap_Print( va( S_COLOR_RED "file too large: %s is %i, max allowed is %i", filename, len, MAX_ARENAS_TEXT ) );
+		UI_Error( va( "file too large: %s is %i, max allowed is %i", filename, len, MAX_ARENAS_TEXT ) );
 		trap_FS_FCloseFile( f );
 		return;
 	}
@@ -188,9 +188,9 @@ static void UI_LoadArenas( void ) {
 		strcat( filename, dirptr );
 		UI_LoadArenasFromFile( filename );
 	}
-	trap_Print( va( "%i arenas parsed\n", ui_numArenas ) );
+	UI_Printf( va( "%i arenas parsed\n", ui_numArenas ) );
 	if ( outOfMemory ) {
-		trap_Print( S_COLOR_YELLOW"WARNING: not anough memory in pool to load all arenas\n" );
+		UI_Warning( "not anough memory in pool to load all arenas\n" );
 	}
 
 	// set initial numbers
@@ -234,7 +234,7 @@ const char * UI_GetArenaInfoByNumber( int num ) {
 	char	* value;
 
 	if ( num < 0 || num >= ui_numArenas ) {
-		trap_Print( va( S_COLOR_RED "Invalid arena number: %i\n", num ) );
+		UI_Error( va( "Invalid arena number: %i\n", num ) );
 		return NULL;
 	}
 

@@ -412,6 +412,7 @@ void CL_InitCGame( void ) {
 	static cgameImport_t cgExports;
 
 	cgExports.Print = Com_Printf;
+	cgExports.Warning = Com_Warning;
 	cgExports.Error = Com_Error;
 	cgExports.Milliseconds = Sys_Milliseconds;
 	cgExports.Cvar_Register = Cvar_Register;

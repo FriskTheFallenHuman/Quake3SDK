@@ -256,7 +256,7 @@ void COM_ParseError( char * format, ... ) {
 	vsprintf( string, format, argptr );
 	va_end( argptr );
 
-	Com_Printf( "ERROR: %s, line %d: %s\n", com_parsename, com_lines, string );
+	Com_Error( ERR_DROP, "%s, line %d: %s\n", com_parsename, com_lines, string );
 }
 
 void COM_ParseWarning( char * format, ... ) {
@@ -267,7 +267,7 @@ void COM_ParseWarning( char * format, ... ) {
 	vsprintf( string, format, argptr );
 	va_end( argptr );
 
-	Com_Printf( "WARNING: %s, line %d: %s\n", com_parsename, com_lines, string );
+	Com_Warning( "%s, line %d: %s\n", com_parsename, com_lines, string );
 }
 
 /*
@@ -851,7 +851,7 @@ void QDECL Com_sprintf( char * dest, int size, const char * fmt, ... ) {
 		Com_Error( ERR_FATAL, "Com_sprintf: overflowed bigbuffer" );
 	}
 	if ( len >= size ) {
-		Com_Printf( "Com_sprintf: overflow of %i in %i\n", len, size );
+		Com_Warning( "Com_sprintf: overflow of %i in %i\n", len, size );
 #ifdef	_DEBUG
 		__asm {
 			int 3;
@@ -1143,17 +1143,17 @@ void Info_SetValueForKey( char * s, const char * key, const char * value ) {
 	}
 
 	if ( strchr( key, '\\' ) || strchr( value, '\\' ) ) {
-		Com_Printf( "Can't use keys or values with a \\\n" );
+		Com_Warning( "Can't use keys or values with a \\\n" );
 		return;
 	}
 
 	if ( strchr( key, ';' ) || strchr( value, ';' ) ) {
-		Com_Printf( "Can't use keys or values with a semicolon\n" );
+		Com_Warning( "Can't use keys or values with a semicolon\n" );
 		return;
 	}
 
 	if ( strchr( key, '\"' ) || strchr( value, '\"' ) ) {
-		Com_Printf( "Can't use keys or values with a \"\n" );
+		Com_Warning( "Can't use keys or values with a \"\n" );
 		return;
 	}
 
@@ -1165,7 +1165,7 @@ void Info_SetValueForKey( char * s, const char * key, const char * value ) {
 	Com_sprintf( newi, sizeof( newi ), "\\%s\\%s", key, value );
 
 	if ( strlen( newi ) + strlen( s ) > MAX_INFO_STRING ) {
-		Com_Printf( "Info string length exceeded\n" );
+		Com_Warning( "Info string length exceeded\n" );
 		return;
 	}
 
@@ -1188,17 +1188,17 @@ void Info_SetValueForKey_Big( char * s, const char * key, const char * value ) {
 	}
 
 	if ( strchr( key, '\\' ) || strchr( value, '\\' ) ) {
-		Com_Printf( "Can't use keys or values with a \\\n" );
+		Com_Warning( "Can't use keys or values with a \\\n" );
 		return;
 	}
 
 	if ( strchr( key, ';' ) || strchr( value, ';' ) ) {
-		Com_Printf( "Can't use keys or values with a semicolon\n" );
+		Com_Warning( "Can't use keys or values with a semicolon\n" );
 		return;
 	}
 
 	if ( strchr( key, '\"' ) || strchr( value, '\"' ) ) {
-		Com_Printf( "Can't use keys or values with a \"\n" );
+		Com_Warning( "Can't use keys or values with a \"\n" );
 		return;
 	}
 
@@ -1210,7 +1210,7 @@ void Info_SetValueForKey_Big( char * s, const char * key, const char * value ) {
 	Com_sprintf( newi, sizeof( newi ), "\\%s\\%s", key, value );
 
 	if ( strlen( newi ) + strlen( s ) > BIG_INFO_STRING ) {
-		Com_Printf( "BIG Info string length exceeded\n" );
+		Com_Warning( "BIG Info string length exceeded\n" );
 		return;
 	}
 

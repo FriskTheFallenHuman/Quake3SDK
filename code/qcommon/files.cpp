@@ -501,7 +501,7 @@ static qboolean FS_CreatePath ( char * OSPath ) {
 	// make absolutely sure that it can't back up the path
 	// FIXME: is c: allowed???
 	if ( strstr( OSPath, ".." ) || strstr( OSPath, "::" ) ) {
-		Com_Printf( "WARNING: refusing to create relative path \"%s\"\n", OSPath );
+		Com_Warning( "refusing to create relative path \"%s\"\n", OSPath );
 		return qtrue;
 	}
 
@@ -1649,7 +1649,7 @@ void FS_WriteFile( const char * qpath, const void * buffer, int size ) {
 
 	f = FS_FOpenFileWrite( qpath );
 	if ( !f ) {
-		Com_Printf( "Failed to open %s\n", qpath );
+		Com_Warning( "Failed to open %s\n", qpath );
 		return;
 	}
 

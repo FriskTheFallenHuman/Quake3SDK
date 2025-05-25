@@ -183,7 +183,7 @@ void Con_Dump_f ( void ) {
 
 	f = FS_FOpenFileWrite( Cmd_Argv( 1 ) );
 	if ( !f ) {
-		Com_Printf ( "ERROR: couldn't open.\n" );
+		Com_Warning ( "couldn't open file.\n" );
 		return;
 	}
 

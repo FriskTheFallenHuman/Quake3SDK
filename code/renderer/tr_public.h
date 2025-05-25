@@ -104,7 +104,10 @@ typedef struct {
 //
 typedef struct {
 	// print message on the local console
-	void	( QDECL *Printf )( int printLevel, const char * fmt, ... );
+	void	( QDECL *Printf )( const char * fmt, ... );
+
+	// print a warning on the console
+	void	( QDECL *Warning )( const char * fmt, ... );
 
 	// abort the game
 	void	( QDECL *Error )( int errorLevel, const char * fmt, ... );

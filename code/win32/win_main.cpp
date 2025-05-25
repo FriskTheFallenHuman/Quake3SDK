@@ -157,13 +157,55 @@ void Sys_Quit( void ) {
 
 /*
 ==============
-Sys_Print
+Sys_Printf
 ==============
 */
-void Sys_Print( const char * msg ) {
+void Sys_Printf( const char * fmt, ... ) {
+	char		msg[MAXPRINTMSG];
+
+	va_list argptr;
+	va_start( argptr, fmt );
+	Q_vsnprintf( msg, MAXPRINTMSG - 1, fmt, argptr );
+	va_end( argptr );
+	msg[sizeof( msg ) -1] = '\0';
+
+	if ( IsDebuggerPresent() ) {
+		OutputDebugString( msg );
+	}
+
 	Conbuf_AppendText( msg );
 }
 
+/*
+==============
+Sys_DebugPrintf
+==============
+*/
+void Sys_DebugPrintf( const char * fmt, ... ) {
+	char msg[MAXPRINTMSG];
+
+	va_list argptr;
+	va_start( argptr, fmt );
+	Q_vsnprintf( msg, MAXPRINTMSG - 1, fmt, argptr );
+	msg[ sizeof( msg ) -1 ] = '\0';
+	va_end( argptr );
+
+	OutputDebugString( msg );
+}
+
+/*
+==============
+Sys_DebugVPrintf
+==============
+*/
+void Sys_DebugVPrintf( const char * fmt, va_list arg ) {
+	char msg[MAXPRINTMSG];
+
+	Q_vsnprintf( msg, MAXPRINTMSG - 1, fmt, arg );
+	msg[ sizeof( msg ) -1 ] = '\0';
+
+	OutputDebugString( msg );
+}
 
 /*
 ==============
@@ -1102,7 +1144,7 @@ void Sys_Init( void ) {
 		} else if ( !Q_stricmp( Cvar_VariableString( "sys_cpustring" ), "axp" ) ) {
 			cpuid = CPUID_AXP;
 		} else {
-			Com_Printf( "WARNING: unknown sys_cpustring '%s'\n", Cvar_VariableString( "sys_cpustring" ) );
+			Com_Warning( "unknown sys_cpustring '%s'\n", Cvar_VariableString( "sys_cpustring" ) );
 			cpuid = CPUID_GENERIC;
 		}
 	}
@@ -1119,22 +1161,44 @@ void Sys_Init( void ) {
 
 int	totalMsec, countMsec;
 
+static LPSTR GetCmdLineArgs( void ) {
+	LPSTR cmdLine = GetCommandLineA();
+	LPSTR args = cmdLine;
+
+	// Check if the program path is quoted.
+	if ( *args == '"' ) {
+		args++;
+		while ( *args && *args != '"' ) {
+			args++;
+		}
+		if ( *args == '"' ) {
+			args++;
+		}
+	} else {
+		while ( *args && !isspace( ( unsigned char ) * args ) ) {
+			args++;
+		}
+	}
+
+	while ( *args && isspace( ( unsigned char ) * args ) ) {
+		args++;
+	}
+
+	return args;
+}
+
 /*
 ==================
-WinMain
-
+main
 ==================
 */
-int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
+int main ( int argc, char * argv[] ) {
 	char		cwd[MAX_OSPATH];
 	int			startTime, endTime;
 
-	// should never get a previous instance in Win32
-	if ( hPrevInstance ) {
-		return 0;
-	}
+	g_wv.hInstance = GetModuleHandle( NULL );
 
-	g_wv.hInstance = hInstance;
+	LPSTR lpCmdLine = GetCmdLineArgs();
 	Q_strncpyz( sys_cmdline, lpCmdLine, sizeof( sys_cmdline ) );
 
 	// done before Com/Sys_Init since we need this for error output

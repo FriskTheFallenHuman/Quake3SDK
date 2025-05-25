@@ -402,14 +402,14 @@ sfxHandle_t	S_RegisterSound( const char * name, qboolean compressed ) {
 	}
 
 	if ( strlen( name ) >= MAX_QPATH ) {
-		Com_Printf( "Sound name exceeds MAX_QPATH\n" );
+		Com_Warning( "Sound name exceeds MAX_QPATH\n" );
 		return 0;
 	}
 
 	sfx = S_FindName( name );
 	if ( sfx->soundData ) {
 		if ( sfx->defaultSound ) {
-			Com_Printf( S_COLOR_YELLOW "WARNING: could not find %s - using default\n", sfx->soundName );
+			Com_Warning( "could not find %s - using default\n", sfx->soundName );
 			return 0;
 		}
 		return sfx - s_knownSfx;
@@ -421,7 +421,7 @@ sfxHandle_t	S_RegisterSound( const char * name, qboolean compressed ) {
 	S_memoryLoad( sfx );
 
 	if ( sfx->defaultSound ) {
-		Com_Printf( S_COLOR_YELLOW "WARNING: could not find %s - using default\n", sfx->soundName );
+		Com_Warning( "could not find %s - using default\n", sfx->soundName );
 		return 0;
 	}
 
@@ -528,7 +528,7 @@ void S_StartSound( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx
 	}
 
 	if ( sfxHandle < 0 || sfxHandle >= s_numSfx ) {
-		Com_Printf( S_COLOR_YELLOW, "S_StartSound: handle %i out of range\n", sfxHandle );
+		Com_Warning( "S_StartSound: handle %i out of range\n", sfxHandle );
 		return;
 	}
 
@@ -640,7 +640,7 @@ void S_StartLocalSound( sfxHandle_t sfxHandle, int channelNum ) {
 	}
 
 	if ( sfxHandle < 0 || sfxHandle >= s_numSfx ) {
-		Com_Printf( S_COLOR_YELLOW, "S_StartLocalSound: handle %i out of range\n", sfxHandle );
+		Com_Warning( "S_StartLocalSound: handle %i out of range\n", sfxHandle );
 		return;
 	}
 
@@ -753,7 +753,7 @@ void S_AddLoopingSound( int entityNum, const vec3_t origin, const vec3_t velocit
 	}
 
 	if ( sfxHandle < 0 || sfxHandle >= s_numSfx ) {
-		Com_Printf( S_COLOR_YELLOW, "S_AddLoopingSound: handle %i out of range\n", sfxHandle );
+		Com_Printf( "S_AddLoopingSound: handle %i out of range\n", sfxHandle );
 		return;
 	}
 
@@ -814,7 +814,7 @@ void S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t vel
 	}
 
 	if ( sfxHandle < 0 || sfxHandle >= s_numSfx ) {
-		Com_Printf( S_COLOR_YELLOW, "S_AddRealLoopingSound: handle %i out of range\n", sfxHandle );
+		Com_Warning( "S_AddRealLoopingSound: handle %i out of range\n", sfxHandle );
 		return;
 	}
 
@@ -1462,7 +1462,7 @@ void S_StartBackgroundTrack( const char * intro, const char * loop ) {
 	//
 	FS_FOpenFileRead( name, &s_backgroundFile, qtrue );
 	if ( !s_backgroundFile ) {
-		Com_Printf( S_COLOR_YELLOW "WARNING: couldn't open music file %s\n", name );
+		Com_Warning( "couldn't open music file %s\n", name );
 		return;
 	}
 
@@ -1488,12 +1488,12 @@ void S_StartBackgroundTrack( const char * intro, const char * loop ) {
 	if ( s_backgroundInfo.format != WAV_FORMAT_PCM ) {
 		FS_FCloseFile( s_backgroundFile );
 		s_backgroundFile = 0;
-		Com_Printf( "Not a microsoft PCM format wav: %s\n", name );
+		Com_Warning( "Not a microsoft PCM format wav: %s\n", name );
 		return;
 	}
 
 	if ( s_backgroundInfo.channels != 2 || s_backgroundInfo.rate != 22050 ) {
-		Com_Printf( S_COLOR_YELLOW "WARNING: music file %s is not 22k stereo\n", name );
+		Com_Warning( "music file %s is not 22k stereo\n", name );
 	}
 
 	if ( ( len = S_FindWavChunk( s_backgroundFile, "data" ) ) == 0 ) {
@@ -1563,7 +1563,7 @@ void S_UpdateBackgroundTrack( void ) {
 
 		r = Sys_StreamedRead( raw, 1, fileBytes, s_backgroundFile );
 		if ( r != fileBytes ) {
-			Com_Printf( "StreamedRead failure on music track\n" );
+			Com_Warning( "StreamedRead failure on music track\n" );
 			S_StopBackgroundTrack();
 			return;
 		}

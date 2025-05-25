@@ -23,12 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // bg_misc.c -- both games misc functions, all completely stateless
 
 #include "../qcommon/q_shared.h"
-#ifdef CGAME
-#include "../cgame/cg_local.h"
-#elif QAGAME
-#include "g_local.h"
-#endif // CGAME
-
 #include "bg_public.h"
 
 /*QUAKED item_***** ( 0 0 0 ) (-16 -16 -16) (16 16 16) suspended
@@ -1286,7 +1280,7 @@ qboolean BG_CanItemBeGrabbed( int gametype, const entityState_t * ent, const pla
 		default:
 #ifndef Q3_VM
 #ifndef NDEBUG // bk0001204
-			Com_Printf( "BG_CanItemBeGrabbed: unknown enum %d\n", item->giType );
+			trap_Warning( "BG_CanItemBeGrabbed: unknown enum %d\n", item->giType );
 #endif
 #endif
 			break;
@@ -1502,9 +1496,9 @@ void BG_AddPredictableEventToPlayerstate( int newEvent, int eventParm, playerSta
 		trap_Cvar_VariableStringBuffer( "showevents", buf, sizeof( buf ) );
 		if ( atof( buf ) != 0 ) {
 #ifdef QAGAME
-			Com_Printf( " game event svt %5d -> %5d: num = %20s parm %d\n", ps->pmove_framecount/*ps->commandTime*/, ps->eventSequence, eventnames[newEvent], eventParm );
+			trap_Warning( " game event svt %5d -> %5d: num = %20s parm %d\n", ps->pmove_framecount/*ps->commandTime*/, ps->eventSequence, eventnames[newEvent], eventParm );
 #else
-			Com_Printf( "Cgame event svt %5d -> %5d: num = %20s parm %d\n", ps->pmove_framecount/*ps->commandTime*/, ps->eventSequence, eventnames[newEvent], eventParm );
+			trap_Warning( "Cgame event svt %5d -> %5d: num = %20s parm %d\n", ps->pmove_framecount/*ps->commandTime*/, ps->eventSequence, eventnames[newEvent], eventParm );
 #endif
 		}
 	}

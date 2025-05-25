@@ -757,13 +757,12 @@ void CL_ShutdownUI( void ) {
 CL_InitUI
 ====================
 */
-#define UI_OLD_API_VERSION	4
-
 void CL_InitUI( void ) {
 	static uiImport_t			uiExport;
 
-	uiExport.Com_Error = Com_Error;
-	uiExport.Com_Printf = Com_Printf;
+	uiExport.Print = Com_Printf;
+	uiExport.Warning = Com_Warning;
+	uiExport.Error = Com_Error;
 	uiExport.Sys_Milliseconds = Sys_Milliseconds;
 	uiExport.Cvar_Register = Cvar_Register;
 	uiExport.Cvar_Update = Cvar_Update;

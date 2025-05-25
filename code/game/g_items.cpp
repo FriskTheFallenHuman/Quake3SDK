@@ -721,11 +721,11 @@ void G_CheckTeamItems( void ) {
 		// check for the two flags
 		item = BG_FindItem( "Red Flag" );
 		if ( !item || !itemRegistered[ item - bg_itemlist ] ) {
-			G_Printf( S_COLOR_YELLOW "WARNING: No team_CTF_redflag in map" );
+			G_Warning( "No team_CTF_redflag in map" );
 		}
 		item = BG_FindItem( "Blue Flag" );
 		if ( !item || !itemRegistered[ item - bg_itemlist ] ) {
-			G_Printf( S_COLOR_YELLOW "WARNING: No team_CTF_blueflag in map" );
+			G_Warning( "No team_CTF_blueflag in map" );
 		}
 	}
 #ifdef MISSIONPACK
@@ -735,15 +735,15 @@ void G_CheckTeamItems( void ) {
 		// check for all three flags
 		item = BG_FindItem( "Red Flag" );
 		if ( !item || !itemRegistered[ item - bg_itemlist ] ) {
-			G_Printf( S_COLOR_YELLOW "WARNING: No team_CTF_redflag in map" );
+			G_Warning( "No team_CTF_redflag in map" );
 		}
 		item = BG_FindItem( "Blue Flag" );
 		if ( !item || !itemRegistered[ item - bg_itemlist ] ) {
-			G_Printf( S_COLOR_YELLOW "WARNING: No team_CTF_blueflag in map" );
+			G_Warning( "No team_CTF_blueflag in map" );
 		}
 		item = BG_FindItem( "Neutral Flag" );
 		if ( !item || !itemRegistered[ item - bg_itemlist ] ) {
-			G_Printf( S_COLOR_YELLOW "WARNING: No team_CTF_neutralflag in map" );
+			G_Warning( "No team_CTF_neutralflag in map" );
 		}
 	}
 
@@ -754,13 +754,13 @@ void G_CheckTeamItems( void ) {
 		ent = NULL;
 		ent = G_Find( ent, FOFS( classname ), "team_redobelisk" );
 		if ( !ent ) {
-			G_Printf( S_COLOR_YELLOW "WARNING: No team_redobelisk in map" );
+			G_Warning( "No team_redobelisk in map" );
 		}
 
 		ent = NULL;
 		ent = G_Find( ent, FOFS( classname ), "team_blueobelisk" );
 		if ( !ent ) {
-			G_Printf( S_COLOR_YELLOW "WARNING: No team_blueobelisk in map" );
+			G_Warning( "No team_blueobelisk in map" );
 		}
 	}
 
@@ -771,19 +771,19 @@ void G_CheckTeamItems( void ) {
 		ent = NULL;
 		ent = G_Find( ent, FOFS( classname ), "team_redobelisk" );
 		if ( !ent ) {
-			G_Printf( S_COLOR_YELLOW "WARNING: No team_redobelisk in map" );
+			G_Warning( "No team_redobelisk in map" );
 		}
 
 		ent = NULL;
 		ent = G_Find( ent, FOFS( classname ), "team_blueobelisk" );
 		if ( !ent ) {
-			G_Printf( S_COLOR_YELLOW "WARNING: No team_blueobelisk in map" );
+			G_Warning( "No team_blueobelisk in map" );
 		}
 
 		ent = NULL;
 		ent = G_Find( ent, FOFS( classname ), "team_neutralobelisk" );
 		if ( !ent ) {
-			G_Printf( S_COLOR_YELLOW "WARNING: No team_neutralobelisk in map" );
+			G_Warning( "No team_neutralobelisk in map" );
 		}
 	}
 #endif

@@ -732,4 +732,20 @@ qboolean	BG_PlayerTouchesItem( playerState_t * ps, entityState_t * item, int atT
 #define KAMI_BOOMSPHERE_MAXRADIUS		720
 #define KAMI_SHOCKWAVE2_MAXRADIUS		704
 
+//===============================================
+
+//
+// system traps
+// These functions are shared between modules
+//
+
+// print message on the local console
+void		trap_Print( const char * fmt, ... );
+
+// print a warning on the local console
+void		trap_Warning( const char * fmt, ... );
+
+// abort the game
+void		trap_Error( const char * fmt, ... );
+
 #endif /* !__BG_PUBLIC_H__ */

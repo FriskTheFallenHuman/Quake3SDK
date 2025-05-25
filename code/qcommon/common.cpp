@@ -72,6 +72,7 @@ cvar_t	* com_maxfps;
 cvar_t	* com_timedemo;
 cvar_t	* com_sv_running;
 cvar_t	* com_cl_running;
+cvar_t	* com_timestampPrints;		// 1 = buffer log, 2 = flush after each print
 cvar_t	* com_logfile;		// 1 = buffer log, 2 = flush after each print
 cvar_t	* com_showtrace;
 cvar_t	* com_version;
@@ -131,22 +132,39 @@ void Com_EndRedirect( void ) {
 
 /*
 =============
-Com_Printf
+Com_VPrintf
 
-Both client and server can use this, and it will output
-to the apropriate place.
-
-A raw string should NEVER be passed as fmt, because of "%f" type crashers.
+A raw string should NEVER be passed as fmt, because of "%f" type crashes.
 =============
 */
-void QDECL Com_Printf( const char * fmt, ... ) {
+void QDECL Com_VPrintf( const char * fmt, va_list args ) {
 	va_list		argptr;
 	char		msg[MAXPRINTMSG];
-	static qboolean opening_qconsole = qfalse;
+	int			timeLength;
+	static bool opening_qconsole = false;
 
 	va_start( argptr, fmt );
 	Q_vsnprintf( msg, sizeof( msg ), fmt, argptr );
 	va_end( argptr );
+
+	// optionally put a timestamp at the beginning of each print,
+	// so we can see how long different init sections are taking
+	if ( com_timestampPrints && com_timestampPrints->integer ) {
+		int	t = Sys_Milliseconds();
+		if ( com_timestampPrints->integer == 1 ) {
+			t /= 1000;
+		}
+		sprintf( msg, "[%i]", t );
+		timeLength = strlen( msg );
+	} else {
+		timeLength = 0;
+	}
+
+	// don't overflow
+	if ( Q_vsnprintf( msg+timeLength, MAXPRINTMSG-timeLength-1, fmt, args ) < 0 ) {
+		msg[sizeof(msg)-2] = '\n'; msg[sizeof(msg)-1] = '\0'; // avoid output garbling
+		Com_Printf("Com_VPrintf: truncated to %d characters\n", strlen(msg)-1 );
+	}
 
 	if ( rd_buffer ) {
 		if ( ( strlen( msg ) + strlen( rd_buffer ) ) > ( rd_buffersize - 1 ) ) {
@@ -166,7 +184,7 @@ void QDECL Com_Printf( const char * fmt, ... ) {
 	}
 
 	// echo to dedicated console and early console
-	Sys_Print( msg );
+	Sys_Printf( msg );
 
 	// logfile
 	if ( com_logfile && com_logfile->integer ) {
@@ -176,25 +194,42 @@ void QDECL Com_Printf( const char * fmt, ... ) {
 			struct tm *newtime;
 			time_t aclock;
 
-			opening_qconsole = qtrue;
+			opening_qconsole = true;
 
 			time( &aclock );
 			newtime = localtime( &aclock );
 
 			logfile = FS_FOpenFileWrite( "qconsole.log" );
-			Com_Printf( "logfile opened on %s\n", asctime( newtime ) );
+			Com_Printf( "log file opened on %s\n", asctime( newtime ) );
 			if ( com_logfile->integer > 1 ) {
 				// force it to not buffer so we get valid
 				// data even if we are crashing
 				FS_ForceFlush( logfile );
 			}
 
-			opening_qconsole = qfalse;
+			opening_qconsole = false;
 		}
 		if ( logfile && FS_Initialized() ) {
 			FS_Write( msg, strlen( msg ), logfile );
 		}
 	}
+}
+
+/*
+=============
+Com_Printf
+
+Both client and server can use this, and it will output
+to the apropriate place.
+
+A raw string should NEVER be passed as fmt, because of "%f" type crashers.
+=============
+*/
+void QDECL Com_Printf( const char * fmt, ... ) {
+	va_list argptr;
+	va_start( argptr, fmt );
+	Com_VPrintf( fmt, argptr );
+	va_end( argptr );
 }
 
 
@@ -216,8 +251,55 @@ void QDECL Com_DPrintf( const char * fmt, ... ) {
 	va_start( argptr, fmt );
 	Q_vsnprintf( msg, sizeof( msg ), fmt, argptr );
 	va_end( argptr );
+	msg[sizeof(msg)-1] = '\0';
 
-	Com_Printf( "%s", msg );
+	Com_Printf( S_COLOR_RED"%s", msg );
+}
+
+/*
+==================
+Com_DWarning
+
+A Com_Printf warning message in yellow that only shows up if the "developer" cvar is set
+==================
+*/
+void QDECL Com_DWarning( const char *fmt, ... ) {
+	va_list		argptr;
+	char		msg[MAXPRINTMSG];
+		
+	if ( !com_developer || !com_developer->integer ) {
+		return;			// don't confuse non-developers with techie stuff...
+	}
+
+	va_start( argptr, fmt );
+	Q_vsnprintf( msg, sizeof( msg ), fmt, argptr );
+	va_end( argptr );
+	msg[sizeof(msg)-1] = '\0';
+
+	Com_Printf( S_COLOR_YELLOW"WARNING: %s\n", msg );
+}
+
+/*
+==================
+Com_Warning
+
+prints WARNING %s and adds the warning message to a queue to be printed later on
+==================
+*/
+void QDECL Com_Warning( const char *fmt, ... ) {
+	va_list		argptr;
+	char		msg[MAXPRINTMSG];
+		
+	va_start( argptr, fmt );
+	Q_vsnprintf( msg, sizeof(msg), fmt, argptr );
+	va_end( argptr );
+	msg[sizeof(msg)-1] = 0;
+
+	Com_Printf( S_COLOR_YELLOW "WARNING: " S_COLOR_RED "%s\n", msg );
+
+	//if ( warningList.Num() < MAX_WARNING_LIST ) {
+	//	warningList.AddUnique( msg );
+	//}
 }
 
 /*
@@ -270,8 +352,9 @@ void QDECL Com_Error( int code, const char * fmt, ... ) {
 	com_errorEntered = qtrue;
 
 	va_start( argptr, fmt );
-	vsprintf( com_errorMessage, fmt, argptr );
+	Q_vsnprintf( com_errorMessage, sizeof( com_errorMessage ), fmt, argptr );
 	va_end( argptr );
+	com_errorMessage[sizeof( com_errorMessage )-1] = '\0';
 
 	if ( code != ERR_DISCONNECT && code != ERR_NEED_CD ) {
 		Cvar_Set( "com_errorMessage", com_errorMessage );
@@ -1268,13 +1351,13 @@ void Com_Meminfo_f( void ) {
 			break;			// all blocks have been hit
 		}
 		if ( ( byte * )block + block->size != ( byte * )block->next ) {
-			Com_Printf ( "ERROR: block size does not touch the next block\n" );
+			Com_Error ( ERR_DROP, "block size does not touch the next block\n" );
 		}
 		if ( block->next->prev != block ) {
-			Com_Printf ( "ERROR: next block doesn't have proper back link\n" );
+			Com_Error ( ERR_DROP, "next block doesn't have proper back link\n" );
 		}
 		if ( !block->tag && !block->next->tag ) {
-			Com_Printf ( "ERROR: two consecutive free blocks\n" );
+			Com_Error ( ERR_DROP, "two consecutive free blocks\n" );
 		}
 	}
 
@@ -1927,7 +2010,7 @@ void Com_InitJournaling( void ) {
 		Cvar_Set( "com_journal", "0" );
 		com_journalFile = 0;
 		com_journalDataFile = 0;
-		Com_Printf( "Couldn't open journal files\n" );
+		Com_Warning( "Couldn't open journal files\n" );
 	}
 }
 
@@ -2008,7 +2091,7 @@ void Com_PushEvent( sysEvent_t * event ) {
 		// don't print the warning constantly, or it can give time for more...
 		if ( !printedWarning ) {
 			printedWarning = qtrue;
-			Com_Printf( "WARNING: Com_PushEvent overflow\n" );
+			Com_Warning( "Com_PushEvent overflow\n" );
 		}
 
 		if ( ev->evPtr ) {
@@ -2426,6 +2509,7 @@ void Com_Init( char * commandLine ) {
 	com_blood = Cvar_Get ( "com_blood", "1", CVAR_ARCHIVE );
 
 	com_developer = Cvar_Get ( "developer", "0", CVAR_TEMP );
+	com_timestampPrints = Cvar_Get ( "com_timestampPrints", "0", CVAR_SYSTEMINFO );
 	com_logfile = Cvar_Get ( "logfile", "0", CVAR_TEMP );
 
 	com_timescale = Cvar_Get ( "timescale", "1", CVAR_CHEAT | CVAR_SYSTEMINFO );
