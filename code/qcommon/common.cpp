@@ -187,6 +187,9 @@ void QDECL Com_VPrintf( const char * fmt, va_list args ) {
 	CL_ConsolePrint( msg );
 #endif
 
+	// remove any color codes
+	Q_RemoveColors( msg );
+
 	// echo to dedicated console and early console
 	Sys_Printf( msg );
 
@@ -960,36 +963,6 @@ void Z_Free( void * ptr ) {
 	}
 }
 
-
-/*
-================
-Z_FreeTags
-================
-*/
-void Z_FreeTags( int tag ) {
-	int			count;
-	memzone_t	* zone;
-
-	if ( tag == TAG_SMALL ) {
-		zone = smallzone;
-	} else {
-		zone = mainzone;
-	}
-	count = 0;
-	// use the rover as our pointer, because
-	// Z_Free automatically adjusts it
-	zone->rover = zone->blocklist.next;
-	do {
-		if ( zone->rover->tag == tag ) {
-			count++;
-			Z_Free( ( void * )( zone->rover + 1 ) );
-			continue;
-		}
-		zone->rover = zone->rover->next;
-	} while ( zone->rover != &zone->blocklist );
-}
-
-
 /*
 ================
 Z_TagMalloc
@@ -1596,8 +1569,8 @@ void Com_InitHunkMemory( void ) {
 	// allocate the stack based hunk allocator
 	cv = Cvar_Get( "com_hunkMegs", DEF_COMHUNKMEGS, CVAR_LATCH | CVAR_ARCHIVE );
 
-    nMinAlloc = MIN_COMHUNKMEGS;
-    pMsg = "Minimum com_hunkMegs is %i, allocating %i megs.\n";
+	nMinAlloc = MIN_COMHUNKMEGS;
+	pMsg = "Minimum com_hunkMegs is %i, allocating %i megs.\n";
 
 	if ( cv->integer < nMinAlloc ) {
 		s_hunkTotal = 1024 * 1024 * nMinAlloc;
@@ -2357,7 +2330,6 @@ void Com_Init( char * commandLine ) {
 	// cvar and command buffer management
 	Com_ParseCommandLine( commandLine );
 
-//	Swap_Init ();
 	Cbuf_Init ();
 
 	Com_InitZoneMemory();
@@ -2403,7 +2375,7 @@ void Com_Init( char * commandLine ) {
 	// init commands and vars
 	//
 #ifndef DEDICATED
-    com_maxfps = Cvar_Get ( "com_maxfps", "85", CVAR_ARCHIVE );
+	com_maxfps = Cvar_Get ( "com_maxfps", "85", CVAR_ARCHIVE );
 #endif
 	com_blood = Cvar_Get ( "com_blood", "1", CVAR_ARCHIVE );
 

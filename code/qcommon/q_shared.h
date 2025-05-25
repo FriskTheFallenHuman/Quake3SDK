@@ -361,14 +361,6 @@ void * Hunk_AllocDebug( int size, ha_pref preference, char * label, char * file,
 void * Hunk_Alloc( int size, ha_pref preference );
 #endif
 
-#ifdef __linux__
-// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=371
-// custom Snd_Memset implementation for glibc memset bug workaround
-void Snd_Memset( void * dest, const int val, const size_t count );
-#else
-#define Snd_Memset Com_Memset
-#endif
-
 #if !( defined __VECTORC )
 void Com_Memset( void * dest, const int val, const size_t count );
 void Com_Memcpy( void * dest, const void * src, const size_t count );
@@ -463,6 +455,8 @@ extern	vec4_t		colorDkGrey;
 #define S_COLOR_BLACK	"^9"
 
 extern vec4_t	g_color_table[8];
+
+int Q_RemoveColors( const char * str );
 
 #define	MAKERGB( v, r, g, b ) v[0]=r;v[1]=g;v[2]=b
 #define	MAKERGBA( v, r, g, b, a ) v[0]=r;v[1]=g;v[2]=b;v[3]=a
@@ -790,8 +784,6 @@ qint64  BigLong64 (qint64 l);
 qint64  LittleLong64 (qint64 l);
 float	BigFloat (const float *l);
 float	LittleFloat (const float *l);
-
-void	Swap_Init (void);
 */
 char	* QDECL va( char * format, ... );
 

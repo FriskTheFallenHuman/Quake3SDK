@@ -33,24 +33,6 @@ cvar_t	*	cl_graphshift;
 
 /*
 ================
-SCR_DrawNamedPic
-
-Coordinates are 640*480 virtual values
-=================
-*/
-void SCR_DrawNamedPic( float x, float y, float width, float height, const char * picname ) {
-	qhandle_t	hShader;
-
-	assert( width != 0 );
-
-	hShader = re.RegisterShader( picname );
-	SCR_AdjustFrom640( &x, &y, &width, &height );
-	re.DrawStretchPic( x, y, width, height, 0, 0, 1, 1, hShader );
-}
-
-
-/*
-================
 SCR_AdjustFrom640
 
 Adjusted for resolution and screen aspect ratio
@@ -59,13 +41,6 @@ Adjusted for resolution and screen aspect ratio
 void SCR_AdjustFrom640( float * x, float * y, float * w, float * h ) {
 	float	xscale;
 	float	yscale;
-
-#if 0
-	// adjust for wide screens
-	if ( cls.glconfig.vidWidth * 480 > cls.glconfig.vidHeight * 640 ) {
-		*x += 0.5 * ( cls.glconfig.vidWidth - ( cls.glconfig.vidHeight * 640 / 480 ) );
-	}
-#endif
 
 	// scale for screen sizes
 	xscale = cls.glconfig.vidWidth / 640.0;
@@ -248,11 +223,6 @@ void SCR_DrawBigString( int x, int y, const char * s, float alpha ) {
 	SCR_DrawStringExt( x, y, BIGCHAR_WIDTH, s, color, qfalse );
 }
 
-void SCR_DrawBigStringColor( int x, int y, const char * s, vec4_t color ) {
-	SCR_DrawStringExt( x, y, BIGCHAR_WIDTH, s, color, qtrue );
-}
-
-
 /*
 ==================
 SCR_DrawSmallString[Color]
@@ -288,35 +258,6 @@ void SCR_DrawSmallStringExt( int x, int y, const char * string, float * setColor
 	}
 	re.SetColor( NULL );
 }
-
-
-
-/*
-** SCR_Strlen -- skips color escape codes
-*/
-static int SCR_Strlen( const char * str ) {
-	const char * s = str;
-	int count = 0;
-
-	while ( *s ) {
-		if ( Q_IsColorString( s ) ) {
-			s += 2;
-		} else {
-			count++;
-			s++;
-		}
-	}
-
-	return count;
-}
-
-/*
-** SCR_GetBigStringWidth
-*/
-int	SCR_GetBigStringWidth( const char * str ) {
-	return SCR_Strlen( str ) * 16;
-}
-
 
 //===============================================================================
 

@@ -51,6 +51,28 @@ vec4_t	g_color_table[8] = {
 	{1.0, 1.0, 1.0, 1.0},
 };
 
+/*
+==================
+Q_RemoveColors
+
+skips color escape codes
+==================
+*/
+int Q_RemoveColors( const char * str ) {
+	const char * s = str;
+	int count = 0;
+
+	while ( *s ) {
+		if ( Q_IsColorString( s ) ) {
+			s += 2;
+		} else {
+			count++;
+			s++;
+		}
+	}
+
+	return count;
+}
 
 vec3_t	bytedirs[NUMVERTEXNORMALS] = {
 	{-0.525731f, 0.000000f, 0.850651f}, {-0.442863f, 0.238856f, 0.864188f},

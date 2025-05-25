@@ -23,8 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../client/client.h"
 #include "win_local.h"
 
-WinVars_t	g_wv;
-
 #ifndef WM_MOUSEWHEEL
 #define WM_MOUSEWHEEL (WM_MOUSELAST+1)  // message that will be supported by the OS 
 #endif
@@ -278,20 +276,6 @@ LONG WINAPI MainWndProc(
 			}
 
 			break;
-#if 0
-		case WM_DISPLAYCHANGE:
-			Com_DPrintf( "WM_DISPLAYCHANGE\n" );
-			// we need to force a vid_restart if the user has changed
-			// their desktop resolution while the game is running,
-			// but don't do anything if the message is a result of
-			// our own calling of ChangeDisplaySettings
-			if ( com_insideVidInit ) {
-				break;		// we did this on purpose
-			}
-			// something else forced a mode change, so restart all our gl stuff
-			Cbuf_AddText( "vid_restart\n" );
-			break;
-#endif
 		case WM_DESTROY:
 			// let sound and input know about this?
 			g_wv.hWnd = NULL;

@@ -71,12 +71,6 @@ void MSG_Bitstream( msg_t *buf ) {
 	buf->oob = qfalse;
 }
 
-void MSG_BeginReading( msg_t *msg ) {
-	msg->readcount = 0;
-	msg->bit = 0;
-	msg->oob = qfalse;
-}
-
 void MSG_BeginReadingOOB( msg_t *msg ) {
 	msg->readcount = 0;
 	msg->bit = 0;

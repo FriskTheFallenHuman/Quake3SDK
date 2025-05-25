@@ -30,6 +30,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <direct.h>
 #include <io.h>
 #include <conio.h>
+#include <uxtheme.h>
+#include <commctrl.h>
+
+#pragma comment(lib, "uxtheme.lib")
+#pragma comment(lib, "comctl32.lib")
 
 #define COPY_ID			1
 #define QUIT_ID			2
@@ -51,9 +56,6 @@ typedef struct {
 
 	HWND		hwndErrorBox;
 	HWND		hwndErrorText;
-
-	HBITMAP		hbmLogo;
-	HBITMAP		hbmClearBitmap;
 
 	HBRUSH		hbrEditBackground;
 	HBRUSH		hbrErrorBackground;
@@ -115,19 +117,8 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			return 0;
 		case WM_CTLCOLORSTATIC:
 			if ( ( HWND ) lParam == s_wcd.hwndBuffer ) {
-				SetBkColor( ( HDC ) wParam, RGB( 0x00, 0x00, 0xB0 ) );
+				SetBkColor( ( HDC ) wParam, RGB( 0x00, 0x00, 0x80 ) );
 				SetTextColor( ( HDC ) wParam, RGB( 0xff, 0xff, 0x00 ) );
-
-#if 0	// this draws a background in the edit box, but there are issues with this
-				if ( ( hdcScaled = CreateCompatibleDC( ( HDC ) wParam ) ) != 0 ) {
-					if ( SelectObject( ( HDC ) hdcScaled, s_wcd.hbmLogo ) ) {
-						StretchBlt( ( HDC ) wParam, 0, 0, 512, 384,
-									hdcScaled, 0, 0, 512, 384,
-									SRCCOPY );
-					}
-					DeleteDC( hdcScaled );
-				}
-#endif
 				return ( long ) s_wcd.hbrEditBackground;
 			} else if ( ( HWND ) lParam == s_wcd.hwndErrorBox ) {
 				if ( s_timePolarity & 1 ) {
@@ -159,57 +150,10 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			}
 			break;
 		case WM_CREATE:
-//		s_wcd.hbmLogo = LoadBitmap( g_wv.hInstance, MAKEINTRESOURCE( IDB_BITMAP1 ) );
-//		s_wcd.hbmClearBitmap = LoadBitmap( g_wv.hInstance, MAKEINTRESOURCE( IDB_BITMAP2 ) );
-			s_wcd.hbrEditBackground = CreateSolidBrush( RGB( 0x00, 0x00, 0xB0 ) );
+			s_wcd.hbrEditBackground = CreateSolidBrush( RGB( 0x00, 0x00, 0x80 ) );
 			s_wcd.hbrErrorBackground = CreateSolidBrush( RGB( 0x80, 0x80, 0x80 ) );
 			SetTimer( hWnd, 1, 1000, NULL );
 			break;
-		case WM_ERASEBKGND:
-#if 0
-			HDC hdcScaled;
-			HGDIOBJ oldObject;
-
-#if 1	// a single, large image
-			hdcScaled = CreateCompatibleDC( ( HDC ) wParam );
-			assert( hdcScaled != 0 );
-
-			if ( hdcScaled ) {
-				oldObject = SelectObject( ( HDC ) hdcScaled, s_wcd.hbmLogo );
-				assert( oldObject != 0 );
-				if ( oldObject ) {
-					StretchBlt( ( HDC ) wParam, 0, 0, s_wcd.windowWidth, s_wcd.windowHeight,
-								hdcScaled, 0, 0, 512, 384,
-								SRCCOPY );
-				}
-				DeleteDC( hdcScaled );
-				hdcScaled = 0;
-			}
-#else	// a repeating brush
-			{
-				HBRUSH hbrClearBrush;
-				RECT r;
-
-				GetWindowRect( hWnd, &r );
-
-				r.bottom = r.bottom - r.top + 1;
-				r.right = r.right - r.left + 1;
-				r.top = 0;
-				r.left = 0;
-
-				hbrClearBrush = CreatePatternBrush( s_wcd.hbmClearBitmap );
-
-				assert( hbrClearBrush != 0 );
-
-				if ( hbrClearBrush ) {
-					FillRect( ( HDC ) wParam, &r, hbrClearBrush );
-					DeleteObject( hbrClearBrush );
-				}
-			}
-#endif
-			return 1;
-#endif
-			return DefWindowProc( hWnd, uMsg, wParam, lParam );
 		case WM_TIMER:
 			if ( wParam == 1 ) {
 				s_timePolarity = !s_timePolarity;
@@ -308,26 +252,26 @@ void Sys_CreateConsole( void ) {
 		return;
 	}
 
+	// InitCommonControlsEx() is required on Windows XP if an application
+	// manifest specifies use of ComCtl32.dll version 6 or later to enable
+	// visual styles.  Otherwise, any window creation will fail.
+	INITCOMMONCONTROLSEX InitCtrls;
+	InitCtrls.dwSize = sizeof( InitCtrls );
+	// Set this to include all the common control classes you want to use
+	// in your application.
+	InitCtrls.dwICC = ICC_WIN95_CLASSES;
+	InitCommonControlsEx( &InitCtrls );
+
+	SetWindowTheme( s_wcd.hWnd, L"Explorer", NULL );
+
 	//
 	// create fonts
 	//
 	hDC = GetDC( s_wcd.hWnd );
 	nHeight = -MulDiv( 8, GetDeviceCaps( hDC, LOGPIXELSY ), 72 );
 
-	s_wcd.hfBufferFont = CreateFont( nHeight,
-									 0,
-									 0,
-									 0,
-									 FW_LIGHT,
-									 0,
-									 0,
-									 0,
-									 DEFAULT_CHARSET,
-									 OUT_DEFAULT_PRECIS,
-									 CLIP_DEFAULT_PRECIS,
-									 DEFAULT_QUALITY,
-									 FF_MODERN | FIXED_PITCH,
-									 "Courier New" );
+	s_wcd.hfButtonFont = CreateFont( nHeight, 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, "MS Shell Dlg" );
+	s_wcd.hfBufferFont = CreateFont( nHeight, 0, 0, 0, FW_NORMAL, 0, 0, 0, DEFAULT_CHARSET, OUT_OUTLINE_PRECIS, CLIP_DEFAULT_PRECIS, CLEARTYPE_QUALITY, VARIABLE_PITCH, "Cascadia Mono" );
 
 	ReleaseDC( s_wcd.hWnd, hDC );
 
@@ -349,6 +293,7 @@ void Sys_CreateConsole( void ) {
 										 s_wcd.hWnd,
 										 ( HMENU ) COPY_ID,	// child window ID
 										 g_wv.hInstance, NULL );
+	SendMessage( s_wcd.hwndButtonCopy, WM_SETFONT, ( WPARAM )s_wcd.hfButtonFont, TRUE );
 	SendMessage( s_wcd.hwndButtonCopy, WM_SETTEXT, 0, ( LPARAM ) "copy" );
 
 	s_wcd.hwndButtonClear = CreateWindow( "button", NULL, BS_PUSHBUTTON | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
@@ -356,6 +301,7 @@ void Sys_CreateConsole( void ) {
 										  s_wcd.hWnd,
 										  ( HMENU ) CLEAR_ID,	// child window ID
 										  g_wv.hInstance, NULL );
+	SendMessage( s_wcd.hwndButtonClear, WM_SETFONT, ( WPARAM )s_wcd.hfButtonFont, TRUE );
 	SendMessage( s_wcd.hwndButtonClear, WM_SETTEXT, 0, ( LPARAM ) "clear" );
 
 	s_wcd.hwndButtonQuit = CreateWindow( "button", NULL, BS_PUSHBUTTON | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
@@ -363,6 +309,7 @@ void Sys_CreateConsole( void ) {
 										 s_wcd.hWnd,
 										 ( HMENU ) QUIT_ID,	// child window ID
 										 g_wv.hInstance, NULL );
+	SendMessage( s_wcd.hwndButtonQuit, WM_SETFONT, ( WPARAM )s_wcd.hfButtonFont, TRUE );
 	SendMessage( s_wcd.hwndButtonQuit, WM_SETTEXT, 0, ( LPARAM ) "quit" );
 
 

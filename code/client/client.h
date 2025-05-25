@@ -403,8 +403,6 @@ void CL_ReadPackets ( void );
 void CL_WritePacket( void );
 void IN_CenterView ( void );
 
-void CL_VerifyCode( void );
-
 float CL_KeyState ( kbutton_t * key );
 char * Key_KeynumToString ( int keynum );
 
@@ -421,7 +419,6 @@ void CL_ParseServerMessage( msg_t *msg );
 void	CL_ServerInfoPacket( netadr_t from, msg_t *msg );
 void	CL_LocalServers_f( void );
 void	CL_GlobalServers_f( void );
-void	CL_FavoriteServers_f( void );
 void	CL_Ping_f( void );
 qboolean CL_UpdateVisiblePings_f( int source );
 
@@ -429,8 +426,6 @@ qboolean CL_UpdateVisiblePings_f( int source );
 //
 // console
 //
-void Con_DrawCharacter ( int cx, int line, int num );
-
 void Con_CheckResize ( void );
 void Con_Init ( void );
 void Con_Clear_f ( void );
@@ -454,19 +449,14 @@ void	SCR_UpdateScreen ( void );
 
 void	SCR_DebugGraph ( float value, int color );
 
-int		SCR_GetBigStringWidth( const char * str );	// returns in virtual 640x480 coordinates
-
 void	SCR_AdjustFrom640( float * x, float * y, float * w, float * h );
 void	SCR_FillRect( float x, float y, float width, float height,
 					const float * color );
 void	SCR_DrawPic( float x, float y, float width, float height, qhandle_t hShader );
-void	SCR_DrawNamedPic( float x, float y, float width, float height, const char * picname );
 
 void	SCR_DrawBigString( int x, int y, const char * s, float alpha );			// draws a string with embedded color control characters with fade
-void	SCR_DrawBigStringColor( int x, int y, const char * s, vec4_t color );	// ignores embedded color control characters
 void	SCR_DrawSmallStringExt( int x, int y, const char * string, float * setColor, qboolean forceColor );
 void	SCR_DrawSmallChar( int x, int y, int ch );
-
 
 //
 // cl_cin.c
@@ -494,7 +484,6 @@ qboolean CL_GameCommand( void );
 void CL_CGameRendering( stereoFrame_t stereo );
 void CL_SetCGameTime( void );
 void CL_FirstSnapshot( void );
-void CL_ShaderStateChanged( void );
 
 //
 // cl_ui.c

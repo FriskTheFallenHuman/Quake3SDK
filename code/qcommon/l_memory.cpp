@@ -157,7 +157,7 @@ void FreeMemory( void * ptr ) {
 
 	if ( *memid == MEM_ID ) {
 		Z_Free( memid );
-	} //end if
+	}
 } //end of the function FreeMemory
 //===========================================================================
 //

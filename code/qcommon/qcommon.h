@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef _QCOMMON_H_
 #define _QCOMMON_H_
 
+#include "q_shared.h"
 #include "../cm/cm_public.h"
 
 //============================================================================
@@ -53,7 +54,6 @@ void MSG_Bitstream( msg_t *buf );
 // sets data buffer as MSG_Init does prior to do the copy
 void MSG_Copy( msg_t *buf, byte *data, int length, msg_t *src );
 
-struct usercmd_s;
 struct entityState_s;
 struct playerState_s;
 
@@ -68,7 +68,6 @@ void MSG_WriteString ( msg_t *sb, const char * s );
 void MSG_WriteBigString ( msg_t *sb, const char * s );
 void MSG_WriteAngle16 ( msg_t *sb, float f );
 
-void	MSG_BeginReading ( msg_t *sb );
 void	MSG_BeginReadingOOB( msg_t *sb );
 
 int		MSG_ReadBits( msg_t *msg, int bits );
@@ -85,8 +84,8 @@ float	MSG_ReadAngle16 ( msg_t *sb );
 void	MSG_ReadData ( msg_t *sb, void * buffer, int size );
 
 
-void MSG_WriteDeltaUsercmd( msg_t *msg, struct usercmd_s *from, struct usercmd_s *to );
-void MSG_ReadDeltaUsercmd( msg_t *msg, struct usercmd_s *from, struct usercmd_s *to );
+void MSG_WriteDeltaUsercmd( msg_t *msg, usercmd_t *from, usercmd_t *to );
+void MSG_ReadDeltaUsercmd( msg_t *msg, usercmd_t *from, usercmd_t *to );
 
 void MSG_WriteDeltaUsercmdKey( msg_t *msg, int key, usercmd_t * from, usercmd_t * to );
 void MSG_ReadDeltaUsercmdKey( msg_t *msg, int key, usercmd_t * from, usercmd_t * to );
@@ -714,7 +713,6 @@ void * Z_Malloc( int size );			// returns 0 filled memory
 void * S_Malloc( int size );			// NOT 0 filled memory only for small allocations
 #endif
 void Z_Free( void * ptr );
-void Z_FreeTags( int tag );
 int Z_AvailableMemory( void );
 void Z_LogHeap( void );
 
@@ -862,17 +860,6 @@ void Sys_DLL_Unload( int dllHandle );
 void * Sys_DLL_CallEntry( intptr_t dllHandle, void * engineAPI );
 void * Sys_DLL_GetProcAddress( intptr_t dllHandle, const char * procName );
 
-void	Sys_UnloadGame( void );
-void	* Sys_GetGameAPI( void * parms );
-
-void	Sys_UnloadCGame( void );
-void	* Sys_GetCGameAPI( void );
-
-void	Sys_UnloadUI( void );
-void	* Sys_GetUIAPI( void );
-
-char	* Sys_GetCurrentUser( void );
-
 void	QDECL Sys_Error( const char * error, ... );
 void	Sys_Quit ( void );
 #ifndef DEDICATED
@@ -972,8 +959,6 @@ void	Huff_offsetReceive ( node_t * node, int * ch, byte *fin, int * offset );
 void	Huff_offsetTransmit ( huff_t * huff, int ch, byte *fout, int * offset );
 void	Huff_putBit( int bit, byte *fout, int * offset );
 int		Huff_getBit( byte *fout, int * offset );
-
-extern huffman_t clientHuffTables;
 
 #define	SV_ENCODE_START		4
 #define SV_DECODE_START		12

@@ -60,36 +60,6 @@ void R_AddEdgeDef( int i1, int i2, int facing ) {
 
 void R_RenderShadowEdges( void ) {
 	int		i;
-
-#if 0
-	int		numTris;
-
-	// dumb way -- render every triangle's edges
-	numTris = tess.numIndexes / 3;
-
-	for ( i = 0 ; i < numTris ; i++ ) {
-		int		i1, i2, i3;
-
-		if ( !facing[i] ) {
-			continue;
-		}
-
-		i1 = tess.indexes[ i * 3 + 0 ];
-		i2 = tess.indexes[ i * 3 + 1 ];
-		i3 = tess.indexes[ i * 3 + 2 ];
-
-		glBegin( GL_TRIANGLE_STRIP );
-		glVertex3fv( tess.xyz[ i1 ] );
-		glVertex3fv( tess.xyz[ i1 + tess.numVertexes ] );
-		glVertex3fv( tess.xyz[ i2 ] );
-		glVertex3fv( tess.xyz[ i2 + tess.numVertexes ] );
-		glVertex3fv( tess.xyz[ i3 ] );
-		glVertex3fv( tess.xyz[ i3 + tess.numVertexes ] );
-		glVertex3fv( tess.xyz[ i1 ] );
-		glVertex3fv( tess.xyz[ i1 + tess.numVertexes ] );
-		glEnd();
-	}
-#else
 	int		c, c2;
 	int		j, k;
 	int		i2;
@@ -136,7 +106,6 @@ void R_RenderShadowEdges( void ) {
 			}
 		}
 	}
-#endif
 }
 
 /*

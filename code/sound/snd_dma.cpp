@@ -680,12 +680,8 @@ void S_ClearSoundBuffer( void ) {
 
 	SNDDMA_BeginPainting();
 	if ( dma.buffer )
-		// TTimo: due to a particular bug workaround in linux sound code,
-		//   have to optionally use a custom C implementation of Com_Memset
-		//   not affecting win32, we have #define Snd_Memset Com_Memset
-		// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=371
 	{
-		Snd_Memset( dma.buffer, clear, dma.samples * dma.samplebits / 8 );
+		Com_Memset(dma.buffer, clear, dma.samples * dma.samplebits/8);
 	}
 	SNDDMA_Submit();
 }
@@ -1208,14 +1204,6 @@ void S_GetSoundtime( void ) {
 	oldsamplepos = samplepos;
 
 	s_soundtime = buffers * fullsamples + samplepos / dma.channels;
-
-#if 0
-// check to make sure that we haven't overshot
-	if ( s_paintedtime < s_soundtime ) {
-		Com_DPrintf( "S_Update_ : overflow\n" );
-		s_paintedtime = s_soundtime;
-	}
-#endif
 
 	if ( dma.submission_chunk < 256 ) {
 		s_paintedtime = s_soundtime + s_mixPreStep->value * dma.speed;

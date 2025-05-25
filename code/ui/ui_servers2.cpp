@@ -75,8 +75,7 @@ MULTIPLAYER MENU (SERVER BROWSER)
 #define ID_CONNECT			22
 #define ID_REMOVE			23
 
-#define GR_LOGO				30
-#define GR_LETTERS			31
+#define GR_LETTERS			30
 
 #define AS_LOCAL			0
 #define AS_MPLAYER			1

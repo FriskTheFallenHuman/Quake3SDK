@@ -72,7 +72,6 @@ static qboolean s_classRegistered = qfalse;
 //
 glwstate_t glw_state;
 
-cvar_t	* r_allowSoftwareGL;		// don't abort out if the pixelformat claims software
 cvar_t	* r_maskMinidriver;		// allow a different dll name to be treated as if it were opengl32.dll
 
 
@@ -132,18 +131,6 @@ static int GLW_ChoosePFD( HDC hDC, PIXELFORMATDESCRIPTOR *pPFD ) {
 
 	// look for a best match
 	for ( i = 1; i <= maxPFD; i++ ) {
-		//
-		// make sure this has hardware acceleration
-		//
-		if ( ( pfds[i].dwFlags & PFD_GENERIC_FORMAT ) != 0 ) {
-			if ( !r_allowSoftwareGL->integer ) {
-				if ( r_verbose->integer ) {
-					ri.Printf( "...PFD %d rejected, software acceleration\n", i );
-				}
-				continue;
-			}
-		}
-
 		// verify pixel type
 		if ( pfds[i].iPixelType != PFD_TYPE_RGBA ) {
 			if ( r_verbose->integer ) {
@@ -239,14 +226,7 @@ static int GLW_ChoosePFD( HDC hDC, PIXELFORMATDESCRIPTOR *pPFD ) {
 		return 0;
 	}
 
-	if ( ( pfds[bestMatch].dwFlags & PFD_GENERIC_FORMAT ) != 0 ) {
-		if ( !r_allowSoftwareGL->integer ) {
-			ri.Printf( "...no hardware acceleration found\n" );
-			return 0;
-		} else {
-			ri.Printf( "...using software emulation\n" );
-		}
-	} else if ( pfds[bestMatch].dwFlags & PFD_GENERIC_ACCELERATED ) {
+	if ( pfds[bestMatch].dwFlags & PFD_GENERIC_ACCELERATED ) {
 		ri.Printf( "...MCD acceleration found\n" );
 	} else {
 		ri.Printf( "...hardware acceleration found\n" );
@@ -1086,7 +1066,6 @@ void GLimp_Init( void ) {
 	cv = ri.Cvar_Get( "win_wndproc", "", 0 );
 	sscanf( cv->string, "%i", ( int * )&glw_state.wndproc );
 
-	r_allowSoftwareGL = ri.Cvar_Get( "r_allowSoftwareGL", "0", CVAR_LATCH );
 	r_maskMinidriver = ri.Cvar_Get( "r_maskMinidriver", "0", CVAR_LATCH );
 
 	// load appropriate DLL and initialize subsystem
