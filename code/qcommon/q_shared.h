@@ -41,25 +41,12 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <ctime>
 #include <ctype.h>
 #include <climits>
-#include <exception>
 
 // this is the define for determining if we have an asm version of a C function
-#if (defined _M_IX86 || defined __i386__) && !defined __sun__  && !defined __LCC__
+#if (defined _M_IX86 || defined __i386__)  && !defined __LCC__
 #define id386	1
 #else
 #define id386	0
-#endif
-
-#if (defined(powerc) || defined(powerpc) || defined(ppc) || defined(__ppc) || defined(__ppc__)) && !defined(C_ONLY)
-#define idppc	1
-#if defined(__VEC__)
-#define idppc_altivec 1
-#else
-#define idppc_altivec 0
-#endif
-#else
-#define idppc	0
-#define idppc_altivec 0
 #endif
 
 // for windows fastcall option
@@ -172,28 +159,6 @@ static ID_INLINE float BigFloat( const float * l ) {
 #define __rlwimi(out, in, shift, maskBegin, maskEnd) asm("rlwimi %0,%1,%2,%3,%4" : "=r" (out) : "r" (in), "i" (shift), "i" (maskBegin), "i" (maskEnd))
 #define __dcbt(addr, offset) asm("dcbt %0,%1" : : "b" (addr), "r" (offset))
 
-static inline unsigned int __lwbrx( register void * addr, register int offset ) {
-	register unsigned int word;
-
-	asm( "lwbrx %0,%2,%1" : "=r"( word ) : "r"( addr ), "b"( offset ) );
-	return word;
-}
-
-static inline unsigned short __lhbrx( register void * addr, register int offset ) {
-	register unsigned short halfword;
-
-	asm( "lhbrx %0,%2,%1" : "=r"( halfword ) : "r"( addr ), "b"( offset ) );
-	return halfword;
-}
-
-static inline float __fctiw( register float f ) {
-	register float fi;
-
-	asm( "fctiw %0,%1" : "=f"( fi ) : "f"( f ) );
-
-	return fi;
-}
-
 #define BigShort
 static inline short LittleShort( short l ) {
 	return ShortSwap( l );
@@ -256,20 +221,6 @@ static inline float LittleFloat( const float l ) {
 #define	PATH_SEP '/'
 #define	PATH_SEP_STR "/"
 
-#if !idppc
-inline static short BigShort( short l ) {
-	return ShortSwap( l );
-}
-#define LittleShort
-inline static int BigLong( int l ) {
-	return LongSwap( l );
-}
-#define LittleLong
-inline static float BigFloat( const float * l ) {
-	return FloatSwap( l );
-}
-#define LittleFloat
-#else
 #define BigShort
 inline static short LittleShort( short l ) {
 	return ShortSwap( l );
@@ -282,50 +233,6 @@ inline static int LittleLong( int l ) {
 inline static float LittleFloat( const float * l ) {
 	return FloatSwap( l );
 }
-#endif
-
-#endif
-
-//======================= FreeBSD DEFINES =====================
-#ifdef __FreeBSD__ // rb010123
-
-#define stricmp strcasecmp
-
-#define MAC_STATIC
-#define ID_INLINE inline
-
-#define	CPUSTRING	OSTYPE "-" CPU_STRING BUILD_DEBUG
-
-#define	PATH_SEP '/'
-#define	PATH_SEP_STR "/"
-
-#if !idppc
-static short BigShort( short l ) {
-	return ShortSwap( l );
-}
-#define LittleShort
-static int BigLong( int l ) {
-	LongSwap( l );
-}
-#define LittleLong
-static float BigFloat( const float * l ) {
-	FloatSwap( l );
-}
-#define LittleFloat
-#else
-#define BigShort
-static short LittleShort( short l ) {
-	return ShortSwap( l );
-}
-#define BigLong
-static int LittleLong( int l ) {
-	return LongSwap( l );
-}
-#define BigFloat
-static float LittleFloat( const float * l ) {
-	return FloatSwap( l );
-}
-#endif
 
 #endif
 
@@ -574,34 +481,8 @@ extern	vec3_t	axisDefault[3];
 
 #define	IS_NAN(x) (((*(int *)&x)&nanmask)==nanmask)
 
-#if idppc
-
-static inline float Q_rsqrt( float number ) {
-	float x = 0.5f * number;
-	float y;
-#ifdef __GNUC__
-	asm( "frsqrte %0,%1" : "=f"( y ) : "f"( number ) );
-#else
-	y = __frsqrte( number );
-#endif
-	return y * ( 1.5f - ( x * y * y ) );
-}
-
-#ifdef __GNUC__
-static inline float Q_fabs( float x ) {
-	float abs_x;
-
-	asm( "fabs %0,%1" : "=f"( abs_x ) : "f"( x ) );
-	return abs_x;
-}
-#else
-#define Q_fabs __fabsf
-#endif
-
-#else
 float Q_fabs( float f );
 float Q_rsqrt( float f );		// reciprocal square root
-#endif
 
 #define SQRTFAST( x ) ( (x) * Q_rsqrt( x ) )
 

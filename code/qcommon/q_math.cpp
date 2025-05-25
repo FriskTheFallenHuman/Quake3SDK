@@ -534,7 +534,6 @@ void VectorRotate( vec3_t in, vec3_t matrix[3], vec3_t out ) {
 
 //============================================================================
 
-#if !idppc
 /*
 ** float q_rsqrt( float number )
 */
@@ -560,7 +559,6 @@ float Q_fabs( float f ) {
 	tmp &= 0x7FFFFFFF;
 	return * ( float * ) &tmp;
 }
-#endif
 
 //============================================================
 
@@ -722,7 +720,7 @@ int BoxOnPlaneSide2 (vec3_t emins, vec3_t emaxs, struct cplane_s *p)
 ==================
 */
 
-#if !( (defined __linux__ || __FreeBSD__) && (defined __i386__) && (!defined C_ONLY)) // rb010123
+#if !( defined __linux__ && (defined __i386__) && (!defined C_ONLY))
 
 #if defined __LCC__ || defined C_ONLY || !id386 || defined __VECTORC
 
@@ -1076,7 +1074,6 @@ void AddPointToBounds( const vec3_t v, vec3_t mins, vec3_t maxs ) {
 
 
 vec_t VectorNormalize( vec3_t v ) {
-	// NOTE: TTimo - Apple G4 altivec source uses double?
 	float	length, ilength;
 
 	length = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
