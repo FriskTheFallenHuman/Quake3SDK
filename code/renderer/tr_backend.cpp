@@ -21,7 +21,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 #include "tr_local.h"
 
-backEndData_t	* backEndData[SMP_FRAMES];
+backEndData_t	* backEndData;
 backEndState_t	backEnd;
 
 
@@ -69,14 +69,10 @@ void GL_SelectTexture( int unit ) {
 
 	if ( unit == 0 ) {
 		glActiveTextureARB( GL_TEXTURE0_ARB );
-		GLimp_LogComment( "glActiveTextureARB( GL_TEXTURE0_ARB )\n" );
 		glClientActiveTextureARB( GL_TEXTURE0_ARB );
-		GLimp_LogComment( "glClientActiveTextureARB( GL_TEXTURE0_ARB )\n" );
 	} else if ( unit == 1 ) {
 		glActiveTextureARB( GL_TEXTURE1_ARB );
-		GLimp_LogComment( "glActiveTextureARB( GL_TEXTURE1_ARB )\n" );
 		glClientActiveTextureARB( GL_TEXTURE1_ARB );
-		GLimp_LogComment( "glClientActiveTextureARB( GL_TEXTURE1_ARB )\n" );
 	} else {
 		ri.Error( ERR_DROP, "GL_SelectTexture: unit = %i", unit );
 	}
@@ -675,7 +671,7 @@ void RE_StretchRaw( int x, int y, int w, int h, int cols, int rows, const byte *
 	if ( !tr.registered ) {
 		return;
 	}
-	R_SyncRenderThread();
+	R_IssuePendingRenderCommands();
 
 	// we definately want to sync every frame for the cinematics
 	glFinish();
@@ -1004,8 +1000,6 @@ const void	* RB_SwapBuffers( const void * data ) {
 		glFinish();
 	}
 
-	GLimp_LogComment( "***************** RB_SwapBuffers *****************\n\n\n" );
-
 	GLimp_EndFrame();
 
 	backEnd.projection2D = qfalse;
@@ -1025,12 +1019,6 @@ void RB_ExecuteRenderCommands( const void * data ) {
 	int		t1, t2;
 
 	t1 = ri.Milliseconds();
-
-	if ( !r_smp->integer || data == backEndData[0]->commands.cmds ) {
-		backEnd.smpFrame = 0;
-	} else {
-		backEnd.smpFrame = 1;
-	}
 
 	while ( 1 ) {
 		switch ( *( const int * )data ) {
@@ -1063,30 +1051,3 @@ void RB_ExecuteRenderCommands( const void * data ) {
 	}
 
 }
-
-
-/*
-================
-RB_RenderThread
-================
-*/
-void RB_RenderThread( void ) {
-	const void	* data;
-
-	// wait for either a rendering command or a quit command
-	while ( 1 ) {
-		// sleep until we have work to do
-		data = GLimp_RendererSleep();
-
-		if ( !data ) {
-			return;	// all done, renderer is shutting down
-		}
-
-		renderThreadActive = qtrue;
-
-		RB_ExecuteRenderCommands( data );
-
-		renderThreadActive = qfalse;
-	}
-}
-

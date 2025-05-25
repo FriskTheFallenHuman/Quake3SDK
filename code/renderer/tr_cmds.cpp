@@ -70,38 +70,6 @@ void R_PerformanceCounters( void ) {
 	Com_Memset( &backEnd.pc, 0, sizeof( backEnd.pc ) );
 }
 
-
-/*
-====================
-R_InitCommandBuffers
-====================
-*/
-void R_InitCommandBuffers( void ) {
-	glConfig.smpActive = qfalse;
-	if ( r_smp->integer ) {
-		ri.Printf( "Trying SMP acceleration...\n" );
-		if ( GLimp_SpawnRenderThread( RB_RenderThread ) ) {
-			ri.Printf( "...succeeded.\n" );
-			glConfig.smpActive = qtrue;
-		} else {
-			ri.Printf( "...failed.\n" );
-		}
-	}
-}
-
-/*
-====================
-R_ShutdownCommandBuffers
-====================
-*/
-void R_ShutdownCommandBuffers( void ) {
-	// kill the rendering thread
-	if ( glConfig.smpActive ) {
-		GLimp_WakeRenderer( NULL );
-		glConfig.smpActive = qfalse;
-	}
-}
-
 /*
 ====================
 R_IssueRenderCommands
@@ -113,31 +81,13 @@ int	c_blockedOnMain;
 void R_IssueRenderCommands( qboolean runPerformanceCounters ) {
 	renderCommandList_t	* cmdList;
 
-	cmdList = &backEndData[tr.smpFrame]->commands;
+	cmdList = &backEndData->commands;
 	assert( cmdList ); // bk001205
 	// add an end-of-list command
 	*( int * )( cmdList->cmds + cmdList->used ) = RC_END_OF_LIST;
 
 	// clear it out, in case this is a sync and not a buffer flip
 	cmdList->used = 0;
-
-	if ( glConfig.smpActive ) {
-		// if the render thread is not idle, wait for it
-		if ( renderThreadActive ) {
-			c_blockedOnRender++;
-			if ( r_showSmp->integer ) {
-				ri.Printf( "R" );
-			}
-		} else {
-			c_blockedOnMain++;
-			if ( r_showSmp->integer ) {
-				ri.Printf( "." );
-			}
-		}
-
-		// sleep until the renderer has completed
-		GLimp_FrontEndSleep();
-	}
 
 	// at this point, the back end thread is idle, so it is ok
 	// to look at it's performance counters
@@ -148,35 +98,23 @@ void R_IssueRenderCommands( qboolean runPerformanceCounters ) {
 	// actually start the commands going
 	if ( !r_skipBackEnd->integer ) {
 		// let it start on the new batch
-		if ( !glConfig.smpActive ) {
-			RB_ExecuteRenderCommands( cmdList->cmds );
-		} else {
-			GLimp_WakeRenderer( cmdList );
-		}
+		RB_ExecuteRenderCommands( cmdList->cmds );
 	}
 }
 
 
 /*
 ====================
-R_SyncRenderThread
+R_IssuePendingRenderCommands
 
 Issue any pending commands and wait for them to complete.
-After exiting, the render thread will have completed its work
-and will remain idle and the main thread is free to issue
-OpenGL calls until R_IssueRenderCommands is called.
 ====================
 */
-void R_SyncRenderThread( void ) {
+void R_IssuePendingRenderCommands( void ) {
 	if ( !tr.registered ) {
 		return;
 	}
 	R_IssueRenderCommands( qfalse );
-
-	if ( !glConfig.smpActive ) {
-		return;
-	}
-	GLimp_FrontEndSleep();
 }
 
 /*
@@ -190,7 +128,7 @@ render thread if needed.
 void * R_GetCommandBuffer( int bytes ) {
 	renderCommandList_t	* cmdList;
 
-	cmdList = &backEndData[tr.smpFrame]->commands;
+	cmdList = &backEndData->commands;
 
 	// always leave room for the end of list command
 	if ( cmdList->used + bytes + 4 > MAX_RENDER_COMMANDS ) {
@@ -322,7 +260,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			ri.Cvar_Set( "r_measureOverdraw", "0" );
 			r_measureOverdraw->modified = qfalse;
 		} else {
-			R_SyncRenderThread();
+			R_IssuePendingRenderCommands();
 			glEnable( GL_STENCIL_TEST );
 			glStencilMask( ~0U );
 			glClearStencil( 0U );
@@ -333,7 +271,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	} else {
 		// this is only reached if it was on and is now off
 		if ( r_measureOverdraw->modified ) {
-			R_SyncRenderThread();
+			R_IssuePendingRenderCommands();
 			glDisable( GL_STENCIL_TEST );
 		}
 		r_measureOverdraw->modified = qfalse;
@@ -343,7 +281,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	// texturemode stuff
 	//
 	if ( r_textureMode->modified ) {
-		R_SyncRenderThread();
+		R_IssuePendingRenderCommands();
 		GL_TextureMode( r_textureMode->string );
 		r_textureMode->modified = qfalse;
 	}
@@ -354,7 +292,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	if ( r_gamma->modified ) {
 		r_gamma->modified = qfalse;
 
-		R_SyncRenderThread();
+		R_IssuePendingRenderCommands();
 		R_SetColorMappings();
 	}
 
@@ -362,7 +300,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	if ( !r_ignoreGLErrors->integer ) {
 		int	err;
 
-		R_SyncRenderThread();
+		R_IssuePendingRenderCommands();
 		if ( ( err = glGetError() ) != GL_NO_ERROR ) {
 			ri.Error( ERR_FATAL, "RE_BeginFrame() - glGetError() failed (0x%x)!\n", err );
 		}
@@ -419,9 +357,7 @@ void RE_EndFrame( int * frontEndMsec, int * backEndMsec ) {
 
 	R_IssueRenderCommands( qtrue );
 
-	// use the other buffers next frame, because another CPU
-	// may still be rendering into the current ones
-	R_ToggleSmpFrame();
+	R_ResetFrameCounts();
 
 	if ( frontEndMsec ) {
 		*frontEndMsec = tr.frontEndMsec;

@@ -254,14 +254,12 @@ static void DrawTris( shaderCommands_t * input ) {
 
 	if ( glLockArraysEXT ) {
 		glLockArraysEXT( 0, input->numVertexes );
-		GLimp_LogComment( "glLockArraysEXT\n" );
 	}
 
 	R_DrawElements( input->numIndexes, input->indexes );
 
 	if ( glUnlockArraysEXT ) {
 		glUnlockArraysEXT();
-		GLimp_LogComment( "glUnlockArraysEXT\n" );
 	}
 	glDepthRange( 0, 1 );
 }
@@ -887,15 +885,6 @@ void RB_StageIteratorGeneric( void ) {
 	RB_DeformTessGeometry();
 
 	//
-	// log this call
-	//
-	if ( r_logFile->integer ) {
-		// don't just call LogComment, or we will get
-		// a call to va() every frame!
-		GLimp_LogComment( va( "--- RB_StageIteratorGeneric( %s ) ---\n", tess.shader->name ) );
-	}
-
-	//
 	// set face culling appropriately
 	//
 	GL_Cull( input->shader->cullType );
@@ -932,7 +921,6 @@ void RB_StageIteratorGeneric( void ) {
 	glVertexPointer( 3, GL_FLOAT, 16, input->xyz );	// padded for SIMD
 	if ( glLockArraysEXT ) {
 		glLockArraysEXT( 0, input->numVertexes );
-		GLimp_LogComment( "glLockArraysEXT\n" );
 	}
 
 	//
@@ -968,7 +956,6 @@ void RB_StageIteratorGeneric( void ) {
 	//
 	if ( glUnlockArraysEXT ) {
 		glUnlockArraysEXT();
-		GLimp_LogComment( "glUnlockArraysEXT\n" );
 	}
 
 	//
@@ -997,15 +984,6 @@ void RB_StageIteratorVertexLitTexture( void ) {
 	RB_CalcDiffuseColor( ( unsigned char * ) tess.svars.colors );
 
 	//
-	// log this call
-	//
-	if ( r_logFile->integer ) {
-		// don't just call LogComment, or we will get
-		// a call to va() every frame!
-		GLimp_LogComment( va( "--- RB_StageIteratorVertexLitTexturedUnfogged( %s ) ---\n", tess.shader->name ) );
-	}
-
-	//
 	// set face culling appropriately
 	//
 	GL_Cull( input->shader->cullType );
@@ -1022,7 +1000,6 @@ void RB_StageIteratorVertexLitTexture( void ) {
 
 	if ( glLockArraysEXT ) {
 		glLockArraysEXT( 0, input->numVertexes );
-		GLimp_LogComment( "glLockArraysEXT\n" );
 	}
 
 	//
@@ -1051,7 +1028,6 @@ void RB_StageIteratorVertexLitTexture( void ) {
 	//
 	if ( glUnlockArraysEXT ) {
 		glUnlockArraysEXT();
-		GLimp_LogComment( "glUnlockArraysEXT\n" );
 	}
 }
 
@@ -1061,15 +1037,6 @@ void RB_StageIteratorLightmappedMultitexture( void ) {
 	shaderCommands_t * input;
 
 	input = &tess;
-
-	//
-	// log this call
-	//
-	if ( r_logFile->integer ) {
-		// don't just call LogComment, or we will get
-		// a call to va() every frame!
-		GLimp_LogComment( va( "--- RB_StageIteratorLightmappedMultitexture( %s ) ---\n", tess.shader->name ) );
-	}
 
 	//
 	// set face culling appropriately
@@ -1119,7 +1086,6 @@ void RB_StageIteratorLightmappedMultitexture( void ) {
 	//
 	if ( glLockArraysEXT ) {
 		glLockArraysEXT( 0, input->numVertexes );
-		GLimp_LogComment( "glLockArraysEXT\n" );
 	}
 
 	R_DrawElements( input->numIndexes, input->indexes );
@@ -1155,7 +1121,6 @@ void RB_StageIteratorLightmappedMultitexture( void ) {
 	//
 	if ( glUnlockArraysEXT ) {
 		glUnlockArraysEXT();
-		GLimp_LogComment( "glUnlockArraysEXT\n" );
 	}
 }
 
@@ -1212,7 +1177,5 @@ void RB_EndSurface( void ) {
 	}
 	// clear shader so we can tell we don't have any unclosed surfaces
 	tess.numIndexes = 0;
-
-	GLimp_LogComment( "----------\n" );
 }
 
