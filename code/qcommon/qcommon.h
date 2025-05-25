@@ -905,7 +905,6 @@ char	* Sys_DefaultHomePath( void );
 char ** Sys_ListFiles( const char * directory, const char * extension, char * filter, int * numfiles, qboolean wantsubs );
 void	Sys_FreeFileList( char ** list );
 
-qboolean Sys_LowPhysicalMemory();
 
 /* This is based on the Adaptive Huffman algorithm described in Sayood's Data
  * Compression book.  The ranks are not actually stored, but implicitly defined
