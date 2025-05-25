@@ -25,8 +25,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "../cm/cm_public.h"
 
-//#define	PRE_RELEASE_DEMO
-
 //============================================================================
 
 //
@@ -230,15 +228,9 @@ extern int demo_protocols[];
 #ifndef MASTER_SERVER_NAME
 #define MASTER_SERVER_NAME	"master.quake3arena.com"
 #endif
-#ifndef AUTHORIZE_SERVER_NAME
-#define	AUTHORIZE_SERVER_NAME	"authorize.quake3arena.com"
-#endif
 
 #define	PORT_MASTER			27950
 #define	PORT_UPDATE			27951
-#ifndef PORT_AUTHORIZE
-#define	PORT_AUTHORIZE		27952
-#endif
 #define	PORT_SERVER			27960
 #define	NUM_SERVER_PORTS	4		// broadcast scan this many ports after
 // PORT_SERVER so a single machine can
@@ -608,10 +600,6 @@ MISC
 ==============================================================
 */
 
-// centralizing the declarations for cl_cdkey
-// https://zerowing.idsoftware.com/bugzilla/show_bug.cgi?id=470
-extern char cl_cdkey[34];
-
 // returnbed by Sys_GetProcessorId
 #define CPUID_GENERIC			0			// any unrecognized processor
 
@@ -792,9 +780,6 @@ void	CL_ForwardCommandToServer( const char * string );
 // things like godmode, noclip, etc, are commands directed to the server,
 // so when they are typed in at the console, they will need to be forwarded.
 
-void CL_CDDialog( void );
-// bring up the "need a cd to play" dialog
-
 void CL_ShutdownAll( void );
 // shutdown all the client stuff
 
@@ -827,7 +812,6 @@ qboolean SV_GameCommand( void );
 // UI interface
 //
 qboolean UI_GameCommand( void );
-qboolean UI_usesUniqueCDKey();
 
 /*
 ==============================================================
@@ -925,15 +909,9 @@ qboolean	Sys_StringToAdr( const char * s, netadr_t * a );
 qboolean	Sys_IsLANAddress ( netadr_t adr );
 void		Sys_ShowIP( void );
 
-qboolean	Sys_CheckCD( void );
-
 void	Sys_Mkdir( const char * path );
 char	* Sys_Cwd( void );
-void	Sys_SetDefaultCDPath( const char * path );
-char	* Sys_DefaultCDPath( void );
-void	Sys_SetDefaultInstallPath( const char * path );
 char	* Sys_DefaultInstallPath( void );
-void  Sys_SetDefaultHomePath( const char * path );
 char	* Sys_DefaultHomePath( void );
 
 char ** Sys_ListFiles( const char * directory, const char * extension, char * filter, int * numfiles, qboolean wantsubs );

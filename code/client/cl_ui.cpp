@@ -318,7 +318,6 @@ static void LAN_GetServerInfo( int source, int n, char * buf, int buflen ) {
 		Info_SetValueForKey( info, "gametype", va( "%i", server->gameType ) );
 		Info_SetValueForKey( info, "nettype", va( "%i", server->netType ) );
 		Info_SetValueForKey( info, "addr", NET_AdrToString( server->adr ) );
-		Info_SetValueForKey( info, "punkbuster", va( "%i", server->punkbuster ) );
 		Q_strncpyz( buf, info, buflen );
 	} else {
 		if ( buf ) {
@@ -672,45 +671,6 @@ void Key_SetCatcher( int catcher ) {
 	cls.keyCatchers = catcher;
 }
 
-
-/*
-====================
-CLUI_GetCDKey
-====================
-*/
-static void CLUI_GetCDKey( char * buf, int buflen ) {
-	cvar_t	* fs;
-	fs = Cvar_Get( "fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO );
-	if ( UI_usesUniqueCDKey() && fs && fs->string[0] != 0 ) {
-		Com_Memcpy( buf, &cl_cdkey[16], 16 );
-		buf[16] = 0;
-	} else {
-		Com_Memcpy( buf, cl_cdkey, 16 );
-		buf[16] = 0;
-	}
-}
-
-
-/*
-====================
-CLUI_SetCDKey
-====================
-*/
-static void CLUI_SetCDKey( char * buf ) {
-	cvar_t	* fs;
-	fs = Cvar_Get( "fs_game", "", CVAR_INIT | CVAR_SYSTEMINFO );
-	if ( UI_usesUniqueCDKey() && fs && fs->string[0] != 0 ) {
-		Com_Memcpy( &cl_cdkey[16], buf, 16 );
-		cl_cdkey[32] = 0;
-		// set the flag so the fle will be written at the next opportunity
-		cvar_modifiedFlags |= CVAR_ARCHIVE;
-	} else {
-		Com_Memcpy( cl_cdkey, buf, 16 );
-		// set the flag so the fle will be written at the next opportunity
-		cvar_modifiedFlags |= CVAR_ARCHIVE;
-	}
-}
-
 /*
 ====================
 GetConfigString
@@ -829,8 +789,6 @@ void CL_InitUI( void ) {
 	uiExport.LAN_RemoveServer = LAN_RemoveServer;
 	uiExport.LAN_CompareServers = LAN_CompareServers;
 	uiExport.Hunk_MemoryRemaining = Hunk_MemoryRemaining;
-	uiExport.CLUI_GetCDKey = CLUI_GetCDKey;
-	uiExport.CLUI_SetCDKey = CLUI_SetCDKey;
 	uiExport.S_StopBackgroundTrack = S_StopBackgroundTrack;
 	uiExport.S_StartBackgroundTrack = S_StartBackgroundTrack;
 	uiExport.Com_RealTime = Com_RealTime;
@@ -840,7 +798,6 @@ void CL_InitUI( void ) {
 	uiExport.CIN_DrawCinematic = CIN_DrawCinematic;
 	uiExport.CIN_SetExtents = CIN_SetExtents;
 	uiExport.re_RemapShader = re.RemapShader;
-	uiExport.CL_CDKeyValidate = CL_CDKeyValidate;
 
 	// load the dll
 	dllHandle = Sys_DLL_Load( "ui" );
@@ -854,10 +811,6 @@ void CL_InitUI( void ) {
 	}
 
 	ui->UI_Init();
-}
-
-qboolean UI_usesUniqueCDKey() {
-	return qfalse;
 }
 
 /*

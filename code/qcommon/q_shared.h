@@ -64,7 +64,6 @@ float	FloatSwap( const float * f );
 // abstracting this to make it portable
 #ifdef WIN32
 #	define Q_vsnprintf _vsnprintf
-#	define Q_vsnprintf _vsnprintf
 #else
 #	define Q_vsnprintf vsnprintf
 #endif
@@ -320,7 +319,6 @@ typedef enum {
 	ERR_DROP,					// print to console and disconnect from game
 	ERR_SERVERDISCONNECT,		// don't kill server
 	ERR_DISCONNECT,				// client disconnected from the server
-	ERR_NEED_CD					// pop up the need-cd dialog
 } errorParm_t;
 
 
@@ -1322,8 +1320,5 @@ typedef enum _flag_status {
 #define SAY_ALL		0
 #define SAY_TEAM	1
 #define SAY_TELL	2
-
-#define CDKEY_LEN 16
-#define CDCHKSUM_LEN 2
 
 #endif	// __Q_SHARED_H

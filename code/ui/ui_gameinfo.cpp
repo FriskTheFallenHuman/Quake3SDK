@@ -352,10 +352,4 @@ void UI_InitGameinfo( void ) {
 
 	UI_InitMemory();
 	UI_LoadArenas();
-
-	if ( trap_Cvar_VariableValue( "fs_restrict" ) ) {
-		uis.demoversion = qtrue;
-	} else {
-		uis.demoversion = qfalse;
-	}
 }

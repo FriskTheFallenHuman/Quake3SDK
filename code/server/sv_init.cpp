@@ -571,7 +571,6 @@ void SV_Init( void ) {
 	sv_killserver = Cvar_Get( "sv_killserver", "0", 0 );
 	sv_mapChecksum = Cvar_Get( "sv_mapChecksum", "", CVAR_ROM );
 	sv_lanForceRate = Cvar_Get( "sv_lanForceRate", "1", CVAR_ARCHIVE );
-	sv_strictAuth = Cvar_Get( "sv_strictAuth", "1", CVAR_ARCHIVE );
 }
 
 

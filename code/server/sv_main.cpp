@@ -50,7 +50,6 @@ cvar_t	* sv_gametype;
 cvar_t	* sv_pure;
 cvar_t	* sv_floodProtect;
 cvar_t	* sv_lanForceRate; // dedicated 1 (LAN) server forces local client rates to 99999 (bug #491)
-cvar_t	* sv_strictAuth;
 
 /*
 =============================================================================
@@ -324,15 +323,6 @@ void SVC_Status( netadr_t from ) {
 	// to prevent timed spoofed reply packets that add ghost servers
 	Info_SetValueForKey( infostring, "challenge", Cmd_Argv( 1 ) );
 
-	// add "demo" to the sv_keywords if restricted
-	if ( Cvar_VariableValue( "fs_restrict" ) ) {
-		char	keywords[MAX_INFO_STRING];
-
-		Com_sprintf( keywords, sizeof( keywords ), "demo %s",
-					 Info_ValueForKey( infostring, "sv_keywords" ) );
-		Info_SetValueForKey( infostring, "sv_keywords", keywords );
-	}
-
 	status[0] = 0;
 	statusLength = 0;
 
@@ -526,8 +516,6 @@ void SV_ConnectionlessPacket( netadr_t from, msg_t *msg ) {
 		SV_GetChallenge( from );
 	} else if ( !Q_stricmp( c, "connect" ) ) {
 		SV_DirectConnect( from );
-	} else if ( !Q_stricmp( c, "ipAuthorize" ) ) {
-		SV_AuthorizeIpPacket( from );
 	} else if ( !Q_stricmp( c, "rcon" ) ) {
 		SVC_RemoteCommand( from, msg );
 	} else if ( !Q_stricmp( c, "disconnect" ) ) {

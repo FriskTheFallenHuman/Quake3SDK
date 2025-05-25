@@ -23,6 +23,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #ifndef __UI_PUBLIC_H__
 #define __UI_PUBLIC_H__
 
+#include "../qcommon/q_shared.h"
+
 #define UI_API_VERSION	8
 
 typedef struct {
@@ -104,8 +106,6 @@ typedef struct {
 	void ( *LAN_RemoveServer )( int source, const char * addr );
 	int ( *LAN_CompareServers )( int source, int sortKey, int sortDir, int s1, int s2 );
 	int ( *Hunk_MemoryRemaining )( void );
-	void ( *CLUI_GetCDKey )( char * buf, int buflen );
-	void ( *CLUI_SetCDKey )( char * buf );
 	void ( *S_StopBackgroundTrack )( void );
 	void ( *S_StartBackgroundTrack )( const char * intro, const char * loop );
 	int ( *Com_RealTime )( qtime_t * qtime );
@@ -115,15 +115,12 @@ typedef struct {
 	void ( *CIN_DrawCinematic )( int handle );
 	void ( *CIN_SetExtents )( int handle, int x, int y, int w, int h );
 	void ( *re_RemapShader )( const char * oldShader, const char * newShader, const char * timeOffset );
-	qboolean( *CL_CDKeyValidate )( const char * key, const char * chksum );
 } uiImport_t;
 
 typedef enum {
 	UIMENU_NONE,
 	UIMENU_MAIN,
 	UIMENU_INGAME,
-	UIMENU_NEED_CD,
-	UIMENU_BAD_CD_KEY,
 	UIMENU_TEAM,
 	UIMENU_POSTGAME
 } uiMenuCommand_t;
@@ -133,7 +130,6 @@ typedef enum {
 #define SORT_CLIENTS		2
 #define SORT_GAME			3
 #define SORT_PING			4
-#define SORT_PUNKBUSTER		5
 
 typedef struct {
 	void ( *UI_Init )( void );

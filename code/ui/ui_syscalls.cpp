@@ -320,14 +320,6 @@ int trap_MemoryRemaining( void ) {
 	return uiSyscalls->Hunk_MemoryRemaining();
 }
 
-void trap_GetCDKey( char * buf, int buflen ) {
-	uiSyscalls->CLUI_GetCDKey( buf, buflen );
-}
-
-void trap_SetCDKey( char * buf ) {
-	uiSyscalls->CLUI_SetCDKey( buf );
-}
-
 void trap_S_StopBackgroundTrack( void ) {
 	uiSyscalls->S_StopBackgroundTrack();
 }
@@ -362,12 +354,4 @@ void trap_CIN_SetExtents( int handle, int x, int y, int w, int h ) {
 
 void trap_R_RemapShader( const char * oldShader, const char * newShader, const char * timeOffset ) {
 	uiSyscalls->re_RemapShader( oldShader, newShader, timeOffset );
-}
-
-qboolean trap_VerifyCDKey( const char * key, const char * chksum ) {
-	return uiSyscalls->CL_CDKeyValidate( key, chksum );
-}
-
-void trap_SetPbClStatus( int status ) {
-
 }

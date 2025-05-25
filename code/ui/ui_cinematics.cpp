@@ -75,11 +75,7 @@ static void UI_CinematicsMenu_Event( void * ptr, int event ) {
 
 	n = ( ( menucommon_s * )ptr )->id - ID_CIN_IDLOGO;
 	trap_Cvar_Set( "nextmap", va( "ui_cinematics %i", n ) );
-	if ( uis.demoversion ) {
-		trap_Cmd_ExecuteText( EXEC_APPEND, "disconnect; cinematic demoEnd.RoQ 1\n" );
-	} else {
-		trap_Cmd_ExecuteText( EXEC_APPEND, va( "disconnect; cinematic %s.RoQ\n", cinematics[n] ) );
-	}
+	trap_Cmd_ExecuteText( EXEC_APPEND, va( "disconnect; cinematic %s.RoQ\n", cinematics[n] ) );
 }
 
 
