@@ -1031,8 +1031,6 @@ void RB_StageIteratorVertexLitTexture( void ) {
 	}
 }
 
-//define	REPLACE_MODE
-
 void RB_StageIteratorLightmappedMultitexture( void ) {
 	shaderCommands_t * input;
 
@@ -1049,14 +1047,8 @@ void RB_StageIteratorLightmappedMultitexture( void ) {
 	GL_State( GLS_DEFAULT );
 	glVertexPointer( 3, GL_FLOAT, 16, input->xyz );
 
-#ifdef REPLACE_MODE
-	glDisableClientState( GL_COLOR_ARRAY );
-	glColor3f( 1, 1, 1 );
-	glShadeModel( GL_FLAT );
-#else
 	glEnableClientState( GL_COLOR_ARRAY );
 	glColorPointer( 4, GL_UNSIGNED_BYTE, 0, tess.constantColor255 );
-#endif
 
 	//
 	// select base stage
@@ -1097,10 +1089,6 @@ void RB_StageIteratorLightmappedMultitexture( void ) {
 	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
 	GL_SelectTexture( 0 );
-#ifdef REPLACE_MODE
-	GL_TexEnv( GL_MODULATE );
-	glShadeModel( GL_SMOOTH );
-#endif
 
 	//
 	// now do any dynamic lighting needed
