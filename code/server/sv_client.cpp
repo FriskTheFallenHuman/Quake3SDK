@@ -86,18 +86,6 @@ void SV_GetChallenge( netadr_t from ) {
 		NET_OutOfBandPrint( NS_SERVER, from, "challengeResponse %i", challenge->challenge );
 		return;
 	}
-
-	// if they have been challenging for a long time and we
-	// haven't heard anything from the authorize server, go ahead and
-	// let them in, assuming the id server is down
-	if ( svs.time - challenge->firstTime > AUTHORIZE_TIMEOUT ) {
-		Com_DPrintf( "authorize server timed out\n" );
-
-		challenge->pingTime = svs.time;
-		NET_OutOfBandPrint( NS_SERVER, challenge->adr,
-							"challengeResponse %i", challenge->challenge );
-		return;
-	}
 }
 
 /*
@@ -313,9 +301,11 @@ gotnewcl:
 			count++;
 		}
 	}
+#ifdef DEDICATED
 	if ( count == 1 || count == sv_maxclients->integer ) {
 		SV_Heartbeat_f();
 	}
+#endif
 }
 
 
@@ -381,9 +371,11 @@ void SV_DropClient( client_t * drop, const char * reason ) {
 			break;
 		}
 	}
+#ifdef DEDICATED
 	if ( i == sv_maxclients->integer ) {
 		SV_Heartbeat_f();
 	}
+#endif
 }
 
 /*
@@ -982,7 +974,7 @@ void SV_UserinfoChanged( client_t * cl ) {
 
 	// if the client is on the same subnet as the server and we aren't running an
 	// internet public server, assume they don't need a rate choke
-	if ( Sys_IsLANAddress( cl->netchan.remoteAddress ) && com_dedicated->integer != 2 && sv_lanForceRate->integer == 1 ) {
+	if ( Sys_IsLANAddress( cl->netchan.remoteAddress ) && sv_lanForceRate->integer == 1 ) {
 		cl->rate = 99999;	// lans should not rate limit
 	} else {
 		val = Info_ValueForKey( cl->userinfo, "rate" );

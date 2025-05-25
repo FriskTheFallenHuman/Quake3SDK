@@ -119,11 +119,11 @@ static void UI_Mods_LoadModsFromFile( char * filename ) {
 
 	len = trap_FS_FOpenFile( filename, &f, FS_READ );
 	if ( !f ) {
-		trap_Print( va( S_COLOR_RED "file not found: %s\n", filename ) );
+		trap_Warning( va( "file not found: %s\n", filename ) );
 		return;
 	}
 	if ( len >= sizeof( buf ) ) {
-		trap_Print( va( S_COLOR_RED "file too large: %s is %i, max allowed is %i", filename, len, sizeof( buf ) ) );
+		trap_Warning( va( "file too large: %s is %i, max allowed is %i", filename, len, sizeof( buf ) ) );
 		trap_FS_FCloseFile( f );
 		return;
 	}

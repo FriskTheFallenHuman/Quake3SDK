@@ -86,7 +86,7 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 				SetFocus( s_wcd.hwndInputLine );
 			}
 
-			if ( com_viewlog && ( com_dedicated && !com_dedicated->integer ) ) {
+			if ( com_viewlog ) {
 				// if the viewlog is open, check to see if it's being minimized
 				if ( com_viewlog->integer == 1 ) {
 					if ( HIWORD( wParam ) ) {	// minimized flag
@@ -101,15 +101,17 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			break;
 
 		case WM_CLOSE:
-			if ( ( com_dedicated && com_dedicated->integer ) ) {
-				cmdString = CopyString( "quit" );
-				Sys_QueEvent( 0, SE_CONSOLE, 0, 0, strlen( cmdString ) + 1, cmdString );
-			} else if ( s_wcd.quitOnClose ) {
+#ifdef DEDICATED
+			cmdString = CopyString( "quit" );
+			Sys_QueEvent( 0, SE_CONSOLE, 0, 0, strlen( cmdString ) + 1, cmdString );
+#else
+			if ( s_wcd.quitOnClose ) {
 				PostQuitMessage( 0 );
 			} else {
 				Sys_ShowConsole( 0, qfalse );
 				Cvar_Set( "viewlog", "0" );
 			}
+#endif
 			return 0;
 		case WM_CTLCOLORSTATIC:
 			if ( ( HWND ) lParam == s_wcd.hwndBuffer ) {

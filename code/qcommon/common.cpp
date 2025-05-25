@@ -40,13 +40,17 @@ int demo_protocols[] =
 #define MAX_NUM_ARGVS	50
 
 #define MIN_DEDICATED_COMHUNKMEGS 1
-#define MIN_COMHUNKMEGS 56
-#ifdef MACOS_X
-#define DEF_COMHUNKMEGS "64"
-#define DEF_COMZONEMEGS "24"
+#ifdef DEDICATED
+#  define MIN_COMHUNKMEGS 1
 #else
-#define DEF_COMHUNKMEGS "56"
-#define DEF_COMZONEMEGS "16"
+#  define MIN_COMHUNKMEGS 56
+#endif
+#ifdef MACOS_X
+#  define DEF_COMHUNKMEGS "64"
+#  define DEF_COMZONEMEGS "24"
+#else
+#  define DEF_COMHUNKMEGS "56"
+#  define DEF_COMZONEMEGS "16"
 #endif
 
 int		com_argc;
@@ -55,7 +59,6 @@ char	* com_argv[MAX_NUM_ARGVS + 1];
 jmp_buf abortframe;		// an ERR_DROP occured, exit the entire frame
 
 
-FILE * debuglogfile;
 static fileHandle_t logfile;
 fileHandle_t	com_journalFile;			// events are written here
 fileHandle_t	com_journalDataFile;		// config files are written here
@@ -63,12 +66,13 @@ fileHandle_t	com_journalDataFile;		// config files are written here
 cvar_t	* com_viewlog;
 cvar_t	* com_speeds;
 cvar_t	* com_developer;
-cvar_t	* com_dedicated;
 cvar_t	* com_timescale;
 cvar_t	* com_fixedtime;
 cvar_t	* com_dropsim;		// 0.0 to 1.0, simulated packet drops
 cvar_t	* com_journal;
+#ifndef DEDICATED
 cvar_t	* com_maxfps;
+#endif
 cvar_t	* com_timedemo;
 cvar_t	* com_sv_running;
 cvar_t	* com_cl_running;
@@ -179,9 +183,9 @@ void QDECL Com_VPrintf( const char * fmt, va_list args ) {
 	}
 
 	// echo to console if we're not a dedicated server
-	if ( com_dedicated && !com_dedicated->integer ) {
-		CL_ConsolePrint( msg );
-	}
+#ifndef DEDICATED
+	CL_ConsolePrint( msg );
+#endif
 
 	// echo to dedicated console and early console
 	Sys_Printf( msg );
@@ -361,19 +365,25 @@ void QDECL Com_Error( int code, const char * fmt, ... ) {
 	}
 
 	if ( code == ERR_SERVERDISCONNECT ) {
+#ifndef DEDICATED
 		CL_Disconnect( qtrue );
 		CL_FlushMemory( );
+#endif
 		com_errorEntered = qfalse;
 		longjmp( abortframe, -1 );
 	} else if ( code == ERR_DROP || code == ERR_DISCONNECT ) {
 		Com_Printf( "********************\nERROR: %s\n********************\n", com_errorMessage );
 		SV_Shutdown( va( "Server crashed: %s\n",  com_errorMessage ) );
+#ifndef DEDICATED
 		CL_Disconnect( qtrue );
 		CL_FlushMemory( );
+#endif
 		com_errorEntered = qfalse;
 		longjmp( abortframe, -1 );
 	} else {
+#ifndef DEDICATED
 		CL_Shutdown();
+#endif
 		SV_Shutdown( va( "Server fatal crashed: %s\n", com_errorMessage ) );
 	}
 
@@ -395,7 +405,9 @@ void Com_Quit_f( void ) {
 	// don't try to shutdown if we are in a recursive error
 	if ( !com_errorEntered ) {
 		SV_Shutdown( "Server quit\n" );
+#ifndef DEDICATED
 		CL_Shutdown();
+#endif
 		Com_Shutdown();
 		FS_Shutdown( qtrue );
 	}
@@ -1584,14 +1596,8 @@ void Com_InitHunkMemory( void ) {
 	// allocate the stack based hunk allocator
 	cv = Cvar_Get( "com_hunkMegs", DEF_COMHUNKMEGS, CVAR_LATCH | CVAR_ARCHIVE );
 
-	// if we are not dedicated min allocation is 56, otherwise min is 1
-	if ( com_dedicated && com_dedicated->integer ) {
-		nMinAlloc = MIN_DEDICATED_COMHUNKMEGS;
-		pMsg = "Minimum com_hunkMegs for a dedicated server is %i, allocating %i megs.\n";
-	} else {
-		nMinAlloc = MIN_COMHUNKMEGS;
-		pMsg = "Minimum com_hunkMegs is %i, allocating %i megs.\n";
-	}
+    nMinAlloc = MIN_COMHUNKMEGS;
+    pMsg = "Minimum com_hunkMegs is %i, allocating %i megs.\n";
 
 	if ( cv->integer < nMinAlloc ) {
 		s_hunkTotal = 1024 * 1024 * nMinAlloc;
@@ -1670,8 +1676,10 @@ qboolean Hunk_CheckMark( void ) {
 	return qfalse;
 }
 
+#ifndef DEDICATED
 void CL_ShutdownCGame( void );
 void CL_ShutdownUI( void );
+#endif
 void SV_ShutdownGameProgs( void );
 
 /*
@@ -2153,10 +2161,12 @@ int Com_EventLoop( void ) {
 
 		// if no more events are available
 		if ( ev.evType == SE_NONE ) {
+#ifndef DEDICATED
 			// manually send packet events for the loopback channel
 			while ( NET_GetLoopPacket( NS_CLIENT, &evFrom, &buf ) ) {
 				CL_PacketEvent( evFrom, &buf );
 			}
+#endif
 
 			while ( NET_GetLoopPacket( NS_SERVER, &evFrom, &buf ) ) {
 				// if the server just shut down, flush the events
@@ -2177,16 +2187,24 @@ int Com_EventLoop( void ) {
 			case SE_NONE:
 				break;
 			case SE_KEY:
+#ifndef DEDICATED
 				CL_KeyEvent( ev.evValue, qboolean( ev.evValue2 ), ev.evTime );
+#endif
 				break;
 			case SE_CHAR:
+#ifndef DEDICATED
 				CL_CharEvent( ev.evValue );
+#endif
 				break;
 			case SE_MOUSE:
+#ifndef DEDICATED
 				CL_MouseEvent( ev.evValue, ev.evValue2, ev.evTime );
+#endif
 				break;
 			case SE_JOYSTICK_AXIS:
+#ifndef DEDICATED
 				CL_JoystickEvent( ev.evValue, ev.evValue2, ev.evTime );
+#endif
 				break;
 			case SE_CONSOLE:
 				Cbuf_AddText( ( char * )ev.evPtr );
@@ -2218,8 +2236,10 @@ int Com_EventLoop( void ) {
 				Com_Memcpy( buf.data, ( byte * )( ( netadr_t * )ev.evPtr + 1 ), buf.cursize );
 				if ( com_sv_running->integer ) {
 					Com_RunAndTimeServerPacket( &evFrom, &buf );
+#ifndef DEDICATED
 				} else {
 					CL_PacketEvent( evFrom, &buf );
+#endif
 				}
 				break;
 		}
@@ -2349,8 +2369,10 @@ void Com_Init( char * commandLine ) {
 	// get the developer cvar set as early as possible
 	Com_StartupVariable( "developer" );
 
+#ifndef DEDICATED
 	// done early so bind command exists
 	CL_InitKeyCommands();
+#endif
 
 	FS_InitFilesystem ();
 
@@ -2370,12 +2392,6 @@ void Com_Init( char * commandLine ) {
 	// override anything from the config files with command line args
 	Com_StartupVariable( NULL );
 
-	// get dedicated here for proper hunk megs initialization
-#ifdef DEDICATED
-	com_dedicated = Cvar_Get ( "dedicated", "1", CVAR_ROM );
-#else
-	com_dedicated = Cvar_Get ( "dedicated", "0", CVAR_LATCH );
-#endif
 	// allocate the stack based hunk allocator
 	Com_InitHunkMemory();
 
@@ -2386,7 +2402,9 @@ void Com_Init( char * commandLine ) {
 	//
 	// init commands and vars
 	//
-	com_maxfps = Cvar_Get ( "com_maxfps", "85", CVAR_ARCHIVE );
+#ifndef DEDICATED
+    com_maxfps = Cvar_Get ( "com_maxfps", "85", CVAR_ARCHIVE );
+#endif
 	com_blood = Cvar_Get ( "com_blood", "1", CVAR_ARCHIVE );
 
 	com_developer = Cvar_Get ( "developer", "0", CVAR_TEMP );
@@ -2414,11 +2432,11 @@ void Com_Init( char * commandLine ) {
 	com_noErrorInterrupt = Cvar_Get( "com_noErrorInterrupt", "0", 0 );
 #endif
 
-	if ( com_dedicated->integer ) {
-		if ( !com_viewlog->integer ) {
-			Cvar_Set( "viewlog", "1" );
-		}
+#ifdef DEDICATED
+	if ( !com_viewlog->integer ) {
+		Cvar_Set( "viewlog", "1" );
 	}
+#endif
 
 	if ( com_developer && com_developer->integer ) {
 		Cmd_AddCommand ( "error", Com_Error_f );
@@ -2436,11 +2454,11 @@ void Com_Init( char * commandLine ) {
 	Netchan_Init( Com_Milliseconds() & 0xffff );	// pick a port value that should be nice and random
 	SV_Init();
 
-	com_dedicated->modified = qfalse;
-	if ( !com_dedicated->integer ) {
-		CL_Init();
-		Sys_ShowConsole( com_viewlog->integer, qfalse );
-	}
+#ifndef DEDICATED
+	CL_Init();
+#endif
+
+	Sys_ShowConsole( com_viewlog->integer, qfalse );
 
 	// set com_frameTime so that if a map is started on the
 	// command line it will still be able to count on com_frameTime
@@ -2448,21 +2466,23 @@ void Com_Init( char * commandLine ) {
 	com_frameTime = Com_Milliseconds();
 
 	// add + commands from command line
+#ifndef DEDICATED
 	if ( !Com_AddStartupCommands() ) {
 		// if the user didn't give any commands, run default action
-		if ( !com_dedicated->integer ) {
-			Cbuf_AddText ( "cinematic idlogo.RoQ\n" );
-			if ( !com_introPlayed->integer ) {
-				Cvar_Set( com_introPlayed->name, "1" );
-				Cvar_Set( "nextmap", "cinematic intro.RoQ" );
-			}
+		Cbuf_AddText ( "cinematic idlogo.RoQ\n" );
+		if ( !com_introPlayed->integer ) {
+			Cvar_Set( com_introPlayed->name, "1" );
+			Cvar_Set( "nextmap", "cinematic intro.RoQ" );
 		}
 	}
+#endif
 
 	// start in full screen ui mode
 	Cvar_Set( "r_uiFullScreen", "1" );
 
+#ifndef DEDICATED
 	CL_StartHunkUsers();
+#endif
 
 	com_fullyInitialized = qtrue;
 	Com_Printf ( "--- Common Initialization Complete ---\n" );
@@ -2480,7 +2500,9 @@ void Com_WriteConfigToFile( const char * filename ) {
 	}
 
 	FS_Printf ( f, "// generated by quake, do not modify\n" );
+#ifndef DEDICATED
 	Key_WriteBindings ( f );
+#endif
 	Cvar_WriteVariables ( f );
 	FS_FCloseFile( f );
 }
@@ -2554,15 +2576,16 @@ int Com_ModifyMsec( int msec ) {
 		msec = 1;
 	}
 
-	if ( com_dedicated->integer ) {
-		// dedicated servers don't want to clamp for a much longer
-		// period, because it would mess up all the client's views
-		// of time.
-		if ( msec > 500 ) {
-			Com_Printf( "Hitch warning: %i msec frame time\n", msec );
-		}
-		clampTime = 5000;
-	} else if ( !com_sv_running->integer ) {
+#ifdef DEDICATED
+	// dedicated servers don't want to clamp for a much longer
+	// period, because it would mess up all the client's views
+	// of time.
+	if ( msec > 500 ) {
+		Com_Printf( "Hitch warning: %i msec frame time\n", msec );
+	}
+	clampTime = 5000;
+#else
+	if ( !com_sv_running->integer ) {
 		// clients of remote servers do not want to clamp time, because
 		// it would skew their view of the server's time temporarily
 		clampTime = 5000;
@@ -2572,6 +2595,7 @@ int Com_ModifyMsec( int msec ) {
 		// flying off edges when something hitches.
 		clampTime = 200;
 	}
+#endif
 
 	if ( msec > clampTime ) {
 		msec = clampTime;
@@ -2622,9 +2646,9 @@ void Com_Frame( void ) {
 
 	// if "viewlog" has been modified, show or hide the log console
 	if ( com_viewlog->modified ) {
-		if ( !com_dedicated->value ) {
-			Sys_ShowConsole( com_viewlog->integer, qfalse );
-		}
+#ifndef DEDICATED
+		Sys_ShowConsole( com_viewlog->integer, qfalse );
+#endif
 		com_viewlog->modified = qfalse;
 	}
 
@@ -2636,11 +2660,16 @@ void Com_Frame( void ) {
 	}
 
 	// we may want to spin here if things are going too fast
-	if ( !com_dedicated->integer && com_maxfps->integer > 0 && !com_timedemo->integer ) {
+#ifdef DEDICATED
+	minMsec = 1;
+#else
+	if ( com_maxfps->integer > 0 && !com_timedemo->integer ) {
 		minMsec = 1000 / com_maxfps->integer;
 	} else {
 		minMsec = 1;
 	}
+#endif
+
 	do {
 		com_frameTime = Com_EventLoop();
 		if ( lastTime > com_frameTime ) {
@@ -2665,51 +2694,35 @@ void Com_Frame( void ) {
 
 	SV_Frame( msec );
 
-	// if "dedicated" has been modified, start up
-	// or shut down the client system.
-	// Do this after the server may have started,
-	// but before the client tries to auto-connect
-	if ( com_dedicated->modified ) {
-		// get the latched value
-		Cvar_Get( "dedicated", "0", 0 );
-		com_dedicated->modified = qfalse;
-		if ( !com_dedicated->integer ) {
-			CL_Init();
-			Sys_ShowConsole( com_viewlog->integer, qfalse );
-		} else {
-			CL_Shutdown();
-			Sys_ShowConsole( 1, qtrue );
-		}
-	}
-
+#ifndef DEDICATED
 	//
 	// client system
 	//
-	if ( !com_dedicated->integer ) {
-		//
-		// run event loop a second time to get server to client packets
-		// without a frame of latency
-		//
-		if ( com_speeds->integer ) {
-			timeBeforeEvents = Sys_Milliseconds ();
-		}
-		Com_EventLoop();
-		Cbuf_Execute ();
 
-
-		//
-		// client side
-		//
-		if ( com_speeds->integer ) {
-			timeBeforeClient = Sys_Milliseconds ();
-		}
-
-		CL_Frame( msec );
-
-		if ( com_speeds->integer ) {
-			timeAfter = Sys_Milliseconds ();
-		}
+	//
+	// run event loop a second time to get server to client packets
+	// without a frame of latency
+	//
+	if ( com_speeds->integer ) {
+		timeBeforeEvents = Sys_Milliseconds ();
 	}
+	Com_EventLoop();
+	Cbuf_Execute ();
+
+
+	//
+	// client side
+	//
+	if ( com_speeds->integer ) {
+		timeBeforeClient = Sys_Milliseconds ();
+	}
+
+	CL_Frame( msec );
+
+	if ( com_speeds->integer ) {
+		timeAfter = Sys_Milliseconds ();
+	}
+#endif
 
 	//
 	// report timing information

@@ -37,7 +37,6 @@ cvar_t	* sv_privateClients;		// number of clients reserved for password
 cvar_t	* sv_hostname;
 cvar_t	* sv_master[MAX_MASTER_SERVERS];		// master server ip address
 cvar_t	* sv_reconnectlimit;		// minimum seconds between connect messages
-cvar_t	* sv_showloss;			// report when usercmds are lost
 cvar_t	* sv_padPackets;			// add nop bytes to messages
 cvar_t	* sv_killserver;			// menu system can set to 1 to shut server down
 cvar_t	* sv_mapname;
@@ -59,6 +58,7 @@ EVENT MESSAGES
 =============================================================================
 */
 
+#ifdef DEDICATED
 /*
 ===============
 SV_ExpandNewlines
@@ -66,7 +66,7 @@ SV_ExpandNewlines
 Converts newlines to "\n" so a line prints nicer
 ===============
 */
-char	* SV_ExpandNewlines( char * in ) {
+static char	* SV_ExpandNewlines( char * in ) {
 	static	char	string[1024];
 	int		l;
 
@@ -84,36 +84,7 @@ char	* SV_ExpandNewlines( char * in ) {
 
 	return string;
 }
-
-/*
-======================
-SV_ReplacePendingServerCommands
-
-  This is ugly
-======================
-*/
-int SV_ReplacePendingServerCommands( client_t * client, const char * cmd ) {
-	int i, index, csnum1, csnum2;
-
-	for ( i = client->reliableSent + 1; i <= client->reliableSequence; i++ ) {
-		index = i & ( MAX_RELIABLE_COMMANDS - 1 );
-		//
-		if ( !Q_strncmp( cmd, client->reliableCommands[ index ], strlen( "cs" ) ) ) {
-			sscanf( cmd, "cs %i", &csnum1 );
-			sscanf( client->reliableCommands[ index ], "cs %i", &csnum2 );
-			if ( csnum1 == csnum2 ) {
-				Q_strncpyz( client->reliableCommands[ index ], cmd, sizeof( client->reliableCommands[ index ] ) );
-				/*
-				if ( client->netchan.remoteAddress.type != NA_BOT ) {
-					Com_Printf( "WARNING: client %i removed double pending config string %i: %s\n", client-svs.clients, csnum1, cmd );
-				}
-				*/
-				return qtrue;
-			}
-		}
-	}
-	return qfalse;
-}
+#endif
 
 /*
 ======================
@@ -125,12 +96,6 @@ not have future snapshot_t executed before it is executed
 */
 void SV_AddServerCommand( client_t * client, const char * cmd ) {
 	int		index, i;
-
-	// this is very ugly but it's also a waste to for instance send multiple config string updates
-	// for the same config string index in one snapshot
-//	if ( SV_ReplacePendingServerCommands( client, cmd ) ) {
-//		return;
-//	}
 
 	client->reliableSequence++;
 	// if we would be losing an old command that hasn't been acknowledged,
@@ -175,10 +140,12 @@ void QDECL SV_SendServerCommand( client_t * cl, const char * fmt, ... ) {
 		return;
 	}
 
+#ifdef DEDICATED
 	// hack to echo broadcast prints to console
-	if ( com_dedicated->integer && !strncmp( ( char * )message, "print", 5 ) ) {
-		Com_Printf( "broadcast: %s\n", SV_ExpandNewlines( ( char * )message ) );
+	if ( !strncmp( (char *)message, "print", 5) ) {
+		Com_Printf ("broadcast: %s\n", SV_ExpandNewlines((char *)message) );
 	}
+#endif
 
 	// send the data to all relevent clients
 	for ( j = 0, client = svs.clients; j < sv_maxclients->integer ; j++, client++ ) {
@@ -189,7 +156,7 @@ void QDECL SV_SendServerCommand( client_t * cl, const char * fmt, ... ) {
 	}
 }
 
-
+#ifdef DEDICATED
 /*
 ==============================================================================
 
@@ -214,11 +181,6 @@ but not on every player enter or exit.
 void SV_MasterHeartbeat( void ) {
 	static netadr_t	adr[MAX_MASTER_SERVERS];
 	int			i;
-
-	// "dedicated 1" is for lan play, "dedicated 2" is for inet public play
-	if ( !com_dedicated || com_dedicated->integer != 2 ) {
-		return;		// only dedicated servers send heartbeats
-	}
 
 	// if not time yet, don't send anything
 	if ( svs.time < svs.nextHeartbeatTime ) {
@@ -283,7 +245,7 @@ void SV_MasterShutdown( void ) {
 	// when the master tries to poll the server, it won't respond, so
 	// it will be removed from the list
 }
-
+#endif
 
 /*
 ==============================================================================
@@ -764,12 +726,14 @@ void SV_Frame( int msec ) {
 
 	sv.timeResidual += msec;
 
-	if ( com_dedicated->integer && sv.timeResidual < frameMsec ) {
+#ifndef DEDICATED
+	if ( sv.timeResidual < frameMsec ) {
 		// NET_Sleep will give the OS time slices until either get a packet
 		// or time enough for a server frame has gone by
-		NET_Sleep( frameMsec - sv.timeResidual );
+		NET_Sleep(frameMsec - sv.timeResidual);
 		return;
 	}
+#endif
 
 	// if time is about to hit the 32nd bit, kick all clients
 	// and clear sv.time, rather
@@ -831,8 +795,10 @@ void SV_Frame( int msec ) {
 	// send messages back to the clients
 	SV_SendClientMessages();
 
+#ifdef DEDICATED
 	// send a heartbeat to the master if needed
 	SV_MasterHeartbeat();
+#endif
 }
 
 //============================================================================

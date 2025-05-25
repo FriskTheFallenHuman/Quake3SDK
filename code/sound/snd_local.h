@@ -148,9 +148,6 @@ extern	int		numLoopChannels;
 
 extern	int		s_paintedtime;
 extern	int		s_rawend;
-extern	vec3_t	listener_forward;
-extern	vec3_t	listener_right;
-extern	vec3_t	listener_up;
 extern	dma_t	dma;
 
 #define	MAX_RAW_SAMPLES	16384
@@ -185,9 +182,6 @@ void S_AdpcmEncodeSound( sfx_t *sfx, short * samples );
 void S_AdpcmGetSamples( sndBuffer *chunk, short * to );
 
 // wavelet function
-
-#define SENTINEL_MULAW_ZERO_RUN 127
-#define SENTINEL_MULAW_FOUR_BIT_RUN 126
 
 void S_FreeOldestSound();
 

@@ -446,6 +446,7 @@ static void SV_Status_f( void ) {
 	Com_Printf( "\n" );
 }
 
+#ifdef DEDICATED
 /*
 ==================
 SV_ConSay_f
@@ -478,7 +479,6 @@ static void SV_ConSay_f( void ) {
 	SV_SendServerCommand( NULL, "chat \"%s\n\"", text );
 }
 
-
 /*
 ==================
 SV_Heartbeat_f
@@ -489,7 +489,7 @@ Also called by SV_DropClient, SV_DirectConnect, and SV_SpawnServer
 void SV_Heartbeat_f( void ) {
 	svs.nextHeartbeatTime = -9999999;
 }
-
+#endif
 
 /*
 ===========
@@ -573,7 +573,6 @@ void SV_AddOperatorCommands( void ) {
 	}
 	initialized = qtrue;
 
-	Cmd_AddCommand( "heartbeat", SV_Heartbeat_f );
 	Cmd_AddCommand( "kick", SV_Kick_f );
 	Cmd_AddCommand( "clientkick", SV_KickNum_f );
 	Cmd_AddCommand( "status", SV_Status_f );
@@ -585,30 +584,8 @@ void SV_AddOperatorCommands( void ) {
 	Cmd_AddCommand( "map", SV_Map_f );
 	Cmd_AddCommand( "devmap", SV_Map_f );
 	Cmd_AddCommand( "killserver", SV_KillServer_f );
-	if ( com_dedicated->integer ) {
-		Cmd_AddCommand( "say", SV_ConSay_f );
-	}
-}
-
-/*
-==================
-SV_RemoveOperatorCommands
-==================
-*/
-void SV_RemoveOperatorCommands( void ) {
-#if 0
-	// removing these won't let the server start again
-	Cmd_RemoveCommand( "heartbeat" );
-	Cmd_RemoveCommand( "kick" );
-	Cmd_RemoveCommand( "banUser" );
-	Cmd_RemoveCommand( "banClient" );
-	Cmd_RemoveCommand( "status" );
-	Cmd_RemoveCommand( "serverinfo" );
-	Cmd_RemoveCommand( "systeminfo" );
-	Cmd_RemoveCommand( "dumpuser" );
-	Cmd_RemoveCommand( "map_restart" );
-	Cmd_RemoveCommand( "sectorlist" );
-	Cmd_RemoveCommand( "say" );
+#ifdef DEDICATED
+	Cmd_AddCommand( "heartbeat", SV_Heartbeat_f );
+    Cmd_AddCommand( "say", SV_ConSay_f );
 #endif
 }
-

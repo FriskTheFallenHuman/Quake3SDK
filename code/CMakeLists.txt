@@ -20,7 +20,7 @@ include(CheckCXXCompilerFlag)
 include(GNUInstallDirs OPTIONAL RESULT_VARIABLE GNUINSTALLDIRS)
 
 option(MISSIONPACK	"Build the team arena expansion pack" OFF)
-option(DEDICATED	"Build the dedicated server" OFF)
+option(DEDICATED	"Build the dedicated server" ON)
 option(ONATIVE		"Optimize for the host CPU" OFF)
 option(HARDLINK_GAME "Compile gamecode into executable (no game DLLs)" OFF)
 
@@ -450,6 +450,32 @@ elseif(APPLE)
 	source_group( "MacOSX" FILES ${SYS_HEADERS} )
 endif()
 
+# Sys (Dedicated)
+if(WIN32)
+	file(GLOB SYS_DEDICATED_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/win32/resource.h ${CMAKE_CURRENT_SOURCE_DIR}/win32/*.rc ${CMAKE_CURRENT_SOURCE_DIR}/win32/*.ico)
+	source_group( "Win32" FILES ${SYS_DEDICATED_RESOURCES} )
+	set(SYS_DEDICATED_SOURCES
+		${CMAKE_CURRENT_SOURCE_DIR}/win32/win_main.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/win32/win_net.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/win32/win_shared.cpp
+		${CMAKE_CURRENT_SOURCE_DIR}/win32/win_syscon.cpp)
+	source_group( "Win32" FILES ${SYS_DEDICATED_SOURCES} )
+	file(GLOB SYS_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/win32/*.h)
+	set(SYS_DEDICATED_HEADERS
+		${CMAKE_CURRENT_SOURCE_DIR}/win32/win_local.h)
+	source_group( "Win32" FILES ${SYS_DEDICATED_HEADERS} )
+#elseif(UNIX)
+#	file(GLOB SYS_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/unix/*.cpp)
+#	source_group( "Unix" FILES ${SYS_SOURCES} )
+#	file(GLOB SYS_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/unix/*.h)
+#	source_group( "Unix" FILES ${SYS_HEADERS} )
+#elseif(APPLE)
+#	file(GLOB SYS_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/unix/*.cpp)
+#	source_group( "MacOSX" FILES ${SYS_SOURCES} )
+#	file(GLOB SYS_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/unix/*.h)
+#	source_group( "MacOSX" FILES ${SYS_HEADERS} )
+endif()
+
 # Qcommon (Library)
 set(QCOMMON_LIB_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_math.cpp
@@ -492,6 +518,17 @@ set(ENGINE_SOURCES
 	${SYS_SOURCES}
 	${SYS_HEADERS})
 
+set(DEDICATED_SOURCES
+	${CM_SOURCES}
+	${CM_HEADERS}
+	${QCOMMON_SOURCES}
+	${QCOMMON_HEADERS}
+	${SERVER_SOURCES}
+	${SERVER_HEADERS}
+	${SYS_DEDICATED_SOURCES}
+	${SYS_DEDICATED_RESOURCES}
+	${SYS_DEDICATED_HEADERS})
+
 add_executable(${PROJECT_NAME} WIN32 MACOSX_BUNDLE ${ENGINE_SOURCES})
 target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC)
 target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/renderer/glew-2.2.0/lib/Win32)
@@ -509,4 +546,17 @@ if(MSVC)
 	set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_COMMAND "${OUTPUT_FOLDER}/${PROJECT_NAME}.exe")
 	set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY "${OUTPUT_FOLDER}")
 	set_target_properties(${PROJECT_NAME} PROPERTIES VS_DEBUGGER_COMMAND_ARGUMENTS "+set r_fullscreen 0 +set developer 1")
+endif()
+
+if (DEDICATED)
+	add_executable(${PROJECT_NAME}ded WIN32 MACOSX_BUNDLE ${DEDICATED_SOURCES})
+	target_compile_definitions(${PROJECT_NAME}ded PRIVATE DEDICATED)
+	if(HARDLINK_GAME)
+		add_dependencies(${PROJECT_NAME}ded qcommon game)
+		target_link_libraries(${PROJECT_NAME}ded PRIVATE ${SYS_LIBS} qcommon game)
+	else()
+		add_dependencies(${PROJECT_NAME}ded qcommon)
+		target_link_libraries(${PROJECT_NAME}ded PRIVATE ${SYS_LIBS} qcommon)
+	endif()
+	set_target_properties(${PROJECT_NAME}ded PROPERTIES RUNTIME_OUTPUT_DIRECTORY $<1:>${OUTPUT_FOLDER})
 endif()

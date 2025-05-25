@@ -132,7 +132,9 @@ typedef enum {
 } netadrtype_t;
 
 typedef enum {
+#ifndef DEDICATED
 	NS_CLIENT,
+#endif
 	NS_SERVER
 } netsrc_t;
 
@@ -639,7 +641,6 @@ void		Com_StartupVariable( const char * match );
 
 
 extern	cvar_t	* com_developer;
-extern	cvar_t	* com_dedicated;
 extern	cvar_t	* com_speeds;
 extern	cvar_t	* com_timescale;
 extern	cvar_t	* com_sv_running;
@@ -792,8 +793,10 @@ void CL_StartHunkUsers( void );
 void Key_WriteBindings( fileHandle_t f );
 // for writing the config files
 
+#ifndef DEDICATED
 void S_ClearSoundBuffer( void );
 // call before filesystem access
+#endif
 
 void SCR_DebugGraph ( float value, int color );	// FIXME: move logging to common?
 
@@ -872,7 +875,9 @@ char	* Sys_GetCurrentUser( void );
 
 void	QDECL Sys_Error( const char * error, ... );
 void	Sys_Quit ( void );
+#ifndef DEDICATED
 char	* Sys_GetClipboardData( void );	// note that this isn't journaled...
+#endif
 
 // will go to the various text consoles
 // NOT thread safe - never use in the async paths
@@ -888,9 +893,6 @@ int		Sys_Milliseconds ( void );
 
 void	Sys_SnapVector( float * v );
 
-// the system console is shown when a dedicated server is running
-void	Sys_DisplaySystemConsole( qboolean show );
-
 int		Sys_GetProcessorId( void );
 
 void	Sys_BeginStreamedFile( fileHandle_t f, int readahead );
@@ -899,7 +901,6 @@ int		Sys_StreamedRead( void * buffer, int size, int count, fileHandle_t f );
 void	Sys_StreamSeek( fileHandle_t f, int offset, int origin );
 
 void	Sys_ShowConsole( int level, qboolean quitOnClose );
-void	Sys_SetErrorText( const char * text );
 
 void	Sys_SendPacket( int length, const void * data, netadr_t to );
 

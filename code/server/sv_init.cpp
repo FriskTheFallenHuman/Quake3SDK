@@ -22,6 +22,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "server.h"
 
+// we don't need nearly as many when playing locally
+#ifdef DEDICATED
+#  define LOCAL_PACKET_BACKUP PACKET_BACKUP
+#else
+#  define LOCAL_PACKET_BACKUP 4
+#endif
+
 /*
 ===============
 SV_SetConfigstring
@@ -221,12 +228,7 @@ void SV_Startup( void ) {
 	SV_BoundMaxClients( 1 );
 
 	svs.clients = ( client_t * )Z_Malloc( sizeof( client_t ) * sv_maxclients->integer );
-	if ( com_dedicated->integer ) {
-		svs.numSnapshotEntities = sv_maxclients->integer * PACKET_BACKUP * 64;
-	} else {
-		// we don't need nearly as many when playing locally
-		svs.numSnapshotEntities = sv_maxclients->integer * 4 * 64;
-	}
+	svs.numSnapshotEntities = sv_maxclients->integer * LOCAL_PACKET_BACKUP * 64;
 	svs.initialized = qtrue;
 
 	Cvar_Set( "sv_running", "1" );
@@ -291,12 +293,7 @@ void SV_ChangeMaxClients( void ) {
 	Hunk_FreeTempMemory( oldClients );
 
 	// allocate new snapshot entities
-	if ( com_dedicated->integer ) {
-		svs.numSnapshotEntities = sv_maxclients->integer * PACKET_BACKUP * 64;
-	} else {
-		// we don't need nearly as many when playing locally
-		svs.numSnapshotEntities = sv_maxclients->integer * 4 * 64;
-	}
+	svs.numSnapshotEntities = sv_maxclients->integer * LOCAL_PACKET_BACKUP * 64;
 }
 
 /*
@@ -354,12 +351,14 @@ void SV_SpawnServer( char * server ) {
 	Com_Printf( "------ Server Initialization ------\n" );
 	Com_Printf( "Server: %s\n", server );
 
+#ifndef DEDICATED
 	// if not running a dedicated server CL_MapLoading will connect the client to the server
 	// also print some status stuff
 	CL_MapLoading();
 
 	// make sure all the client stuff is unloaded
 	CL_ShutdownAll();
+#endif
 
 	// clear the whole hunk because we're (re)loading the server
 	Hunk_Clear();
@@ -477,11 +476,11 @@ void SV_SpawnServer( char * server ) {
 		p = FS_LoadedPakNames();
 		Cvar_Set( "sv_pakNames", p );
 
+#ifdef DEDICATED
 		// if a dedicated pure server we need to touch the cgame because it could be in a
 		// seperate pk3 file and the client will need to load the latest cgame.qvm
-		if ( com_dedicated->integer ) {
-			SV_TouchCGame();
-		}
+		SV_TouchCGame();
+#endif
 	} else {
 		Cvar_Set( "sv_paks", "" );
 		Cvar_Set( "sv_pakNames", "" );
@@ -506,8 +505,10 @@ void SV_SpawnServer( char * server ) {
 	// to all clients
 	sv.state = SS_GAME;
 
+#ifdef DEDICATED
 	// send a heartbeat now so the master will get up to date info
 	SV_Heartbeat_f();
+#endif
 
 	Hunk_SetMark();
 
@@ -566,7 +567,6 @@ void SV_Init( void ) {
 	sv_master[3] = Cvar_Get( "sv_master4", "", CVAR_ARCHIVE );
 	sv_master[4] = Cvar_Get( "sv_master5", "", CVAR_ARCHIVE );
 	sv_reconnectlimit = Cvar_Get( "sv_reconnectlimit", "3", 0 );
-	sv_showloss = Cvar_Get( "sv_showloss", "0", 0 );
 	sv_padPackets = Cvar_Get( "sv_padPackets", "0", 0 );
 	sv_killserver = Cvar_Get( "sv_killserver", "0", 0 );
 	sv_mapChecksum = Cvar_Get( "sv_mapChecksum", "", CVAR_ROM );
@@ -625,8 +625,9 @@ void SV_Shutdown( char * finalmsg ) {
 		SV_FinalMessage( finalmsg );
 	}
 
-	SV_RemoveOperatorCommands();
+#ifdef DEDICATED
 	SV_MasterShutdown();
+#endif
 	SV_ShutdownGameProgs();
 
 	// free current level
@@ -642,7 +643,9 @@ void SV_Shutdown( char * finalmsg ) {
 
 	Com_Printf( "---------------------------\n" );
 
+#ifndef DEDICATED
 	// disconnect any local clients
 	CL_Disconnect( qfalse );
+#endif
 }
 

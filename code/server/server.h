@@ -129,7 +129,6 @@ typedef struct client_s {
 	int				challenge;
 
 	usercmd_t		lastUsercmd;
-	int				lastMessageNum;		// for delta compression
 	int				lastClientCommand;	// reliable client message sequence
 	char			lastClientCommandString[MAX_STRING_CHARS];
 	sharedEntity_t	* gentity;			// SV_GentityNum(clientnum)
@@ -178,8 +177,6 @@ typedef struct client_s {
 // out before legitimate users connected
 #define	MAX_CHALLENGES	1024
 
-#define	AUTHORIZE_TIMEOUT	5000
-
 typedef struct {
 	netadr_t	adr;
 	int			challenge;
@@ -205,7 +202,9 @@ typedef struct {
 	int			numSnapshotEntities;		// sv_maxclients->integer*PACKET_BACKUP*MAX_PACKET_ENTITIES
 	int			nextSnapshotEntities;		// next snapshotEntities to use
 	entityState_t	* snapshotEntities;		// [numSnapshotEntities]
+#ifdef DEDICATED
 	int			nextHeartbeatTime;
+#endif
 	challenge_t	challenges[MAX_CHALLENGES];	// to prevent invalid IPs from connecting
 	netadr_t	redirectAddress;			// for rcon return messages
 } serverStatic_t;
@@ -229,7 +228,6 @@ extern	cvar_t	* sv_privateClients;
 extern	cvar_t	* sv_hostname;
 extern	cvar_t	* sv_master[MAX_MASTER_SERVERS];
 extern	cvar_t	* sv_reconnectlimit;
-extern	cvar_t	* sv_showloss;
 extern	cvar_t	* sv_padPackets;
 extern	cvar_t	* sv_killserver;
 extern	cvar_t	* sv_mapname;
@@ -253,11 +251,11 @@ void QDECL SV_SendServerCommand( client_t * cl, const char * fmt, ... );
 
 
 void SV_AddOperatorCommands ( void );
-void SV_RemoveOperatorCommands ( void );
 
-
-void SV_MasterHeartbeat ( void );
-void SV_MasterShutdown ( void );
+#ifdef DEDICATED
+void SV_MasterHeartbeat (void);
+void SV_MasterShutdown (void);
+#endif
 
 
 
@@ -294,17 +292,18 @@ void SV_ClientThink ( client_t * cl, usercmd_t * cmd );
 void SV_ClientNumThink( int clientNum, usercmd_t * cmd );
 void SV_WriteDownloadToClient( client_t * cl, msg_t *msg );
 
+#ifdef DEDICATED
 //
 // sv_ccmds.c
 //
 void SV_Heartbeat_f( void );
+#endif
 
 //
 // sv_snapshot.c
 //
 void SV_AddServerCommand( client_t * client, const char * cmd );
 void SV_UpdateServerCommandsToClient( client_t * client, msg_t *msg );
-void SV_WriteFrameToClient ( client_t * client, msg_t *msg );
 void SV_SendMessageToClient( msg_t *msg, client_t * client );
 void SV_SendClientMessages( void );
 void SV_SendClientSnapshot( client_t * client );
@@ -312,7 +311,6 @@ void SV_SendClientSnapshot( client_t * client );
 //
 // sv_game.c
 //
-int	SV_NumForGentity( sharedEntity_t * ent );
 sharedEntity_t * SV_GentityNum( int num );
 playerState_t * SV_GameClientNum( int num );
 svEntity_t	* SV_SvEntityForGentity( sharedEntity_t * gEnt );

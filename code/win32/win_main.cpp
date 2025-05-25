@@ -39,6 +39,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define	CD_EXE_LINUX "quake3"
 #define MEM_THRESHOLD 96*1024*1024
 
+WinVars_t	g_wv;
+
 static char		sys_cmdline[MAX_STRING_CHARS];
 
 // define this to use alternate spanking method
@@ -126,7 +128,9 @@ void QDECL Sys_Error( const char * error, ... ) {
 
 	timeEndPeriod( 1 );
 
+#ifndef DEDICATED
 	IN_Shutdown();
+#endif
 
 	// wait for the user to quit
 	while ( 1 ) {
@@ -149,7 +153,9 @@ Sys_Quit
 */
 void Sys_Quit( void ) {
 	timeEndPeriod( 1 );
+#ifndef DEDICATED
 	IN_Shutdown();
+#endif
 	Sys_DestroyConsole();
 
 	exit( 0 );
@@ -435,8 +441,7 @@ void	Sys_FreeFileList( char ** list ) {
 	Z_Free( list );
 }
 
-//========================================================
-
+#ifndef DEDICATED
 /*
 ================
 Sys_GetClipboardData
@@ -463,7 +468,7 @@ char * Sys_GetClipboardData( void ) {
 	}
 	return data;
 }
-
+#endif
 
 /*
 ========================================================================
@@ -948,7 +953,7 @@ sysEvent_t Sys_GetEvent( void ) {
 }
 
 //================================================================
-
+#ifndef DEDICATED
 /*
 =================
 Sys_In_Restart_f
@@ -960,7 +965,7 @@ void Sys_In_Restart_f( void ) {
 	IN_Shutdown();
 	IN_Init();
 }
-
+#endif
 
 /*
 =================
@@ -992,7 +997,9 @@ void Sys_Init( void ) {
 	// NT gets 18ms resolution
 	timeBeginPeriod( 1 );
 
+#ifndef DEDICATED
 	Cmd_AddCommand ( "in_restart", Sys_In_Restart_f );
+#endif
 	Cmd_AddCommand ( "net_restart", Sys_Net_Restart_f );
 
 	g_wv.osversion.dwOSVersionInfoSize = sizeof( g_wv.osversion );
@@ -1024,7 +1031,9 @@ void Sys_Init( void ) {
 
 	// save out a couple things in rom cvars for the renderer to access
 	Cvar_Get( "win_hinstance", va( "%i", ( int )g_wv.hInstance ), CVAR_ROM );
+#ifndef DEDICATED
 	Cvar_Get( "win_wndproc", va( "%i", ( int )MainWndProc ), CVAR_ROM );
+#endif
 
 	//
 	// figure out our CPU
@@ -1083,9 +1092,9 @@ void Sys_Init( void ) {
 	Cvar_SetValue( "sys_cpuid", cpuid );
 	Com_Printf( "%s\n", Cvar_VariableString( "sys_cpustring" ) );
 
-	Cvar_Set( "username", Sys_GetCurrentUser() );
-
-	IN_Init();		// FIXME: not in dedicated?
+#ifndef DEDICATED
+	IN_Init();
+#endif
 }
 
 
@@ -1093,6 +1102,7 @@ void Sys_Init( void ) {
 
 int	totalMsec, countMsec;
 
+#if 0
 static LPSTR GetCmdLineArgs( void ) {
 	LPSTR cmdLine = GetCommandLineA();
 	LPSTR args = cmdLine;
@@ -1118,19 +1128,26 @@ static LPSTR GetCmdLineArgs( void ) {
 
 	return args;
 }
+#endif
 
 /*
 ==================
-main
+WinMain
+
 ==================
 */
-int main ( int argc, char * argv[] ) {
+int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow ) {
 	char		cwd[MAX_OSPATH];
 	int			startTime, endTime;
 
-	g_wv.hInstance = GetModuleHandle( NULL );
+	// should never get a previous instance in Win32
+	if ( hPrevInstance ) {
+		return 0;
+	}
 
-	LPSTR lpCmdLine = GetCmdLineArgs();
+	g_wv.hInstance = hInstance;
+
+	//LPSTR lpCmdLine = GetCmdLineArgs();
 	Q_strncpyz( sys_cmdline, lpCmdLine, sizeof( sys_cmdline ) );
 
 	// done before Com/Sys_Init since we need this for error output
@@ -1152,14 +1169,14 @@ int main ( int argc, char * argv[] ) {
 
 	// hide the early console since we've reached the point where we
 	// have a working graphics subsystems
-	if ( !com_dedicated->integer && !com_viewlog->integer ) {
+	if ( !com_viewlog->integer ) {
 		Sys_ShowConsole( 0, qfalse );
 	}
 
 	// main game loop
 	while ( 1 ) {
-		// if not running as a game client, sleep a bit
-		if ( g_wv.isMinimized || ( com_dedicated && com_dedicated->integer ) ) {
+		// if not running maximized game client, sleep a bit
+		if ( g_wv.isMinimized ) {
 			Sleep( 5 );
 		}
 
@@ -1171,8 +1188,10 @@ int main ( int argc, char * argv[] ) {
 
 		startTime = Sys_Milliseconds();
 
+#ifndef DEDICATED
 		// make sure mouse and joystick are only called once a frame
 		IN_Frame();
+#endif
 
 		// run the game
 		Com_Frame();
