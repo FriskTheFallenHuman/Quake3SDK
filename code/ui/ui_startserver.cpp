@@ -82,7 +82,7 @@ typedef struct {
 	menutext_s		mapname;
 	menubitmap_s	item_null;
 
-	qboolean		multiplayer;
+	bool			multiplayer;
 	int				currentmap;
 	int				nummaps;
 	int				page;
@@ -104,7 +104,7 @@ static const char * gametype_items[] = {
 static int gametype_remap[] = {GT_FFA, GT_TEAM, GT_TOURNAMENT, GT_CTF};
 static int gametype_remap2[] = {0, 2, 0, 1, 3};
 
-static void UI_ServerOptionsMenu( qboolean multiplayer );
+static void UI_ServerOptionsMenu( bool multiplayer );
 
 
 /*
@@ -120,7 +120,7 @@ static int GametypeBits( char * string ) {
 	bits = 0;
 	p = string;
 	while ( 1 ) {
-		token = COM_ParseExt( &p, qfalse );
+		token = COM_ParseExt( &p, false );
 		if ( token[0] == 0 ) {
 			break;
 		}
@@ -385,8 +385,8 @@ static void StartServer_MenuInit( void ) {
 
 	StartServer_Cache();
 
-	s_startserver.menu.wrapAround = qtrue;
-	s_startserver.menu.fullscreen = qtrue;
+	s_startserver.menu.wrapAround = true;
+	s_startserver.menu.fullscreen = true;
 
 	s_startserver.banner.generic.type  = MTYPE_BTEXT;
 	s_startserver.banner.generic.x	   = 320;
@@ -545,7 +545,7 @@ StartServer_Cache
 void StartServer_Cache( void ) {
 	int				i;
 	const char	*	info;
-	qboolean		precache;
+	bool		precache;
 	char			picname[64];
 
 	trap_R_RegisterShaderNoMip( GAMESERVER_BACK0 );
@@ -561,7 +561,7 @@ void StartServer_Cache( void ) {
 	trap_R_RegisterShaderNoMip( GAMESERVER_ARROWSL );
 	trap_R_RegisterShaderNoMip( GAMESERVER_ARROWSR );
 
-	precache = trap_Cvar_VariableValue( "com_buildscript" ) > 1.0f ? qtrue : qfalse;
+	precache = trap_Cvar_VariableValue( "com_buildscript" ) > 1.0f ? true : false;
 
 	s_startserver.nummaps = UI_GetNumArenas();
 
@@ -587,7 +587,7 @@ void StartServer_Cache( void ) {
 UI_StartServerMenu
 =================
 */
-void UI_StartServerMenu( qboolean multiplayer ) {
+void UI_StartServerMenu( bool multiplayer ) {
 	StartServer_MenuInit();
 	s_startserver.multiplayer = multiplayer;
 	UI_PushMenu( &s_startserver.menu );
@@ -637,7 +637,7 @@ typedef struct {
 	menubitmap_s		next;
 	menubitmap_s		back;
 
-	qboolean			multiplayer;
+	bool				multiplayer;
 	int					gametype;
 	char				mapnamebuffer[32];
 	char				playerNameBuffers[PLAYER_SLOTS][16];
@@ -1011,7 +1011,7 @@ static void PlayerName_Draw( void * item ) {
 	float	*	color;
 	int			x, y;
 	int			style;
-	qboolean	focus;
+	bool		focus;
 
 	s = ( menutext_s * )item;
 
@@ -1019,7 +1019,7 @@ static void PlayerName_Draw( void * item ) {
 	y =	s->generic.y;
 
 	style = UI_SMALLFONT;
-	focus = ( qboolean )( s->generic.parent->cursor == s->generic.menuPosition );
+	focus = ( s->generic.parent->cursor == s->generic.menuPosition );
 
 	if ( s->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
@@ -1051,7 +1051,7 @@ ServerOptions_MenuInit
 */
 #define OPTIONS_X	456
 
-static void ServerOptions_MenuInit( qboolean multiplayer ) {
+static void ServerOptions_MenuInit( bool multiplayer ) {
 	int		y;
 	int		n;
 
@@ -1061,8 +1061,8 @@ static void ServerOptions_MenuInit( qboolean multiplayer ) {
 
 	ServerOptions_Cache();
 
-	s_serveroptions.menu.wrapAround = qtrue;
-	s_serveroptions.menu.fullscreen = qtrue;
+	s_serveroptions.menu.wrapAround = true;
+	s_serveroptions.menu.fullscreen = true;
 
 	s_serveroptions.banner.generic.type			= MTYPE_BTEXT;
 	s_serveroptions.banner.generic.x			= 320;
@@ -1293,7 +1293,7 @@ void ServerOptions_Cache( void ) {
 UI_ServerOptionsMenu
 =================
 */
-static void UI_ServerOptionsMenu( qboolean multiplayer ) {
+static void UI_ServerOptionsMenu( bool multiplayer ) {
 	ServerOptions_MenuInit( multiplayer );
 	UI_PushMenu( &s_serveroptions.menu );
 }

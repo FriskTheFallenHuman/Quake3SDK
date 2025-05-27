@@ -168,7 +168,7 @@ void PC_InitTokenHeap( void ) {
 		token_heap[i].next = freetokens;
 		freetokens = &token_heap[i];
 	}
-	tokenheapinitialized = qtrue;
+	tokenheapinitialized = true;
 	*/
 } //end of the function PC_InitTokenHeap
 //============================================================================
@@ -218,7 +218,7 @@ int PC_ReadSourceToken( source_t * source, token_t * token ) {
 	while ( !source->tokens ) {
 		//if there's a token to read from the script
 		if ( PS_ReadToken( source->scriptstack, token ) ) {
-			return qtrue;
+			return true;
 		}
 		//if at the end of the script
 		if ( EndOfScript( source->scriptstack ) ) {
@@ -231,20 +231,20 @@ int PC_ReadSourceToken( source_t * source, token_t * token ) {
 		}
 		//if this was the initial script
 		if ( !source->scriptstack->next ) {
-			return qfalse;
+			return false;
 		}
 		//remove the script and return to the last one
 		script = source->scriptstack;
 		source->scriptstack = source->scriptstack->next;
 		FreeScript( script );
-	} //end while
+	}
 	//copy the already available token
 	Com_Memcpy( token, source->tokens, sizeof( token_t ) );
 	//free the read token
 	t = source->tokens;
 	source->tokens = source->tokens->next;
 	PC_FreeToken( t );
-	return qtrue;
+	return true;
 } //end of the function PC_ReadSourceToken
 //============================================================================
 //
@@ -258,7 +258,7 @@ int PC_UnreadSourceToken( source_t * source, token_t * token ) {
 	t = PC_CopyToken( token );
 	t->next = source->tokens;
 	source->tokens = t;
-	return qtrue;
+	return true;
 } //end of the function PC_UnreadSourceToken
 //============================================================================
 //
@@ -272,12 +272,12 @@ int PC_ReadDefineParms( source_t * source, define_t * define, token_t ** parms, 
 
 	if ( !PC_ReadSourceToken( source, &token ) ) {
 		SourceError( source, "define %s missing parms", define->name );
-		return qfalse;
+		return false;
 	}
 	//
 	if ( define->numparms > maxparms ) {
 		SourceError( source, "define with more than %d parameters", maxparms );
-		return qfalse;
+		return false;
 	}
 	//
 	for ( i = 0; i < define->numparms; i++ ) {
@@ -287,17 +287,17 @@ int PC_ReadDefineParms( source_t * source, define_t * define, token_t ** parms, 
 	if ( strcmp( token.string, "(" ) ) {
 		PC_UnreadSourceToken( source, &token );
 		SourceError( source, "define %s missing parms", define->name );
-		return qfalse;
+		return false;
 	}
 	//read the define parameters
 	for ( done = 0, numparms = 0, indent = 0; !done; ) {
 		if ( numparms >= maxparms ) {
 			SourceError( source, "define %s with too many parms", define->name );
-			return qfalse;
+			return false;
 		}
 		if ( numparms >= define->numparms ) {
 			SourceWarning( source, "define %s has too many parms", define->name );
-			return qfalse;
+			return false;
 		}
 		parms[numparms] = NULL;
 		lastcomma = 1;
@@ -306,7 +306,7 @@ int PC_ReadDefineParms( source_t * source, define_t * define, token_t ** parms, 
 			//
 			if ( !PC_ReadSourceToken( source, &token ) ) {
 				SourceError( source, "define %s incomplete", define->name );
-				return qfalse;
+				return false;
 			}
 			//
 			if ( !strcmp( token.string, "," ) ) {
@@ -345,10 +345,10 @@ int PC_ReadDefineParms( source_t * source, define_t * define, token_t ** parms, 
 				}
 				last = t;
 			}
-		} //end while
+		}
 		numparms++;
 	}
-	return qtrue;
+	return true;
 } //end of the function PC_ReadDefineParms
 //============================================================================
 //
@@ -368,7 +368,7 @@ int PC_StringizeTokens( token_t * tokens, token_t * token ) {
 		strncat( token->string, t->string, MAX_TOKEN - strlen( token->string ) );
 	}
 	strncat( token->string, "\"", MAX_TOKEN - strlen( token->string ) );
-	return qtrue;
+	return true;
 } //end of the function PC_StringizeTokens
 //============================================================================
 //
@@ -380,7 +380,7 @@ int PC_MergeTokens( token_t * t1, token_t * t2 ) {
 	//merging of a name with a name or number
 	if ( t1->type == TT_NAME && ( t2->type == TT_NAME || t2->type == TT_NUMBER ) ) {
 		strcat( t1->string, t2->string );
-		return qtrue;
+		return true;
 	}
 	//merging of two strings
 	if ( t1->type == TT_STRING && t2->type == TT_STRING ) {
@@ -388,10 +388,10 @@ int PC_MergeTokens( token_t * t1, token_t * t2 ) {
 		t1->string[strlen( t1->string ) -1] = '\0';
 		//concat without leading double quote
 		strcat( t1->string, &t2->string[1] );
-		return qtrue;
+		return true;
 	}
 	//FIXME: merging of two number of the same sub type
-	return qfalse;
+	return false;
 } //end of the function PC_MergeTokens
 //============================================================================
 //
@@ -445,7 +445,7 @@ int PC_NameHash( char * name ) {
 		hash += name[i] * ( 119 + i );
 		//hash += (name[i] << 7) + i;
 		//hash += (name[i] << (i&15));
-	} //end while
+	}
 	hash = ( hash ^ ( hash >> 10 ) ^ ( hash >> 20 ) ) & ( DEFINEHASHSIZE - 1 );
 	return hash;
 } //end of the function PC_NameHash
@@ -601,7 +601,7 @@ int PC_ExpandBuiltinDefine( source_t * source, token_t * deftoken, define_t * de
 			*firsttoken = token;
 			*lasttoken = token;
 			break;
-		} //end case
+		}
 		case BUILTIN_FILE: {
 			strcpy( token->string, source->scriptstack->filename );
 			token->type = TT_NAME;
@@ -609,7 +609,7 @@ int PC_ExpandBuiltinDefine( source_t * source, token_t * deftoken, define_t * de
 			*firsttoken = token;
 			*lasttoken = token;
 			break;
-		} //end case
+		}
 		case BUILTIN_DATE: {
 			t = time( NULL );
 			curtime = ctime( &t );
@@ -623,7 +623,7 @@ int PC_ExpandBuiltinDefine( source_t * source, token_t * deftoken, define_t * de
 			*firsttoken = token;
 			*lasttoken = token;
 			break;
-		} //end case
+		}
 		case BUILTIN_TIME: {
 			t = time( NULL );
 			curtime = ctime( &t );
@@ -636,15 +636,15 @@ int PC_ExpandBuiltinDefine( source_t * source, token_t * deftoken, define_t * de
 			*firsttoken = token;
 			*lasttoken = token;
 			break;
-		} //end case
+		}
 		case BUILTIN_STDC:
 		default: {
 			*firsttoken = NULL;
 			*lasttoken = NULL;
 			break;
-		} //end case
-	} //end switch
-	return qtrue;
+		}
+	}
+	return true;
 } //end of the function PC_ExpandBuiltinDefine
 //============================================================================
 //
@@ -665,7 +665,7 @@ int PC_ExpandDefine( source_t * source, token_t * deftoken, define_t * define,
 	//if the define has parameters
 	if ( define->numparms ) {
 		if ( !PC_ReadDefineParms( source, define, parms, MAX_DEFINEPARMS ) ) {
-			return qfalse;
+			return false;
 		}
 #ifdef DEBUG_EVAL
 		for ( i = 0; i < define->numparms; i++ ) {
@@ -716,7 +716,7 @@ int PC_ExpandDefine( source_t * source, token_t * deftoken, define_t * define,
 					//stringize the define parameter tokens
 					if ( !PC_StringizeTokens( parms[parmnum], &token ) ) {
 						SourceError( source, "can't stringize tokens" );
-						return qfalse;
+						return false;
 					}
 					t = PC_CopyToken( &token );
 				}
@@ -748,7 +748,7 @@ int PC_ExpandDefine( source_t * source, token_t * deftoken, define_t * define,
 				if ( t2 ) {
 					if ( !PC_MergeTokens( t1, t2 ) ) {
 						SourceError( source, "can't merge %s with %s", t1->string, t2->string );
-						return qfalse;
+						return false;
 					}
 					PC_FreeToken( t1->next );
 					t1->next = t2->next;
@@ -773,7 +773,7 @@ int PC_ExpandDefine( source_t * source, token_t * deftoken, define_t * define,
 		}
 	}
 	//
-	return qtrue;
+	return true;
 } //end of the function PC_ExpandDefine
 //============================================================================
 //
@@ -785,15 +785,15 @@ int PC_ExpandDefineIntoSource( source_t * source, token_t * deftoken, define_t *
 	token_t * firsttoken, * lasttoken;
 
 	if ( !PC_ExpandDefine( source, deftoken, define, &firsttoken, &lasttoken ) ) {
-		return qfalse;
+		return false;
 	}
 
 	if ( firsttoken && lasttoken ) {
 		lasttoken->next = source->tokens;
 		source->tokens = firsttoken;
-		return qtrue;
+		return true;
 	}
-	return qfalse;
+	return false;
 } //end of the function PC_ExpandDefineIntoSource
 //============================================================================
 //
@@ -813,14 +813,14 @@ void PC_ConvertPath( char * path ) {
 		else {
 			ptr++;
 		}
-	} //end while
+	}
 	//set OS dependent path seperators
 	for ( ptr = path; *ptr; ) {
 		if ( *ptr == '/' || *ptr == '\\' ) {
 			*ptr = PATH_SEP;
 		}
 		ptr++;
-	} //end while
+	}
 } //end of the function PC_ConvertPath
 //============================================================================
 //
@@ -834,16 +834,16 @@ int PC_Directive_include( source_t * source ) {
 	char path[MAX_QPATH];
 
 	if ( source->skip > 0 ) {
-		return qtrue;
+		return true;
 	}
 	//
 	if ( !PC_ReadSourceToken( source, &token ) ) {
 		SourceError( source, "#include without file name" );
-		return qfalse;
+		return false;
 	}
 	if ( token.linescrossed > 0 ) {
 		SourceError( source, "#include without file name" );
-		return qfalse;
+		return false;
 	}
 	if ( token.type == TT_STRING ) {
 		StripDoubleQuotes( token.string );
@@ -866,27 +866,27 @@ int PC_Directive_include( source_t * source ) {
 				break;
 			}
 			strncat( path, token.string, MAX_QPATH );
-		} //end while
+		}
 		if ( *token.string != '>' ) {
 			SourceWarning( source, "#include missing trailing >" );
 		}
 		if ( !strlen( path ) ) {
 			SourceError( source, "#include without file name between < >" );
-			return qfalse;
+			return false;
 		}
 		PC_ConvertPath( path );
 		script = LoadScriptFile( path );
 	}
 	else {
 		SourceError( source, "#include without file name" );
-		return qfalse;
+		return false;
 	}
 	if ( !script ) {
 		SourceError( source, "file %s not found", path );
-		return qfalse;
+		return false;
 	}
 	PC_PushScript( source, script );
-	return qtrue;
+	return true;
 } //end of the function PC_Directive_include
 //============================================================================
 // reads a token from the current line, continues reading on the next
@@ -902,16 +902,16 @@ int PC_ReadLine( source_t * source, token_t * token ) {
 	crossline = 0;
 	do {
 		if ( !PC_ReadSourceToken( source, token ) ) {
-			return qfalse;
+			return false;
 		}
 
 		if ( token->linescrossed > crossline ) {
 			PC_UnreadSourceToken( source, token );
-			return qfalse;
+			return false;
 		}
 		crossline = 1;
 	} while ( !strcmp( token->string, "\\" ) );
-	return qtrue;
+	return true;
 } //end of the function PC_ReadLine
 //============================================================================
 //
@@ -945,17 +945,17 @@ int PC_Directive_undef( source_t * source ) {
 	int hash;
 
 	if ( source->skip > 0 ) {
-		return qtrue;
+		return true;
 	}
 	//
 	if ( !PC_ReadLine( source, &token ) ) {
 		SourceError( source, "undef without name" );
-		return qfalse;
+		return false;
 	}
 	if ( token.type != TT_NAME ) {
 		PC_UnreadSourceToken( source, &token );
 		SourceError( source, "expected name, found %s", token.string );
-		return qfalse;
+		return false;
 	}
 #if DEFINEHASHING
 
@@ -996,7 +996,7 @@ int PC_Directive_undef( source_t * source ) {
 		lastdefine = define;
 	}
 #endif //DEFINEHASHING
-	return qtrue;
+	return true;
 } //end of the function PC_Directive_undef
 //============================================================================
 //
@@ -1009,17 +1009,17 @@ int PC_Directive_define( source_t * source ) {
 	define_t * define;
 
 	if ( source->skip > 0 ) {
-		return qtrue;
+		return true;
 	}
 	//
 	if ( !PC_ReadLine( source, &token ) ) {
 		SourceError( source, "#define without name" );
-		return qfalse;
+		return false;
 	}
 	if ( token.type != TT_NAME ) {
 		PC_UnreadSourceToken( source, &token );
 		SourceError( source, "expected name after #define, found %s", token.string );
-		return qfalse;
+		return false;
 	}
 	//check if the define already exists
 #if DEFINEHASHING
@@ -1030,13 +1030,13 @@ int PC_Directive_define( source_t * source ) {
 	if ( define ) {
 		if ( define->flags & DEFINE_FIXED ) {
 			SourceError( source, "can't redefine %s", token.string );
-			return qfalse;
+			return false;
 		}
 		SourceWarning( source, "redefinition of %s", token.string );
 		//unread the define name before executing the #undef directive
 		PC_UnreadSourceToken( source, &token );
 		if ( !PC_Directive_undef( source ) ) {
-			return qfalse;
+			return false;
 		}
 		//if the define was not removed (define->flags & DEFINE_FIXED)
 #if DEFINEHASHING
@@ -1059,7 +1059,7 @@ int PC_Directive_define( source_t * source ) {
 #endif //DEFINEHASHING
 	//if nothing is defined, just return
 	if ( !PC_ReadLine( source, &token ) ) {
-		return qtrue;
+		return true;
 	}
 	//if it is a define with parameters
 	if ( !PC_WhiteSpaceBeforeToken( &token ) && !strcmp( token.string, "(" ) ) {
@@ -1069,17 +1069,17 @@ int PC_Directive_define( source_t * source ) {
 			while ( 1 ) {
 				if ( !PC_ReadLine( source, &token ) ) {
 					SourceError( source, "expected define parameter" );
-					return qfalse;
+					return false;
 				}
 				//if it isn't a name
 				if ( token.type != TT_NAME ) {
 					SourceError( source, "invalid define parameter" );
-					return qfalse;
+					return false;
 				}
 				//
 				if ( PC_FindDefineParm( define, token.string ) >= 0 ) {
 					SourceError( source, "two the same define parameters" );
-					return qfalse;
+					return false;
 				}
 				//add the define parm
 				t = PC_CopyToken( &token );
@@ -1095,7 +1095,7 @@ int PC_Directive_define( source_t * source ) {
 				//read next token
 				if ( !PC_ReadLine( source, &token ) ) {
 					SourceError( source, "define parameters not terminated" );
-					return qfalse;
+					return false;
 				}
 				//
 				if ( !strcmp( token.string, ")" ) ) {
@@ -1104,12 +1104,12 @@ int PC_Directive_define( source_t * source ) {
 				//then it must be a comma
 				if ( strcmp( token.string, "," ) ) {
 					SourceError( source, "define not terminated" );
-					return qfalse;
+					return false;
 				}
-			} //end while
+			}
 		}
 		if ( !PC_ReadLine( source, &token ) ) {
-			return qtrue;
+			return true;
 		}
 	}
 	//read the defined stuff
@@ -1135,10 +1135,10 @@ int PC_Directive_define( source_t * source ) {
 		if ( !strcmp( define->tokens->string, "##" ) ||
 				!strcmp( last->string, "##" ) ) {
 			SourceError( source, "define with misplaced ##" );
-			return qfalse;
+			return false;
 		}
 	}
-	return qtrue;
+	return true;
 } //end of the function PC_Directive_define
 //============================================================================
 //
@@ -1209,7 +1209,7 @@ int PC_AddDefine( source_t * source, char * string ) {
 
 	define = PC_DefineFromString( string );
 	if ( !define ) {
-		return qfalse;
+		return false;
 	}
 #if DEFINEHASHING
 	PC_AddDefineToHash( define, source->definehash );
@@ -1217,7 +1217,7 @@ int PC_AddDefine( source_t * source, char * string ) {
 	define->next = source->defines;
 	source->defines = define;
 #endif //DEFINEHASHING
-	return qtrue;
+	return true;
 } //end of the function PC_AddDefine
 //============================================================================
 // add a globals define that will be added to all opened sources
@@ -1231,11 +1231,11 @@ int PC_AddGlobalDefine( char * string ) {
 
 	define = PC_DefineFromString( string );
 	if ( !define ) {
-		return qfalse;
+		return false;
 	}
 	define->next = globaldefines;
 	globaldefines = define;
-	return qtrue;
+	return true;
 } //end of the function PC_AddGlobalDefine
 //============================================================================
 // remove the given global define
@@ -1250,9 +1250,9 @@ int PC_RemoveGlobalDefine( char * name ) {
 	define = PC_FindDefine( globaldefines, name );
 	if ( define ) {
 		PC_FreeDefine( define );
-		return qtrue;
+		return true;
 	}
-	return qfalse;
+	return false;
 } //end of the function PC_RemoveGlobalDefine
 //============================================================================
 // remove all globals defines
@@ -1347,12 +1347,12 @@ int PC_Directive_if_def( source_t * source, int type ) {
 
 	if ( !PC_ReadLine( source, &token ) ) {
 		SourceError( source, "#ifdef without name" );
-		return qfalse;
+		return false;
 	}
 	if ( token.type != TT_NAME ) {
 		PC_UnreadSourceToken( source, &token );
 		SourceError( source, "expected name after #ifdef, found %s", token.string );
-		return qfalse;
+		return false;
 	}
 #if DEFINEHASHING
 	d = PC_FindHashedDefine( source->definehash, token.string );
@@ -1361,7 +1361,7 @@ int PC_Directive_if_def( source_t * source, int type ) {
 #endif //DEFINEHASHING
 	skip = ( type == INDENT_IFDEF ) == ( d == NULL );
 	PC_PushIndent( source, type, skip );
-	return qtrue;
+	return true;
 } //end of the function PC_Directiveif_def
 //============================================================================
 //
@@ -1393,14 +1393,14 @@ int PC_Directive_else( source_t * source ) {
 	PC_PopIndent( source, &type, &skip );
 	if ( !type ) {
 		SourceError( source, "misplaced #else" );
-		return qfalse;
+		return false;
 	}
 	if ( type == INDENT_ELSE ) {
 		SourceError( source, "#else after #else" );
-		return qfalse;
+		return false;
 	}
 	PC_PushIndent( source, INDENT_ELSE, !skip );
-	return qtrue;
+	return true;
 } //end of the function PC_Directive_else
 //============================================================================
 //
@@ -1414,9 +1414,9 @@ int PC_Directive_endif( source_t * source ) {
 	PC_PopIndent( source, &type, &skip );
 	if ( !type ) {
 		SourceError( source, "misplaced #endif" );
-		return qfalse;
+		return false;
 	}
-	return qtrue;
+	return true;
 } //end of the function PC_Directive_endif
 //============================================================================
 //
@@ -1489,8 +1489,8 @@ int PC_OperatorPriority( int op ) {
 			return 5;
 		case P_QUESTIONMARK:
 			return 5;
-	} //end switch
-	return qfalse;
+	}
+	return false;
 } //end of the function PC_OperatorPriority
 
 //#define AllocValue()			GetClearedMemory(sizeof(value_t));
@@ -1532,7 +1532,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 	int negativevalue = 0;
 	int questmarkintvalue = 0;
 	double questmarkfloatvalue = 0;
-	int gotquestmarkvalue = qfalse;
+	int gotquestmarkvalue = false;
 	int lastoperatortype = 0;
 	//
 	operator_t operator_heap[MAX_OPERATORS];
@@ -1563,7 +1563,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 				}
 				t = t->next;
 				if ( !strcmp( t->string, "(" ) ) {
-					brace = qtrue;
+					brace = true;
 					t = t->next;
 				}
 				if ( !t || t->type != TT_NAME ) {
@@ -1603,11 +1603,11 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 						break;
 					}
 				}
-				brace = qfalse;
+				brace = false;
 				// defined() creates a value
 				lastwasvalue = 1;
 				break;
-			} //end case
+			}
 			case TT_NUMBER: {
 				if ( lastwasvalue ) {
 					SourceError( source, "syntax error in #if/#elif" );
@@ -1638,7 +1638,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 				//
 				negativevalue = 0;
 				break;
-			} //end case
+			}
 			case TT_PUNCTUATION: {
 				if ( negativevalue ) {
 					SourceError( source, "misplaced minus sign in #if/#elif" );
@@ -1677,18 +1677,18 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 							break;
 						}
 						break;
-					} //end case
+					}
 					case P_INC:
 					case P_DEC: {
 						SourceError( source, "++ or -- used in #if/#elif" );
 						break;
-					} //end case
+					}
 					case P_SUB: {
 						if ( !lastwasvalue ) {
 							negativevalue = 1;
 							break;
 						}
-					} //end case
+					}
 
 					case P_MUL:
 					case P_DIV:
@@ -1720,13 +1720,13 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 							break;
 						}
 						break;
-					} //end case
+					}
 					default: {
 						SourceError( source, "invalid operator %s in #if/#elif", t->string );
 						error = 1;
 						break;
 					} //end default
-				} //end switch
+				}
 				if ( !error && !negativevalue ) {
 					//o = (operator_t *) GetClearedMemory(sizeof(operator_t));
 					AllocOperator( o );
@@ -1744,13 +1744,13 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 					lastwasvalue = 0;
 				}
 				break;
-			} //end case
+			}
 			default: {
 				SourceError( source, "unknown %s in #if/#elif", t->string );
 				error = 1;
 				break;
 			} //end default
-		} //end switch
+		}
 		if ( error ) {
 			break;
 		}
@@ -1766,7 +1766,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 		}
 	}
 	//
-	gotquestmarkvalue = qfalse;
+	gotquestmarkvalue = false;
 	questmarkintvalue = 0;
 	questmarkfloatvalue = 0;
 	//while there are operators
@@ -1917,9 +1917,9 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 						v1->floatvalue = v2->floatvalue;
 					}
 				}
-				gotquestmarkvalue = qfalse;
+				gotquestmarkvalue = false;
 				break;
-			} //end case
+			}
 			case P_QUESTIONMARK: {
 				if ( gotquestmarkvalue ) {
 					SourceError( source, "? after ? in #if/#elif" );
@@ -1928,10 +1928,10 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 				}
 				questmarkintvalue = v1->intvalue;
 				questmarkfloatvalue = v1->floatvalue;
-				gotquestmarkvalue = qtrue;
+				gotquestmarkvalue = true;
 				break;
 			}
-		} //end switch
+		}
 #ifdef DEBUG_EVAL
 		if ( integer ) {
 			Log_Write( "result value = %d", v1->intvalue );
@@ -1977,7 +1977,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 		}
 		//FreeMemory(o);
 		FreeOperator( o );
-	} //end while
+	}
 	if ( firstvalue ) {
 		if ( intvalue ) {
 			*intvalue = firstvalue->intvalue;
@@ -1997,7 +1997,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 		FreeValue( v );
 	}
 	if ( !error ) {
-		return qtrue;
+		return true;
 	}
 	if ( intvalue ) {
 		*intvalue = 0;
@@ -2005,7 +2005,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 	if ( floatvalue ) {
 		*floatvalue = 0;
 	}
-	return qfalse;
+	return false;
 } //end of the function PC_EvaluateTokens
 //============================================================================
 //
@@ -2018,7 +2018,7 @@ int PC_Evaluate( source_t * source, signed long int * intvalue,
 	token_t token, * firsttoken, * lasttoken;
 	token_t * t, * nexttoken;
 	define_t * define;
-	int defined = qfalse;
+	int defined = false;
 
 	if ( intvalue ) {
 		*intvalue = 0;
@@ -2029,7 +2029,7 @@ int PC_Evaluate( source_t * source, signed long int * intvalue,
 	//
 	if ( !PC_ReadLine( source, &token ) ) {
 		SourceError( source, "no value after #if/#elif" );
-		return qfalse;
+		return false;
 	}
 	firsttoken = NULL;
 	lasttoken = NULL;
@@ -2037,7 +2037,7 @@ int PC_Evaluate( source_t * source, signed long int * intvalue,
 		//if the token is a name
 		if ( token.type == TT_NAME ) {
 			if ( defined ) {
-				defined = qfalse;
+				defined = false;
 				t = PC_CopyToken( &token );
 				t->next = NULL;
 				if ( lasttoken ) {
@@ -2048,7 +2048,7 @@ int PC_Evaluate( source_t * source, signed long int * intvalue,
 				lasttoken = t;
 			}
 			else if ( !strcmp( token.string, "defined" ) ) {
-				defined = qtrue;
+				defined = true;
 				t = PC_CopyToken( &token );
 				t->next = NULL;
 				if ( lasttoken ) {
@@ -2067,10 +2067,10 @@ int PC_Evaluate( source_t * source, signed long int * intvalue,
 #endif //DEFINEHASHING
 				if ( !define ) {
 					SourceError( source, "can't evaluate %s, not defined", token.string );
-					return qfalse;
+					return false;
 				}
 				if ( !PC_ExpandDefineIntoSource( source, &token, define ) ) {
-					return qfalse;
+					return false;
 				}
 			}
 		}
@@ -2087,12 +2087,12 @@ int PC_Evaluate( source_t * source, signed long int * intvalue,
 		}
 		else { //can't evaluate the token
 			SourceError( source, "can't evaluate %s", token.string );
-			return qfalse;
+			return false;
 		}
 	} while ( PC_ReadLine( source, &token ) );
 	//
 	if ( !PC_EvaluateTokens( source, firsttoken, intvalue, floatvalue, integer ) ) {
-		return qfalse;
+		return false;
 	}
 	//
 #ifdef DEBUG_EVAL
@@ -2113,7 +2113,7 @@ int PC_Evaluate( source_t * source, signed long int * intvalue,
 	}
 #endif //DEBUG_EVAL
 	//
-	return qtrue;
+	return true;
 } //end of the function PC_Evaluate
 //============================================================================
 //
@@ -2123,7 +2123,7 @@ int PC_Evaluate( source_t * source, signed long int * intvalue,
 //============================================================================
 int PC_DollarEvaluate( source_t * source, signed long int * intvalue,
 					   double * floatvalue, int integer ) {
-	int indent, defined = qfalse;
+	int indent, defined = false;
 	token_t token, * firsttoken, * lasttoken;
 	token_t * t, * nexttoken;
 	define_t * define;
@@ -2137,11 +2137,11 @@ int PC_DollarEvaluate( source_t * source, signed long int * intvalue,
 	//
 	if ( !PC_ReadSourceToken( source, &token ) ) {
 		SourceError( source, "no leading ( after $evalint/$evalfloat" );
-		return qfalse;
+		return false;
 	}
 	if ( !PC_ReadSourceToken( source, &token ) ) {
 		SourceError( source, "nothing to evaluate" );
-		return qfalse;
+		return false;
 	}
 	indent = 1;
 	firsttoken = NULL;
@@ -2150,7 +2150,7 @@ int PC_DollarEvaluate( source_t * source, signed long int * intvalue,
 		//if the token is a name
 		if ( token.type == TT_NAME ) {
 			if ( defined ) {
-				defined = qfalse;
+				defined = false;
 				t = PC_CopyToken( &token );
 				t->next = NULL;
 				if ( lasttoken ) {
@@ -2161,7 +2161,7 @@ int PC_DollarEvaluate( source_t * source, signed long int * intvalue,
 				lasttoken = t;
 			}
 			else if ( !strcmp( token.string, "defined" ) ) {
-				defined = qtrue;
+				defined = true;
 				t = PC_CopyToken( &token );
 				t->next = NULL;
 				if ( lasttoken ) {
@@ -2180,10 +2180,10 @@ int PC_DollarEvaluate( source_t * source, signed long int * intvalue,
 #endif //DEFINEHASHING
 				if ( !define ) {
 					SourceError( source, "can't evaluate %s, not defined", token.string );
-					return qfalse;
+					return false;
 				}
 				if ( !PC_ExpandDefineIntoSource( source, &token, define ) ) {
-					return qfalse;
+					return false;
 				}
 			}
 		}
@@ -2208,12 +2208,12 @@ int PC_DollarEvaluate( source_t * source, signed long int * intvalue,
 		}
 		else { //can't evaluate the token
 			SourceError( source, "can't evaluate %s", token.string );
-			return qfalse;
+			return false;
 		}
 	} while ( PC_ReadSourceToken( source, &token ) );
 	//
 	if ( !PC_EvaluateTokens( source, firsttoken, intvalue, floatvalue, integer ) ) {
-		return qfalse;
+		return false;
 	}
 	//
 #ifdef DEBUG_EVAL
@@ -2234,7 +2234,7 @@ int PC_DollarEvaluate( source_t * source, signed long int * intvalue,
 	}
 #endif //DEBUG_EVAL
 	//
-	return qtrue;
+	return true;
 } //end of the function PC_DollarEvaluate
 //============================================================================
 //
@@ -2249,14 +2249,14 @@ int PC_Directive_elif( source_t * source ) {
 	PC_PopIndent( source, &type, &skip );
 	if ( !type || type == INDENT_ELSE ) {
 		SourceError( source, "misplaced #elif" );
-		return qfalse;
+		return false;
 	}
-	if ( !PC_Evaluate( source, &value, NULL, qtrue ) ) {
-		return qfalse;
+	if ( !PC_Evaluate( source, &value, NULL, true ) ) {
+		return false;
 	}
 	skip = ( value == 0 );
 	PC_PushIndent( source, INDENT_ELIF, skip );
-	return qtrue;
+	return true;
 } //end of the function PC_Directive_elif
 //============================================================================
 //
@@ -2268,12 +2268,12 @@ int PC_Directive_if( source_t * source ) {
 	signed long int value;
 	int skip;
 
-	if ( !PC_Evaluate( source, &value, NULL, qtrue ) ) {
-		return qfalse;
+	if ( !PC_Evaluate( source, &value, NULL, true ) ) {
+		return false;
 	}
 	skip = ( value == 0 );
 	PC_PushIndent( source, INDENT_IF, skip );
-	return qtrue;
+	return true;
 } //end of the function PC_Directive
 //============================================================================
 //
@@ -2283,7 +2283,7 @@ int PC_Directive_if( source_t * source ) {
 //============================================================================
 int PC_Directive_line( source_t * source ) {
 	SourceError( source, "#line directive not supported" );
-	return qfalse;
+	return false;
 } //end of the function PC_Directive_line
 //============================================================================
 //
@@ -2297,7 +2297,7 @@ int PC_Directive_error( source_t * source ) {
 	strcpy( token.string, "" );
 	PC_ReadSourceToken( source, &token );
 	SourceError( source, "#error directive: %s", token.string );
-	return qfalse;
+	return false;
 } //end of the function PC_Directive_error
 //============================================================================
 //
@@ -2310,7 +2310,7 @@ int PC_Directive_pragma( source_t * source ) {
 
 	SourceWarning( source, "#pragma directive not supported" );
 	while ( PC_ReadLine( source, &token ) ) ;
-	return qtrue;
+	return true;
 } //end of the function PC_Directive_pragma
 //============================================================================
 //
@@ -2340,8 +2340,8 @@ int PC_Directive_eval( source_t * source ) {
 	signed long int value;
 	token_t token;
 
-	if ( !PC_Evaluate( source, &value, NULL, qtrue ) ) {
-		return qfalse;
+	if ( !PC_Evaluate( source, &value, NULL, true ) ) {
+		return false;
 	}
 	//
 	token.line = source->scriptstack->line;
@@ -2355,7 +2355,7 @@ int PC_Directive_eval( source_t * source ) {
 	if ( value < 0 ) {
 		UnreadSignToken( source );
 	}
-	return qtrue;
+	return true;
 } //end of the function PC_Directive_eval
 //============================================================================
 //
@@ -2367,8 +2367,8 @@ int PC_Directive_evalfloat( source_t * source ) {
 	double value;
 	token_t token;
 
-	if ( !PC_Evaluate( source, NULL, &value, qfalse ) ) {
-		return qfalse;
+	if ( !PC_Evaluate( source, NULL, &value, false ) ) {
+		return false;
 	}
 	token.line = source->scriptstack->line;
 	token.whitespace_p = source->scriptstack->script_p;
@@ -2381,7 +2381,7 @@ int PC_Directive_evalfloat( source_t * source ) {
 	if ( value < 0 ) {
 		UnreadSignToken( source );
 	}
-	return qtrue;
+	return true;
 } //end of the function PC_Directive_evalfloat
 //============================================================================
 //
@@ -2414,13 +2414,13 @@ int PC_ReadDirective( source_t * source ) {
 	//read the directive name
 	if ( !PC_ReadSourceToken( source, &token ) ) {
 		SourceError( source, "found # without name" );
-		return qfalse;
+		return false;
 	}
 	//directive name must be on the same line
 	if ( token.linescrossed > 0 ) {
 		PC_UnreadSourceToken( source, &token );
 		SourceError( source, "found # at end of line" );
-		return qfalse;
+		return false;
 	}
 	//if if is a name
 	if ( token.type == TT_NAME ) {
@@ -2432,7 +2432,7 @@ int PC_ReadDirective( source_t * source ) {
 		}
 	}
 	SourceError( source, "unknown precompiler directive %s", token.string );
-	return qfalse;
+	return false;
 } //end of the function PC_ReadDirective
 //============================================================================
 //
@@ -2444,8 +2444,8 @@ int PC_DollarDirective_evalint( source_t * source ) {
 	signed long int value;
 	token_t token;
 
-	if ( !PC_DollarEvaluate( source, &value, NULL, qtrue ) ) {
-		return qfalse;
+	if ( !PC_DollarEvaluate( source, &value, NULL, true ) ) {
+		return false;
 	}
 	//
 	token.line = source->scriptstack->line;
@@ -2463,7 +2463,7 @@ int PC_DollarDirective_evalint( source_t * source ) {
 	if ( value < 0 ) {
 		UnreadSignToken( source );
 	}
-	return qtrue;
+	return true;
 } //end of the function PC_DollarDirective_evalint
 //============================================================================
 //
@@ -2475,8 +2475,8 @@ int PC_DollarDirective_evalfloat( source_t * source ) {
 	double value;
 	token_t token;
 
-	if ( !PC_DollarEvaluate( source, NULL, &value, qfalse ) ) {
-		return qfalse;
+	if ( !PC_DollarEvaluate( source, NULL, &value, false ) ) {
+		return false;
 	}
 	token.line = source->scriptstack->line;
 	token.whitespace_p = source->scriptstack->script_p;
@@ -2493,7 +2493,7 @@ int PC_DollarDirective_evalfloat( source_t * source ) {
 	if ( value < 0 ) {
 		UnreadSignToken( source );
 	}
-	return qtrue;
+	return true;
 } //end of the function PC_DollarDirective_evalfloat
 //============================================================================
 //
@@ -2514,13 +2514,13 @@ int PC_ReadDollarDirective( source_t * source ) {
 	//read the directive name
 	if ( !PC_ReadSourceToken( source, &token ) ) {
 		SourceError( source, "found $ without name" );
-		return qfalse;
+		return false;
 	}
 	//directive name must be on the same line
 	if ( token.linescrossed > 0 ) {
 		PC_UnreadSourceToken( source, &token );
 		SourceError( source, "found $ at end of line" );
-		return qfalse;
+		return false;
 	}
 	//if if is a name
 	if ( token.type == TT_NAME ) {
@@ -2533,7 +2533,7 @@ int PC_ReadDollarDirective( source_t * source ) {
 	}
 	PC_UnreadSourceToken( source, &token );
 	SourceError( source, "unknown precompiler directive %s", token.string );
-	return qfalse;
+	return false;
 } //end of the function PC_ReadDirective
 
 //============================================================================
@@ -2547,20 +2547,20 @@ int PC_ReadToken( source_t * source, token_t * token ) {
 
 	while ( 1 ) {
 		if ( !PC_ReadSourceToken( source, token ) ) {
-			return qfalse;
+			return false;
 		}
 		//check for precompiler directives
 		if ( token->type == TT_PUNCTUATION && *token->string == '#' ) {
 			//read the precompiler directive
 			if ( !PC_ReadDirective( source ) ) {
-				return qfalse;
+				return false;
 			}
 			continue;
 		}
 		if ( token->type == TT_PUNCTUATION && *token->string == '$' ) {
 			//read the precompiler directive
 			if ( !PC_ReadDollarDirective( source ) ) {
-				return qfalse;
+				return false;
 			}
 			continue;
 		}
@@ -2572,7 +2572,7 @@ int PC_ReadToken( source_t * source, token_t * token ) {
 					token->string[strlen( token->string ) -1] = '\0';
 					if ( strlen( token->string ) + strlen( newtoken.string + 1 ) + 1 >= MAX_TOKEN ) {
 						SourceError( source, "string longer than MAX_TOKEN %d\n", MAX_TOKEN );
-						return qfalse;
+						return false;
 					}
 					strcat( token->string, newtoken.string + 1 );
 				} else {
@@ -2596,7 +2596,7 @@ int PC_ReadToken( source_t * source, token_t * token ) {
 			if ( define ) {
 				//expand the defined macro
 				if ( !PC_ExpandDefineIntoSource( source, token, define ) ) {
-					return qfalse;
+					return false;
 				}
 				continue;
 			}
@@ -2604,8 +2604,8 @@ int PC_ReadToken( source_t * source, token_t * token ) {
 		//copy token for unreading
 		Com_Memcpy( &source->token, token, sizeof( token_t ) );
 		//found a token
-		return qtrue;
-	} //end while
+		return true;
+	}
 } //end of the function PC_ReadToken
 //============================================================================
 //
@@ -2618,14 +2618,14 @@ int PC_ExpectTokenString( source_t * source, char * string ) {
 
 	if ( !PC_ReadToken( source, &token ) ) {
 		SourceError( source, "couldn't find expected %s", string );
-		return qfalse;
+		return false;
 	}
 
 	if ( strcmp( token.string, string ) ) {
 		SourceError( source, "expected %s, found %s", string, token.string );
-		return qfalse;
+		return false;
 	}
-	return qtrue;
+	return true;
 } //end of the function PC_ExpectTokenString
 //============================================================================
 //
@@ -2638,7 +2638,7 @@ int PC_ExpectTokenType( source_t * source, int type, int subtype, token_t * toke
 
 	if ( !PC_ReadToken( source, token ) ) {
 		SourceError( source, "couldn't read expected token" );
-		return qfalse;
+		return false;
 	}
 
 	if ( token->type != type ) {
@@ -2659,7 +2659,7 @@ int PC_ExpectTokenType( source_t * source, int type, int subtype, token_t * toke
 			strcpy( str, "punctuation" );
 		}
 		SourceError( source, "expected a %s, found %s", str, token->string );
-		return qfalse;
+		return false;
 	}
 	if ( token->type == TT_NUMBER ) {
 		if ( ( token->subtype & subtype ) != subtype ) {
@@ -2688,16 +2688,16 @@ int PC_ExpectTokenType( source_t * source, int type, int subtype, token_t * toke
 				strcat( str, " integer" );
 			}
 			SourceError( source, "expected %s, found %s", str, token->string );
-			return qfalse;
+			return false;
 		}
 	}
 	else if ( token->type == TT_PUNCTUATION ) {
 		if ( token->subtype != subtype ) {
 			SourceError( source, "found %s", token->string );
-			return qfalse;
+			return false;
 		}
 	}
-	return qtrue;
+	return true;
 } //end of the function PC_ExpectTokenType
 //============================================================================
 //
@@ -2708,10 +2708,10 @@ int PC_ExpectTokenType( source_t * source, int type, int subtype, token_t * toke
 int PC_ExpectAnyToken( source_t * source, token_t * token ) {
 	if ( !PC_ReadToken( source, token ) ) {
 		SourceError( source, "couldn't read expected token" );
-		return qfalse;
+		return false;
 	}
 	else {
-		return qtrue;
+		return true;
 	}
 } //end of the function PC_ExpectAnyToken
 //============================================================================
@@ -2724,15 +2724,15 @@ int PC_CheckTokenString( source_t * source, char * string ) {
 	token_t tok;
 
 	if ( !PC_ReadToken( source, &tok ) ) {
-		return qfalse;
+		return false;
 	}
 	//if the token is available
 	if ( !strcmp( tok.string, string ) ) {
-		return qtrue;
+		return true;
 	}
 	//
 	PC_UnreadSourceToken( source, &tok );
-	return qfalse;
+	return false;
 } //end of the function PC_CheckTokenString
 //============================================================================
 //
@@ -2744,17 +2744,17 @@ int PC_CheckTokenType( source_t * source, int type, int subtype, token_t * token
 	token_t tok;
 
 	if ( !PC_ReadToken( source, &tok ) ) {
-		return qfalse;
+		return false;
 	}
 	//if the type matches
 	if ( tok.type == type &&
 			( tok.subtype & subtype ) == subtype ) {
 		Com_Memcpy( token, &tok, sizeof( token_t ) );
-		return qtrue;
+		return true;
 	}
 	//
 	PC_UnreadSourceToken( source, &tok );
-	return qfalse;
+	return false;
 } //end of the function PC_CheckTokenType
 //============================================================================
 //
@@ -2767,10 +2767,10 @@ int PC_SkipUntilString( source_t * source, char * string ) {
 
 	while ( PC_ReadToken( source, &token ) ) {
 		if ( !strcmp( token.string, string ) ) {
-			return qtrue;
+			return true;
 		}
-	} //end while
-	return qfalse;
+	}
+	return false;
 } //end of the function PC_SkipUntilString
 //============================================================================
 //
@@ -2914,7 +2914,7 @@ void FreeSource( source_t * source ) {
 			define = source->definehash[i];
 			source->definehash[i] = source->definehash[i]->hashnext;
 			PC_FreeDefine( define );
-		} //end while
+		}
 	}
 #else //DEFINEHASHING
 	//free all defines
@@ -2978,15 +2978,15 @@ int PC_LoadSourceHandle( const char * filename ) {
 //============================================================================
 int PC_FreeSourceHandle( int handle ) {
 	if ( handle < 1 || handle >= MAX_SOURCEFILES ) {
-		return qfalse;
+		return false;
 	}
 	if ( !sourceFiles[handle] ) {
-		return qfalse;
+		return false;
 	}
 
 	FreeSource( sourceFiles[handle] );
 	sourceFiles[handle] = NULL;
-	return qtrue;
+	return true;
 } //end of the function PC_FreeSourceHandle
 //============================================================================
 //
@@ -3024,10 +3024,10 @@ int PC_ReadTokenHandle( int handle, pc_token_t * pc_token ) {
 //============================================================================
 int PC_SourceFileAndLine( int handle, char * filename, int * line ) {
 	if ( handle < 1 || handle >= MAX_SOURCEFILES ) {
-		return qfalse;
+		return false;
 	}
 	if ( !sourceFiles[handle] ) {
-		return qfalse;
+		return false;
 	}
 
 	strcpy( filename, sourceFiles[handle]->filename );
@@ -3036,7 +3036,7 @@ int PC_SourceFileAndLine( int handle, char * filename, int * line ) {
 	} else {
 		*line = 0;
 	}
-	return qtrue;
+	return true;
 } //end of the function PC_SourceFileAndLine
 //============================================================================
 //

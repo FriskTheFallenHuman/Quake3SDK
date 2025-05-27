@@ -210,12 +210,12 @@ static void UI_TeamOrdersMenu_ListDraw( void * self ) {
 	int			y;
 	int			i;
 	float	*	color;
-	qboolean	hasfocus;
+	bool	hasfocus;
 	int			style;
 
 	l = ( menulist_s * )self;
 
-	hasfocus = ( qboolean )( l->generic.parent->cursor == l->generic.menuPosition );
+	hasfocus = ( l->generic.parent->cursor == l->generic.menuPosition );
 
 	x =	320;//l->generic.x;
 	y =	l->generic.y;
@@ -327,7 +327,7 @@ static void UI_TeamOrdersMenu_Init( void ) {
 	UI_TeamOrdersMenu_Cache();
 
 	memset( &teamOrdersMenuInfo, 0, sizeof( teamOrdersMenuInfo ) );
-	teamOrdersMenuInfo.menu.fullscreen = qfalse;
+	teamOrdersMenuInfo.menu.fullscreen = false;
 	teamOrdersMenuInfo.menu.key = UI_TeamOrdersMenu_Key;
 
 	UI_TeamOrdersMenu_BuildBotList();

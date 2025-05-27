@@ -262,7 +262,7 @@ void GibEntity( gentity_t * self, int killer ) {
 		}
 	}
 	G_AddEvent( self, EV_GIB_PLAYER, killer );
-	self->takedamage = qfalse;
+	self->takedamage = false;
 	self->s.eType = ET_INVISIBLE;
 	self->r.contents = 0;
 }
@@ -600,7 +600,7 @@ void player_die( gentity_t * self, gentity_t * inflictor, gentity_t * attacker, 
 		}
 	}
 
-	self->takedamage = qtrue;	// can still be gibbed
+	self->takedamage = true;	// can still be gibbed
 
 	self->s.weapon = WP_NONE;
 	self->s.powerups = 0;
@@ -763,7 +763,7 @@ int G_InvulnerabilityEffect( gentity_t * targ, vec3_t dir, vec3_t point, vec3_t 
 	int			n;
 
 	if ( !targ->client ) {
-		return qfalse;
+		return false;
 	}
 	VectorCopy( dir, vec );
 	VectorInverse( vec );
@@ -784,9 +784,9 @@ int G_InvulnerabilityEffect( gentity_t * targ, vec3_t dir, vec3_t point, vec3_t 
 			VectorCopy( vec, bouncedir );
 			VectorNormalize( bouncedir );
 		}
-		return qtrue;
+		return true;
 	} else {
-		return qfalse;
+		return false;
 	}
 }
 #endif
@@ -1016,10 +1016,10 @@ void G_Damage( gentity_t * targ, gentity_t * inflictor, gentity_t * attacker,
 		client->damage_knockback += knockback;
 		if ( dir ) {
 			VectorCopy( dir, client->damage_from );
-			client->damage_fromWorld = qfalse;
+			client->damage_fromWorld = false;
 		} else {
 			VectorCopy( targ->r.currentOrigin, client->damage_from );
-			client->damage_fromWorld = qtrue;
+			client->damage_fromWorld = true;
 		}
 	}
 
@@ -1069,11 +1069,11 @@ void G_Damage( gentity_t * targ, gentity_t * inflictor, gentity_t * attacker,
 ============
 CanDamage
 
-Returns qtrue if the inflictor can directly damage the target.  Used for
+Returns true if the inflictor can directly damage the target.  Used for
 explosions and melee attacks.
 ============
 */
-qboolean CanDamage( gentity_t * targ, vec3_t origin ) {
+bool CanDamage( gentity_t * targ, vec3_t origin ) {
 	vec3_t	dest;
 	trace_t	tr;
 	vec3_t	midpoint;
@@ -1086,7 +1086,7 @@ qboolean CanDamage( gentity_t * targ, vec3_t origin ) {
 	VectorCopy( midpoint, dest );
 	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 	if ( tr.fraction == 1.0 || tr.entityNum == targ->s.number ) {
-		return qtrue;
+		return true;
 	}
 
 	// this should probably check in the plane of projection,
@@ -1096,7 +1096,7 @@ qboolean CanDamage( gentity_t * targ, vec3_t origin ) {
 	dest[1] += 15.0;
 	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 	if ( tr.fraction == 1.0 ) {
-		return qtrue;
+		return true;
 	}
 
 	VectorCopy( midpoint, dest );
@@ -1104,7 +1104,7 @@ qboolean CanDamage( gentity_t * targ, vec3_t origin ) {
 	dest[1] -= 15.0;
 	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 	if ( tr.fraction == 1.0 ) {
-		return qtrue;
+		return true;
 	}
 
 	VectorCopy( midpoint, dest );
@@ -1112,7 +1112,7 @@ qboolean CanDamage( gentity_t * targ, vec3_t origin ) {
 	dest[1] += 15.0;
 	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 	if ( tr.fraction == 1.0 ) {
-		return qtrue;
+		return true;
 	}
 
 	VectorCopy( midpoint, dest );
@@ -1120,11 +1120,11 @@ qboolean CanDamage( gentity_t * targ, vec3_t origin ) {
 	dest[1] -= 15.0;
 	trap_Trace( &tr, origin, vec3_origin, vec3_origin, dest, ENTITYNUM_NONE, MASK_SOLID );
 	if ( tr.fraction == 1.0 ) {
-		return qtrue;
+		return true;
 	}
 
 
-	return qfalse;
+	return false;
 }
 
 
@@ -1133,7 +1133,7 @@ qboolean CanDamage( gentity_t * targ, vec3_t origin ) {
 G_RadiusDamage
 ============
 */
-qboolean G_RadiusDamage( vec3_t origin, gentity_t * attacker, float damage, float radius,
+bool G_RadiusDamage( vec3_t origin, gentity_t * attacker, float damage, float radius,
 						 gentity_t * ignore, int mod ) {
 	float		points, dist;
 	gentity_t	* ent;
@@ -1143,7 +1143,7 @@ qboolean G_RadiusDamage( vec3_t origin, gentity_t * attacker, float damage, floa
 	vec3_t		v;
 	vec3_t		dir;
 	int			i, e;
-	qboolean	hitClient = qfalse;
+	bool		hitClient = false;
 
 	if ( radius < 1 ) {
 		radius = 1;
@@ -1186,7 +1186,7 @@ qboolean G_RadiusDamage( vec3_t origin, gentity_t * attacker, float damage, floa
 
 		if ( CanDamage( ent, origin ) ) {
 			if ( LogAccuracyHit( ent, attacker ) ) {
-				hitClient = qtrue;
+				hitClient = true;
 			}
 			VectorSubtract( ent->r.currentOrigin, origin, dir );
 			// push the center of mass higher than the origin so players

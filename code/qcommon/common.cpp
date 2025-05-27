@@ -96,8 +96,8 @@ int			com_frameTime;
 int			com_frameMsec;
 int			com_frameNumber;
 
-qboolean	com_errorEntered;
-qboolean	com_fullyInitialized;
+bool	com_errorEntered;
+bool	com_fullyInitialized;
 
 char	com_errorMessage[MAXPRINTMSG];
 
@@ -353,7 +353,7 @@ void QDECL Com_Error( int code, const char * fmt, ... ) {
 	if ( com_errorEntered ) {
 		Sys_Error( "recursive error after: %s", com_errorMessage );
 	}
-	com_errorEntered = qtrue;
+	com_errorEntered = true;
 
 	va_start( argptr, fmt );
 	Q_vsnprintf( com_errorMessage, sizeof( com_errorMessage ), fmt, argptr );
@@ -366,19 +366,19 @@ void QDECL Com_Error( int code, const char * fmt, ... ) {
 
 	if ( code == ERR_SERVERDISCONNECT ) {
 #ifndef DEDICATED
-		CL_Disconnect( qtrue );
+		CL_Disconnect( true );
 		CL_FlushMemory( );
 #endif
-		com_errorEntered = qfalse;
+		com_errorEntered = false;
 		longjmp( abortframe, -1 );
 	} else if ( code == ERR_DROP || code == ERR_DISCONNECT ) {
 		Com_Printf( "********************\nERROR: %s\n********************\n", com_errorMessage );
 		SV_Shutdown( va( "Server crashed: %s\n",  com_errorMessage ) );
 #ifndef DEDICATED
-		CL_Disconnect( qtrue );
+		CL_Disconnect( true );
 		CL_FlushMemory( );
 #endif
-		com_errorEntered = qfalse;
+		com_errorEntered = false;
 		longjmp( abortframe, -1 );
 	} else {
 #ifndef DEDICATED
@@ -409,7 +409,7 @@ void Com_Quit_f( void ) {
 		CL_Shutdown();
 #endif
 		Com_Shutdown();
-		FS_Shutdown( qtrue );
+		FS_Shutdown( true );
 	}
 	Sys_Quit();
 }
@@ -476,7 +476,7 @@ Check for "safe" on the command line, which will
 skip loading of q3config.cfg
 ===================
 */
-qboolean Com_SafeMode( void ) {
+bool Com_SafeMode( void ) {
 	int		i;
 
 	for ( i = 0 ; i < com_numConsoleLines ; i++ ) {
@@ -484,10 +484,10 @@ qboolean Com_SafeMode( void ) {
 		if ( !Q_stricmp( Cmd_Argv( 0 ), "safe" )
 				|| !Q_stricmp( Cmd_Argv( 0 ), "cvar_restart" ) ) {
 			com_consoleLines[i][0] = 0;
-			return qtrue;
+			return true;
 		}
 	}
-	return qfalse;
+	return false;
 }
 
 
@@ -531,15 +531,15 @@ Com_AddStartupCommands
 Adds command line parameters as script statements
 Commands are seperated by + signs
 
-Returns qtrue if any late commands were added, which
+Returns true if any late commands were added, which
 will keep the demoloop from immediately starting
 =================
 */
-qboolean Com_AddStartupCommands( void ) {
+bool Com_AddStartupCommands( void ) {
 	int		i;
-	qboolean	added;
+	bool	added;
 
-	added = qfalse;
+	added = false;
 	// quote every token, so args with semicolons can work
 	for ( i = 0 ; i < com_numConsoleLines ; i++ ) {
 		if ( !com_consoleLines[i] || !com_consoleLines[i][0] ) {
@@ -548,7 +548,7 @@ qboolean Com_AddStartupCommands( void ) {
 
 		// set commands won't override menu startup
 		if ( Q_stricmpn( com_consoleLines[i], "set", 3 ) ) {
-			added = qtrue;
+			added = true;
 		}
 		Cbuf_AddText( com_consoleLines[i] );
 		Cbuf_AddText( "\n" );
@@ -655,7 +655,7 @@ int Com_Filter( char * filter, char * name, int casesensitive ) {
 			if ( strlen( buf ) ) {
 				ptr = Com_StringContains( name, buf, casesensitive );
 				if ( !ptr ) {
-					return qfalse;
+					return false;
 				}
 				name = ptr + strlen( buf );
 			}
@@ -666,7 +666,7 @@ int Com_Filter( char * filter, char * name, int casesensitive ) {
 			filter++;
 		} else if ( *filter == '[' ) {
 			filter++;
-			found = qfalse;
+			found = false;
 			while ( *filter && !found ) {
 				if ( *filter == ']' && *( filter + 1 ) != ']' ) {
 					break;
@@ -674,30 +674,30 @@ int Com_Filter( char * filter, char * name, int casesensitive ) {
 				if ( *( filter + 1 ) == '-' && *( filter + 2 ) && ( *( filter + 2 ) != ']' || *( filter + 3 ) == ']' ) ) {
 					if ( casesensitive ) {
 						if ( *name >= *filter && *name <= *( filter + 2 ) ) {
-							found = qtrue;
+							found = true;
 						}
 					} else {
 						if ( toupper( *name ) >= toupper( *filter ) &&
 								toupper( *name ) <= toupper( *( filter + 2 ) ) ) {
-							found = qtrue;
+							found = true;
 						}
 					}
 					filter += 3;
 				} else {
 					if ( casesensitive ) {
 						if ( *filter == *name ) {
-							found = qtrue;
+							found = true;
 						}
 					} else {
 						if ( toupper( *filter ) == toupper( *name ) ) {
-							found = qtrue;
+							found = true;
 						}
 					}
 					filter++;
 				}
 			}
 			if ( !found ) {
-				return qfalse;
+				return false;
 			}
 			while ( *filter ) {
 				if ( *filter == ']' && *( filter + 1 ) != ']' ) {
@@ -710,18 +710,18 @@ int Com_Filter( char * filter, char * name, int casesensitive ) {
 		} else {
 			if ( casesensitive ) {
 				if ( *filter != *name ) {
-					return qfalse;
+					return false;
 				}
 			} else {
 				if ( toupper( *filter ) != toupper( *name ) ) {
-					return qfalse;
+					return false;
 				}
 			}
 			filter++;
 			name++;
 		}
 	}
-	return qtrue;
+	return true;
 }
 
 /*
@@ -1510,7 +1510,7 @@ void Hunk_SmallLog( void ) {
 		return;
 	}
 	for ( block = hunkblocks ; block; block = block->next ) {
-		block->printed = qfalse;
+		block->printed = false;
 	}
 	size = 0;
 	numBlocks = 0;
@@ -1530,7 +1530,7 @@ void Hunk_SmallLog( void ) {
 			}
 			size += block2->size;
 			locsize += block2->size;
-			block2->printed = qtrue;
+			block2->printed = true;
 		}
 #ifdef HUNK_DEBUG
 		Com_sprintf( buf, sizeof( buf ), "size = %8d: %s, line: %d (%s)\r\n", locsize, block->file, block->line, block->label );
@@ -1639,11 +1639,11 @@ void Hunk_ClearToMark( void ) {
 Hunk_CheckMark
 =================
 */
-qboolean Hunk_CheckMark( void ) {
+bool Hunk_CheckMark( void ) {
 	if ( hunk_low.mark || hunk_high.mark ) {
-		return qtrue;
+		return true;
 	}
-	return qfalse;
+	return false;
 }
 
 #ifndef DEDICATED
@@ -1969,8 +1969,8 @@ void Com_InitJournaling( void ) {
 		com_journalDataFile = FS_FOpenFileWrite( "journaldata.dat" );
 	} else if ( com_journal->integer == 2 ) {
 		Com_Printf( "Replaying journaled events\n" );
-		FS_FOpenFileRead( "journal.dat", &com_journalFile, qtrue );
-		FS_FOpenFileRead( "journaldata.dat", &com_journalDataFile, qtrue );
+		FS_FOpenFileRead( "journal.dat", &com_journalFile, true );
+		FS_FOpenFileRead( "journaldata.dat", &com_journalDataFile, true );
 	}
 
 	if ( !com_journalFile || !com_journalDataFile ) {
@@ -2057,7 +2057,7 @@ void Com_PushEvent( sysEvent_t * event ) {
 
 		// don't print the warning constantly, or it can give time for more...
 		if ( !printedWarning ) {
-			printedWarning = qtrue;
+			printedWarning = true;
 			Com_Warning( "Com_PushEvent overflow\n" );
 		}
 
@@ -2066,7 +2066,7 @@ void Com_PushEvent( sysEvent_t * event ) {
 		}
 		com_pushedEventsTail++;
 	} else {
-		printedWarning = qfalse;
+		printedWarning = false;
 	}
 
 	*ev = *event;
@@ -2158,7 +2158,7 @@ int Com_EventLoop( void ) {
 				break;
 			case SE_KEY:
 #ifndef DEDICATED
-				CL_KeyEvent( ev.evValue, qboolean( ev.evValue2 ), ev.evTime );
+				CL_KeyEvent( ev.evValue, ev.evValue2, ev.evTime );
 #endif
 				break;
 			case SE_CHAR:
@@ -2427,7 +2427,7 @@ void Com_Init( char * commandLine ) {
 	CL_Init();
 #endif
 
-	Sys_ShowConsole( com_viewlog->integer, qfalse );
+	Sys_ShowConsole( com_viewlog->integer, false );
 
 	// set com_frameTime so that if a map is started on the
 	// command line it will still be able to count on com_frameTime
@@ -2453,7 +2453,7 @@ void Com_Init( char * commandLine ) {
 	CL_StartHunkUsers();
 #endif
 
-	com_fullyInitialized = qtrue;
+	com_fullyInitialized = true;
 	Com_Printf ( "--- Common Initialization Complete ---\n" );
 }
 
@@ -2616,9 +2616,9 @@ void Com_Frame( void ) {
 	// if "viewlog" has been modified, show or hide the log console
 	if ( com_viewlog->modified ) {
 #ifndef DEDICATED
-		Sys_ShowConsole( com_viewlog->integer, qfalse );
+		Sys_ShowConsole( com_viewlog->integer, false );
 #endif
-		com_viewlog->modified = qfalse;
+		com_viewlog->modified = false;
 	}
 
 	//
@@ -2986,7 +2986,7 @@ void Com_Memset ( void * dest, const int val, const size_t count ) {
 	}
 }
 
-qboolean Com_Memcmp ( const void * src0, const void * src1, const unsigned int count ) {
+bool Com_Memcmp ( const void * src0, const void * src1, const unsigned int count ) {
 	unsigned int i;
 	// MMX version anyone?
 
@@ -2999,7 +2999,7 @@ qboolean Com_Memcmp ( const void * src0, const void * src1, const unsigned int c
 			unsigned int tmp = ( dw[i + 0] - sw[i + 0] ) | ( dw[i + 1] - sw[i + 1] ) |
 							   ( dw[i + 2] - sw[i + 2] ) | ( dw[i + 3] - sw[i + 3] );
 			if ( tmp ) {
-				return qfalse;
+				return false;
 			}
 		}
 	}
@@ -3008,11 +3008,11 @@ qboolean Com_Memcmp ( const void * src0, const void * src1, const unsigned int c
 		byte *s = ( byte * )src1;
 		for ( i = count & 0xfffffff0; i < count; i++ )
 			if ( d[i] != s[i] ) {
-				return qfalse;
+				return false;
 			}
 	}
 
-	return qtrue;
+	return true;
 }
 
 void Com_Prefetch ( const void * s, const unsigned int bytes, e_prefetch type ) {

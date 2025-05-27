@@ -23,9 +23,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 volatile renderCommandList_t	* renderCommandList;
 
-volatile qboolean	renderThreadActive;
-
-
 /*
 =====================
 R_PerformanceCounters
@@ -78,7 +75,7 @@ R_IssueRenderCommands
 int	c_blockedOnRender;
 int	c_blockedOnMain;
 
-void R_IssueRenderCommands( qboolean runPerformanceCounters ) {
+void R_IssueRenderCommands( bool runPerformanceCounters ) {
 	renderCommandList_t	* cmdList;
 
 	cmdList = &backEndData->commands;
@@ -114,7 +111,7 @@ void R_IssuePendingRenderCommands( void ) {
 	if ( !tr.registered ) {
 		return;
 	}
-	R_IssueRenderCommands( qfalse );
+	R_IssueRenderCommands( false );
 }
 
 /*
@@ -242,7 +239,7 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	if ( !tr.registered ) {
 		return;
 	}
-	glState.finishCalled = qfalse;
+	glState.finishCalled = false;
 
 	tr.frameCount++;
 	tr.frameSceneNum = 0;
@@ -254,11 +251,11 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 		if ( glConfig.stencilBits < 4 ) {
 			ri.Warning( "not enough stencil bits to measure overdraw: %d\n", glConfig.stencilBits );
 			ri.Cvar_Set( "r_measureOverdraw", "0" );
-			r_measureOverdraw->modified = qfalse;
+			r_measureOverdraw->modified = false;
 		} else if ( r_shadows->integer == 2 ) {
 			ri.Warning( "stencil shadows and overdraw measurement are mutually exclusive\n" );
 			ri.Cvar_Set( "r_measureOverdraw", "0" );
-			r_measureOverdraw->modified = qfalse;
+			r_measureOverdraw->modified = false;
 		} else {
 			R_IssuePendingRenderCommands();
 			glEnable( GL_STENCIL_TEST );
@@ -267,14 +264,14 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 			glStencilFunc( GL_ALWAYS, 0U, ~0U );
 			glStencilOp( GL_KEEP, GL_INCR, GL_INCR );
 		}
-		r_measureOverdraw->modified = qfalse;
+		r_measureOverdraw->modified = false;
 	} else {
 		// this is only reached if it was on and is now off
 		if ( r_measureOverdraw->modified ) {
 			R_IssuePendingRenderCommands();
 			glDisable( GL_STENCIL_TEST );
 		}
-		r_measureOverdraw->modified = qfalse;
+		r_measureOverdraw->modified = false;
 	}
 
 	//
@@ -283,14 +280,14 @@ void RE_BeginFrame( stereoFrame_t stereoFrame ) {
 	if ( r_textureMode->modified ) {
 		R_IssuePendingRenderCommands();
 		GL_TextureMode( r_textureMode->string );
-		r_textureMode->modified = qfalse;
+		r_textureMode->modified = false;
 	}
 
 	//
 	// gamma stuff
 	//
 	if ( r_gamma->modified ) {
-		r_gamma->modified = qfalse;
+		r_gamma->modified = false;
 
 		R_IssuePendingRenderCommands();
 		R_SetColorMappings();
@@ -355,7 +352,7 @@ void RE_EndFrame( int * frontEndMsec, int * backEndMsec ) {
 	}
 	cmd->commandId = RC_SWAP_BUFFERS;
 
-	R_IssueRenderCommands( qtrue );
+	R_IssueRenderCommands( true );
 
 	R_ResetFrameCounts();
 

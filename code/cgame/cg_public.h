@@ -105,13 +105,13 @@ typedef struct {
 	int ( *CM_MarkFragments )( int numPoints, const vec3_t * points, const vec3_t projection, int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t * fragmentBuffer );
 	void ( *S_StartSound )( vec3_t origin, int entityNum, int entchannel, sfxHandle_t sfx );
 	void ( *S_StartLocalSound )( sfxHandle_t sfx, int channelNum );
-	void ( *S_ClearLoopingSounds )( qboolean killall );
+	void ( *S_ClearLoopingSounds )( bool killall );
 	void ( *S_AddLoopingSound )( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx );
 	void ( *S_AddRealLoopingSound )( int entityNum, const vec3_t origin, const vec3_t velocity, sfxHandle_t sfx );
 	void ( *S_StopLoopingSound )( int entityNum );
 	void ( *S_UpdateEntityPosition )( int entityNum, const vec3_t origin );
 	void ( *S_Respatialize )( int entityNum, const vec3_t origin, vec3_t axis[3], int inwater );
-	sfxHandle_t( *S_RegisterSound )( const char * sample, qboolean compressed );
+	sfxHandle_t( *S_RegisterSound )( const char * sample, bool compressed );
 	void ( *S_StartBackgroundTrack )( const char * intro, const char * loop );
 	void ( *R_LoadWorldMap )( const char * mapname );
 	qhandle_t( *R_RegisterModel )( const char * name );
@@ -135,13 +135,13 @@ typedef struct {
 	void ( *GetGlconfig )( glconfig_t * glconfig );
 	void ( *GetGameState )( gameState_t * gamestate );
 	void ( *GetCurrentSnapshotNumber )( int * snapshotNumber, int * serverTime );
-	qboolean( *GetSnapshot )( int snapshotNumber, snapshot_t * snapshot );
-	qboolean( *GetServerCommand )( int serverCommandNumber );
+	bool( *GetSnapshot )( int snapshotNumber, snapshot_t * snapshot );
+	bool( *GetServerCommand )( int serverCommandNumber );
 	int ( *GetCurrentCmdNumber )( void );
-	qboolean( *GetUserCmd )( int cmdNumber, usercmd_t * ucmd );
+	bool( *GetUserCmd )( int cmdNumber, usercmd_t * ucmd );
 	void ( *SetUserCmdValue )( int stateValue, float sensitivityScale );
 	int ( *MemoryRemaining )( void );
-	qboolean( *Key_IsDown )( int keynum );
+	bool( *Key_IsDown )( int keynum );
 	int ( *Key_GetCatcher )( void );
 	void ( *Key_SetCatcher )( int catcher );
 	int ( *Key_GetKey )( const char * binding );
@@ -152,8 +152,8 @@ typedef struct {
 	e_status( *CIN_RunCinematic )( int handle );
 	void ( *CIN_DrawCinematic )( int handle );
 	void ( *CIN_SetExtents )( int handle, int x, int y, int w, int h );
-	qboolean( *GetEntityToken )( char * buffer, int bufferSize );
-	qboolean( *R_inPVS )( const vec3_t p1, const vec3_t p2 );
+	bool( *GetEntityToken )( char * buffer, int bufferSize );
+	bool( *R_inPVS )( const vec3_t p1, const vec3_t p2 );
 } cgameImport_t;
 
 /*
@@ -167,11 +167,11 @@ functions exported to the main executable
 typedef struct {
 	void ( *CG_Init )( int, int, int );
 	void ( *CG_Shutdown )( void );
-	qboolean ( *CG_ConsoleCommand )( void );
-	void ( *CG_DrawActiveFrame )( int, stereoFrame_t, qboolean );
+	bool ( *CG_ConsoleCommand )( void );
+	void ( *CG_DrawActiveFrame )( int, stereoFrame_t, bool );
 	int ( *CG_CrosshairPlayer )( void );
 	int ( *CG_LastAttacker )( void );
-	void ( *CG_KeyEvent )( int, qboolean );
+	void ( *CG_KeyEvent )( int, bool );
 	void ( *CG_MouseEvent )( int, int );
 	void ( *CG_EventHandling )( int );
 } cgameExport_t;

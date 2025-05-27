@@ -124,7 +124,7 @@ void SV_SetBrushModel( sharedEntity_t * ent, const char * name ) {
 	CM_ModelBounds( h, mins, maxs );
 	VectorCopy( mins, ent->r.mins );
 	VectorCopy( maxs, ent->r.maxs );
-	ent->r.bmodel = qtrue;
+	ent->r.bmodel = true;
 
 	ent->r.contents = -1;		// we don't know exactly what is in the brushes
 
@@ -140,7 +140,7 @@ SV_inPVS
 Also checks portalareas so that doors block sight
 =================
 */
-qboolean SV_inPVS( const vec3_t p1, const vec3_t p2 ) {
+bool SV_inPVS( const vec3_t p1, const vec3_t p2 ) {
 	int		leafnum;
 	int		cluster;
 	int		area1, area2;
@@ -155,12 +155,12 @@ qboolean SV_inPVS( const vec3_t p1, const vec3_t p2 ) {
 	cluster = CM_LeafCluster( leafnum );
 	area2 = CM_LeafArea( leafnum );
 	if ( mask && ( !( mask[cluster >> 3] & ( 1 << ( cluster & 7 ) ) ) ) ) {
-		return qfalse;
+		return false;
 	}
 	if ( !CM_AreasConnected( area1, area2 ) ) {
-		return qfalse;    // a door blocks sight
+		return false;    // a door blocks sight
 	}
-	return qtrue;
+	return true;
 }
 
 
@@ -171,7 +171,7 @@ SV_inPVSIgnorePortals
 Does NOT check portalareas
 =================
 */
-qboolean SV_inPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
+bool SV_inPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
 	int		leafnum;
 	int		cluster;
 	int		area1, area2;
@@ -187,10 +187,10 @@ qboolean SV_inPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
 	area2 = CM_LeafArea( leafnum );
 
 	if ( mask && ( !( mask[cluster >> 3] & ( 1 << ( cluster & 7 ) ) ) ) ) {
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 
 
@@ -199,7 +199,7 @@ qboolean SV_inPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
 SV_AdjustAreaPortalState
 ========================
 */
-void SV_AdjustAreaPortalState( sharedEntity_t * ent, qboolean open ) {
+void SV_AdjustAreaPortalState( sharedEntity_t * ent, bool open ) {
 	svEntity_t	* svEnt;
 
 	svEnt = SV_SvEntityForGentity( ent );
@@ -215,7 +215,7 @@ void SV_AdjustAreaPortalState( sharedEntity_t * ent, qboolean open ) {
 SV_GameAreaEntities
 ==================
 */
-qboolean	SV_EntityContact( vec3_t mins, vec3_t maxs, const sharedEntity_t * gEnt, int capsule ) {
+bool	SV_EntityContact( vec3_t mins, vec3_t maxs, const sharedEntity_t * gEnt, int capsule ) {
 	const float	* origin, * angles;
 	clipHandle_t	ch;
 	trace_t			trace;
@@ -228,7 +228,7 @@ qboolean	SV_EntityContact( vec3_t mins, vec3_t maxs, const sharedEntity_t * gEnt
 	CM_TransformedBoxTrace( &trace, vec3_origin, vec3_origin, mins, maxs,
 							ch, -1, origin, angles, capsule );
 
-	return ( qboolean )trace.startsolid;
+	return trace.startsolid;
 }
 
 
@@ -289,7 +289,7 @@ void SV_ShutdownGameProgs( void ) {
 		return;
 	}
 
-	game->G_ShutdownGame( qfalse );
+	game->G_ShutdownGame( false );
 	Sys_DLL_Unload( dllHandle );
 	game = NULL;
 	dllHandle = 0;
@@ -302,7 +302,7 @@ SV_InitGameVM
 Called for both a full init and a restart
 ==================
 */
-static void SV_InitGameVM( qboolean restart ) {
+static void SV_InitGameVM( bool restart ) {
 	int		i;
 
 	// start the entity parsing at the beginning
@@ -349,10 +349,10 @@ int SV_GetEntityToken( char * buffer, int bufferSize ) {
 	s = COM_Parse( &sv.entityParsePoint );
 	Q_strncpyz( buffer, s, bufferSize );
 	if ( !sv.entityParsePoint && !s[0] ) {
-		return qfalse;
+		return false;
 	}
 
-	return qtrue;
+	return true;
 }
 
 /*
@@ -409,15 +409,15 @@ void SV_InitGameProgs( void ) {
 	// load the dll
 	dllHandle = Sys_DLL_Load( "qagame" );
 	if ( !dllHandle ) {
-		Com_Error( ERR_DROP, "VM_Create on game failed" );
+		Com_Error( ERR_DROP, "SV_InitGameProgs on game failed" );
 	}
 
 	game = ( gameExport_t * )Sys_DLL_CallEntry( dllHandle, &gameExports );
 	if ( !game ) {
-		Com_Error( ERR_DROP, "VM_Create game api was invalid" );
+		Com_Error( ERR_DROP, "SV_InitGameProgs game api was invalid" );
 	}
 
-	SV_InitGameVM( qfalse );
+	SV_InitGameVM( false );
 }
 
 
@@ -428,9 +428,9 @@ SV_GameCommand
 See if the current console command is claimed by the game
 ====================
 */
-qboolean SV_GameCommand( void ) {
+bool SV_GameCommand( void ) {
 	if ( sv.state != SS_GAME ) {
-		return qfalse;
+		return false;
 	}
 
 	return game->ConsoleCommand();

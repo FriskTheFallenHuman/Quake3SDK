@@ -47,7 +47,7 @@ typedef struct {
 	int				slashX;
 	const char *	question;
 	void			( *draw )( void );
-	void			( *action )( qboolean result );
+	void			( *action )( bool result );
 
 	int style;
 	const char ** lines;
@@ -63,7 +63,7 @@ ConfirmMenu_Event
 =================
 */
 static void ConfirmMenu_Event( void * ptr, int event ) {
-	qboolean	result;
+	bool	result;
 
 	if ( event != QM_ACTIVATED ) {
 		return;
@@ -72,9 +72,9 @@ static void ConfirmMenu_Event( void * ptr, int event ) {
 	UI_PopMenu();
 
 	if ( ( ( menucommon_s * )ptr )->id == ID_CONFIRM_NO ) {
-		result = qfalse;
+		result = false;
 	} else {
-		result = qtrue;
+		result = true;
 	}
 
 	if ( s_confirm.action ) {
@@ -168,7 +168,7 @@ void ConfirmMenu_Cache( void ) {
 UI_ConfirmMenu_Stlye
 =================
 */
-void UI_ConfirmMenu_Style( const char * question, int style, void ( *draw )( void ), void ( *action )( qboolean result ) ) {
+void UI_ConfirmMenu_Style( const char * question, int style, void ( *draw )( void ), void ( *action )( bool result ) ) {
 	uiClientState_t	cstate;
 	int	n1, n2, n3;
 	int	l1, l2, l3;
@@ -193,13 +193,13 @@ void UI_ConfirmMenu_Style( const char * question, int style, void ( *draw )( voi
 
 	s_confirm.menu.draw       = ConfirmMenu_Draw;
 	s_confirm.menu.key        = ConfirmMenu_Key;
-	s_confirm.menu.wrapAround = qtrue;
+	s_confirm.menu.wrapAround = true;
 
 	trap_GetClientState( &cstate );
 	if ( cstate.connState >= CA_CONNECTED ) {
-		s_confirm.menu.fullscreen = qfalse;
+		s_confirm.menu.fullscreen = false;
 	} else {
-		s_confirm.menu.fullscreen = qtrue;
+		s_confirm.menu.fullscreen = true;
 	}
 
 	s_confirm.yes.generic.type		= MTYPE_PTEXT;
@@ -235,7 +235,7 @@ void UI_ConfirmMenu_Style( const char * question, int style, void ( *draw )( voi
 UI_ConfirmMenu
 =================
 */
-void UI_ConfirmMenu( const char * question, void ( *draw )( void ), void ( *action )( qboolean result ) ) {
+void UI_ConfirmMenu( const char * question, void ( *draw )( void ), void ( *action )( bool result ) ) {
 	UI_ConfirmMenu_Style( question, UI_CENTER | UI_INVERSE, draw, action );
 }
 
@@ -262,13 +262,13 @@ void UI_Message( const char ** lines ) {
 
 	s_confirm.menu.draw       = MessageMenu_Draw;
 	s_confirm.menu.key        = ConfirmMenu_Key;
-	s_confirm.menu.wrapAround = qtrue;
+	s_confirm.menu.wrapAround = true;
 
 	trap_GetClientState( &cstate );
 	if ( cstate.connState >= CA_CONNECTED ) {
-		s_confirm.menu.fullscreen = qfalse;
+		s_confirm.menu.fullscreen = false;
 	} else {
-		s_confirm.menu.fullscreen = qtrue;
+		s_confirm.menu.fullscreen = true;
 	}
 
 	s_confirm.yes.generic.type		= MTYPE_PTEXT;

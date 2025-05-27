@@ -63,7 +63,7 @@ void QDECL Sys_Error( const char * error, ... ) {
 	Conbuf_AppendText( "\n" );
 
 	Sys_SetErrorText( text );
-	Sys_ShowConsole( 1, qtrue );
+	Sys_ShowConsole( 1, true );
 
 	timeEndPeriod( 1 );
 
@@ -239,7 +239,7 @@ void Sys_ListFilteredFiles( const char * basedir, char * subdirs, char * filter,
 			break;
 		}
 		Com_sprintf( filename, sizeof( filename ), "%s\\%s", subdirs, findinfo.name );
-		if ( !Com_FilterPath( filter, filename, qfalse ) ) {
+		if ( !Com_FilterPath( filter, filename, false ) ) {
 			continue;
 		}
 		list[ *numfiles ] = CopyString( filename );
@@ -249,7 +249,7 @@ void Sys_ListFilteredFiles( const char * basedir, char * subdirs, char * filter,
 	_findclose( findhandle );
 }
 
-static qboolean strgtr( const char * s0, const char * s1 ) {
+static bool strgtr( const char * s0, const char * s1 ) {
 	int l0, l1, i;
 
 	l0 = strlen( s0 );
@@ -261,16 +261,16 @@ static qboolean strgtr( const char * s0, const char * s1 ) {
 
 	for ( i = 0; i < l0; i++ ) {
 		if ( s1[i] > s0[i] ) {
-			return qtrue;
+			return true;
 		}
 		if ( s1[i] < s0[i] ) {
-			return qfalse;
+			return false;
 		}
 	}
-	return qfalse;
+	return false;
 }
 
-char ** Sys_ListFiles( const char * directory, const char * extension, char * filter, int * numfiles, qboolean wantsubs ) {
+char ** Sys_ListFiles( const char * directory, const char * extension, char * filter, int * numfiles, bool wantsubs ) {
 	char		search[MAX_OSPATH];
 	int			nfiles;
 	char	**	listCopy;
@@ -540,8 +540,8 @@ void Sys_StreamSeek( fileHandle_t f, int offset, int origin ) {
 typedef struct {
 	fileHandle_t	file;
 	byte	* buffer;
-	qboolean	eof;
-	qboolean	active;
+	bool	eof;
+	bool	active;
 	int		bufferSize;
 	int		streamPosition;	// next byte to be returned by Sys_StreamRead
 	int		threadPosition;	// next byte to be read from file
@@ -590,7 +590,7 @@ void Sys_StreamThread( void ) {
 				stream.sIO[i].threadPosition += r;
 
 				if ( r != readCount ) {
-					stream.sIO[i].eof = qtrue;
+					stream.sIO[i].eof = true;
 				}
 			}
 		}
@@ -622,7 +622,7 @@ void Sys_InitStreamThread( void ) {
 							  0,			//   DWORD fdwCreate,
 							  &stream.threadId );
 	for ( i = 0; i < MAX_FILE_HANDLES; i++ ) {
-		stream.sIO[i].active = qfalse;
+		stream.sIO[i].active = false;
 	}
 }
 
@@ -652,8 +652,8 @@ void Sys_BeginStreamedFile( fileHandle_t f, int readAhead ) {
 	stream.sIO[f].bufferSize = readAhead;
 	stream.sIO[f].streamPosition = 0;
 	stream.sIO[f].threadPosition = 0;
-	stream.sIO[f].eof = qfalse;
-	stream.sIO[f].active = qtrue;
+	stream.sIO[f].eof = false;
+	stream.sIO[f].active = true;
 
 	// let the thread start running
 //	LeaveCriticalSection( &stream.crit );
@@ -673,7 +673,7 @@ void Sys_EndStreamedFile( fileHandle_t f ) {
 	EnterCriticalSection( &stream.crit );
 
 	stream.sIO[f].file = 0;
-	stream.sIO[f].active = qfalse;
+	stream.sIO[f].active = false;
 
 	Z_Free( stream.sIO[f].buffer );
 
@@ -696,7 +696,7 @@ int Sys_StreamedRead( void * buffer, int size, int count, fileHandle_t f ) {
 	int		bufferPoint;
 	byte	*dest;
 
-	if ( stream.sIO[f].active == qfalse ) {
+	if ( stream.sIO[f].active == false ) {
 		Com_Error( ERR_FATAL, "Streamed read with non-streaming file" );
 	}
 
@@ -759,7 +759,7 @@ void Sys_StreamSeek( fileHandle_t f, int offset, int origin ) {
 	FS_Seek( f, offset, origin );
 	stream.sIO[f].streamPosition = 0;
 	stream.sIO[f].threadPosition = 0;
-	stream.sIO[f].eof = qfalse;
+	stream.sIO[f].eof = false;
 
 	// let the thread start running at the new position
 	LeaveCriticalSection( &stream.crit );
@@ -1109,7 +1109,7 @@ int WINAPI WinMain ( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	// hide the early console since we've reached the point where we
 	// have a working graphics subsystems
 	if ( !com_viewlog->integer ) {
-		Sys_ShowConsole( 0, qfalse );
+		Sys_ShowConsole( 0, false );
 	}
 
 	// main game loop

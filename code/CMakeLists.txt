@@ -385,7 +385,6 @@ file(GLOB QCOMMON_SOURCES  ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/*.cpp)
 list(REMOVE_ITEM QCOMMON_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_math.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_crc.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_libvar.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_memory.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_precomp.cpp
@@ -395,7 +394,6 @@ source_group( "Common" FILES ${QCOMMON_SOURCES} )
 file(GLOB QCOMMON_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/qcommon/*.h)
 list(REMOVE_ITEM QCOMMON_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.h
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_crc.h
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_libvar.h
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_memory.h
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_precomp.h
@@ -480,7 +478,6 @@ endif()
 set(QCOMMON_LIB_SOURCES
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_math.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.cpp
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_crc.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_libvar.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_memory.cpp
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_precomp.cpp
@@ -489,7 +486,6 @@ set(QCOMMON_LIB_SOURCES
 source_group( "Common" FILES ${QCOMMON_LIB_SOURCES} )
 set(QCOMMON_LIB_HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/q_shared.h
-	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_crc.h
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_libvar.h
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_memory.h
 	${CMAKE_CURRENT_SOURCE_DIR}/qcommon/l_precomp.h

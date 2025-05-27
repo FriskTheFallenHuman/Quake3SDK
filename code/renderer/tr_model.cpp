@@ -25,7 +25,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #define	LL(x) x=LittleLong(x)
 
-static qboolean R_LoadMD3( model_t * mod, int lod, void * buffer, const char * name );
+static bool R_LoadMD3( model_t * mod, int lod, void * buffer, const char * name );
 
 model_t	* loadmodel;
 
@@ -82,7 +82,7 @@ qhandle_t RE_RegisterModel( const char * name ) {
 	unsigned	*buf;
 	int			lod;
 	int			ident;
-	qboolean	loaded;
+	bool	loaded;
 	qhandle_t	hModel;
 	int			numLoaded;
 
@@ -207,7 +207,7 @@ fail:
 R_LoadMD3
 =================
 */
-static qboolean R_LoadMD3( model_t * mod, int lod, void * buffer, const char * mod_name ) {
+static bool R_LoadMD3( model_t * mod, int lod, void * buffer, const char * mod_name ) {
 	int					i, j;
 	md3Header_t		*	pinmodel;
 	md3Frame_t		*	frame;
@@ -226,7 +226,7 @@ static qboolean R_LoadMD3( model_t * mod, int lod, void * buffer, const char * m
 	if ( version != MD3_VERSION ) {
 		ri.Warning( "R_LoadMD3: %s has wrong version (%i should be %i)\n",
 					mod_name, version, MD3_VERSION );
-		return qfalse;
+		return false;
 	}
 
 	mod->type = MOD_MESH;
@@ -248,7 +248,7 @@ static qboolean R_LoadMD3( model_t * mod, int lod, void * buffer, const char * m
 
 	if ( mod->md3[lod]->numFrames < 1 ) {
 		ri.Warning( "R_LoadMD3: %s has no frames\n", mod_name );
-		return qfalse;
+		return false;
 	}
 
 	// swap all the frames
@@ -316,7 +316,7 @@ static qboolean R_LoadMD3( model_t * mod, int lod, void * buffer, const char * m
 		for ( j = 0 ; j < surf->numShaders ; j++, shader++ ) {
 			shader_t	* sh;
 
-			sh = R_FindShader( shader->name, LIGHTMAP_NONE, qtrue );
+			sh = R_FindShader( shader->name, LIGHTMAP_NONE, true );
 			if ( sh->defaultShader ) {
 				shader->shaderIndex = 0;
 			} else {
@@ -354,7 +354,7 @@ static qboolean R_LoadMD3( model_t * mod, int lod, void * buffer, const char * m
 		surf = ( md3Surface_t * )( ( byte * )surf + surf->ofsEnd );
 	}
 
-	return qtrue;
+	return true;
 }
 
 //=============================================================================
@@ -374,7 +374,7 @@ void RE_BeginRegistration( glconfig_t * glconfigOut ) {
 	R_ClearFlares();
 	RE_ClearScene();
 
-	tr.registered = qtrue;
+	tr.registered = true;
 
 	// NOTE: this sucks, for some reason the first stretch pic is never drawn
 	// without this we'd see a white flash on a level load because the very
@@ -476,7 +476,7 @@ int R_LerpTag( orientation_t * tag, qhandle_t handle, int startFrame, int endFra
 	if ( !model->md3[0] ) {
 		AxisClear( tag->axis );
 		VectorClear( tag->origin );
-		return qfalse;
+		return false;
 	}
 
 	start = R_GetTag( model->md3[0], startFrame, tagName );
@@ -484,7 +484,7 @@ int R_LerpTag( orientation_t * tag, qhandle_t handle, int startFrame, int endFra
 	if ( !start || !end ) {
 		AxisClear( tag->axis );
 		VectorClear( tag->origin );
-		return qfalse;
+		return false;
 	}
 
 	frontLerp = frac;
@@ -499,7 +499,7 @@ int R_LerpTag( orientation_t * tag, qhandle_t handle, int startFrame, int endFra
 	VectorNormalize( tag->axis[0] );
 	VectorNormalize( tag->axis[1] );
 	VectorNormalize( tag->axis[2] );
-	return qtrue;
+	return true;
 }
 
 

@@ -201,7 +201,7 @@ void SV_BoundMaxClients( int minimum ) {
 	// get the current maxclients value
 	Cvar_Get( "sv_maxclients", "8", 0 );
 
-	sv_maxclients->modified = qfalse;
+	sv_maxclients->modified = false;
 
 	if ( sv_maxclients->integer < minimum ) {
 		Cvar_Set( "sv_maxclients", va( "%i", minimum ) );
@@ -229,7 +229,7 @@ void SV_Startup( void ) {
 
 	svs.clients = ( client_t * )Z_Malloc( sizeof( client_t ) * sv_maxclients->integer );
 	svs.numSnapshotEntities = sv_maxclients->integer * LOCAL_PACKET_BACKUP * 64;
-	svs.initialized = qtrue;
+	svs.initialized = true;
 
 	Cvar_Set( "sv_running", "1" );
 }
@@ -324,7 +324,7 @@ void SV_TouchCGame( void ) {
 	char filename[MAX_QPATH];
 
 	Com_sprintf( filename, sizeof( filename ), "vm/%s.qvm", "cgame" );
-	FS_FOpenFileRead( filename, &f, qfalse );
+	FS_FOpenFileRead( filename, &f, false );
 	if ( f ) {
 		FS_FCloseFile( f );
 	}
@@ -406,7 +406,7 @@ void SV_SpawnServer( char * server ) {
 	sv.checksumFeed = ( ( ( int ) rand() << 16 ) ^ rand() ) ^ Com_Milliseconds();
 	FS_Restart( sv.checksumFeed );
 
-	CM_LoadMap( va( "maps/%s.bsp", server ), qfalse, &checksum );
+	CM_LoadMap( va( "maps/%s.bsp", server ), false, &checksum );
 
 	// set serverinfo visible name
 	Cvar_Set( "mapname", server );
@@ -431,7 +431,7 @@ void SV_SpawnServer( char * server ) {
 	SV_InitGameProgs();
 
 	// don't allow a map_restart if game is modified
-	sv_gametype->modified = qfalse;
+	sv_gametype->modified = false;
 
 	// run a few frames to allow everything to settle
 	for ( i = 0 ; i < 3 ; i++ ) {
@@ -448,7 +448,7 @@ void SV_SpawnServer( char * server ) {
 			char	* denied;
 
 			// connect the client again
-			denied = game->ClientConnect( i, qfalse );
+			denied = game->ClientConnect( i, false );
 			if ( denied ) {
 				// this generally shouldn't happen, because the client
 				// was connected before the level change
@@ -645,7 +645,7 @@ void SV_Shutdown( char * finalmsg ) {
 
 #ifndef DEDICATED
 	// disconnect any local clients
-	CL_Disconnect( qfalse );
+	CL_Disconnect( false );
 #endif
 }
 

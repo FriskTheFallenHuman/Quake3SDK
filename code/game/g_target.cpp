@@ -429,7 +429,7 @@ static void target_location_linkup( gentity_t * ent ) {
 		return;
 	}
 
-	level.locationLinked = qtrue;
+	level.locationLinked = true;
 
 	level.locationHead = NULL;
 

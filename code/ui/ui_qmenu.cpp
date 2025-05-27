@@ -465,12 +465,12 @@ static void RadioButton_Draw( menuradiobutton_s *rb ) {
 	int y;
 	float * color;
 	int	style;
-	qboolean focus;
+	bool focus;
 
 	x = rb->generic.x;
 	y = rb->generic.y;
 
-	focus = ( qboolean )( rb->generic.parent->cursor == rb->generic.menuPosition );
+	focus = ( rb->generic.parent->cursor == rb->generic.menuPosition );
 
 	if ( rb->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
@@ -596,11 +596,11 @@ static void Slider_Draw( menuslider_s *s ) {
 	int			style;
 	float	*	color;
 	int			button;
-	qboolean	focus;
+	bool	focus;
 
 	x =	s->generic.x;
 	y = s->generic.y;
-	focus = ( qboolean )( s->generic.parent->cursor == s->generic.menuPosition );
+	focus = ( s->generic.parent->cursor == s->generic.menuPosition );
 
 	if ( s->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
@@ -654,7 +654,7 @@ static void Slider_Draw( menuslider_s *s ) {
 	int	i;
 	int x;
 	int y;
-	qboolean focus;
+	bool focus;
 
 	x =	s->generic.x;
 	y = s->generic.y;
@@ -795,13 +795,13 @@ static void SpinControl_Draw( menulist_s *s ) {
 	float * color;
 	int	x, y;
 	int	style;
-	qboolean focus;
+	bool focus;
 
 	x = s->generic.x;
 	y =	s->generic.y;
 
 	style = UI_SMALLFONT;
-	focus = ( qboolean )( s->generic.parent->cursor == s->generic.menuPosition );
+	focus = s->generic.parent->cursor == s->generic.menuPosition;
 
 	if ( s->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
@@ -1139,10 +1139,10 @@ void ScrollList_Draw( menulist_s *l ) {
 	int			base;
 	int			column;
 	float	*	color;
-	qboolean	hasfocus;
+	bool		hasfocus;
 	int			style;
 
-	hasfocus = ( qboolean )( l->generic.parent->cursor == l->generic.menuPosition );
+	hasfocus = l->generic.parent->cursor == l->generic.menuPosition;
 
 	x =	l->generic.x;
 	for ( column = 0; column < l->columns; column++ ) {
@@ -1326,7 +1326,7 @@ void Menu_SetCursorToItem( menuframework_s *m, void * ptr ) {
 */
 void Menu_AdjustCursor( menuframework_s *m, int dir ) {
 	menucommon_s	*item = NULL;
-	qboolean		wrapped = qfalse;
+	bool		wrapped = false;
 
 wrap:
 	while ( m->cursor >= 0 && m->cursor < m->nitems ) {
@@ -1346,7 +1346,7 @@ wrap:
 					return;
 				}
 				m->cursor = 0;
-				wrapped = qtrue;
+				wrapped = true;
 				goto wrap;
 			}
 			m->cursor = m->cursor_prev;
@@ -1359,7 +1359,7 @@ wrap:
 					return;
 				}
 				m->cursor = m->nitems - 1;
-				wrapped = qtrue;
+				wrapped = true;
 				goto wrap;
 			}
 			m->cursor = m->cursor_prev;
@@ -1643,11 +1643,11 @@ void Menu_Cache( void ) {
 	}
 	uis.menuBackNoLogoShader = trap_R_RegisterShaderNoMip( "menubacknologo" );
 
-	menu_in_sound	= trap_S_RegisterSound( "sound/misc/menu1.wav", qfalse );
-	menu_move_sound	= trap_S_RegisterSound( "sound/misc/menu2.wav", qfalse );
-	menu_out_sound	= trap_S_RegisterSound( "sound/misc/menu3.wav", qfalse );
-	menu_buzz_sound	= trap_S_RegisterSound( "sound/misc/menu4.wav", qfalse );
-	weaponChangeSound	= trap_S_RegisterSound( "sound/weapons/change.wav", qfalse );
+	menu_in_sound	= trap_S_RegisterSound( "sound/misc/menu1.wav", false );
+	menu_move_sound	= trap_S_RegisterSound( "sound/misc/menu2.wav", false );
+	menu_out_sound	= trap_S_RegisterSound( "sound/misc/menu3.wav", false );
+	menu_buzz_sound	= trap_S_RegisterSound( "sound/misc/menu4.wav", false );
+	weaponChangeSound	= trap_S_RegisterSound( "sound/weapons/change.wav", false );
 
 	// need a nonzero sound, make an empty sound for this
 	menu_null_sound = -1;

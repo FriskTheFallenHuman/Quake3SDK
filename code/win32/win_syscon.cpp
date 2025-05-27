@@ -69,7 +69,7 @@ typedef struct {
 
 	char		consoleText[512], returnedText[512];
 	int			visLevel;
-	qboolean	quitOnClose;
+	bool		quitOnClose;
 	int			windowWidth, windowHeight;
 
 	WNDPROC		SysInputLineWndProc;
@@ -110,7 +110,7 @@ static LONG WINAPI ConWndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPara
 			if ( s_wcd.quitOnClose ) {
 				PostQuitMessage( 0 );
 			} else {
-				Sys_ShowConsole( 0, qfalse );
+				Sys_ShowConsole( 0, false );
 				Cvar_Set( "viewlog", "0" );
 			}
 #endif
@@ -350,7 +350,7 @@ void Sys_DestroyConsole( void ) {
 /*
 ** Sys_ShowConsole
 */
-void Sys_ShowConsole( int visLevel, qboolean quitOnClose ) {
+void Sys_ShowConsole( int visLevel, bool quitOnClose ) {
 	s_wcd.quitOnClose = quitOnClose;
 
 	if ( visLevel == s_wcd.visLevel ) {

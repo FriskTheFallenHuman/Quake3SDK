@@ -97,7 +97,7 @@ void R_AddPolygonSurfaces( void ) {
 
 	for ( i = 0, poly = tr.refdef.polys; i < tr.refdef.numPolys ; i++, poly++ ) {
 		sh = R_GetShaderByHandle( poly->hShader );
-		R_AddDrawSurf( ( surfaceType_t * )poly, sh, poly->fogIndex, qfalse );
+		R_AddDrawSurf( ( surfaceType_t * )poly, sh, poly->fogIndex, false );
 	}
 }
 
@@ -209,7 +209,7 @@ void RE_AddRefEntityToScene( const refEntity_t * ent ) {
 	}
 
 	backEndData->entities[r_numentities].e = *ent;
-	backEndData->entities[r_numentities].lightingCalculated = qfalse;
+	backEndData->entities[r_numentities].lightingCalculated = false;
 
 	r_numentities++;
 }
@@ -253,7 +253,7 @@ RE_AddLightToScene
 =====================
 */
 void RE_AddLightToScene( const vec3_t org, float intensity, float r, float g, float b ) {
-	RE_AddDynamicLightToScene( org, intensity, r, g, b, qfalse );
+	RE_AddDynamicLightToScene( org, intensity, r, g, b, false );
 }
 
 /*
@@ -263,7 +263,7 @@ RE_AddAdditiveLightToScene
 =====================
 */
 void RE_AddAdditiveLightToScene( const vec3_t org, float intensity, float r, float g, float b ) {
-	RE_AddDynamicLightToScene( org, intensity, r, g, b, qtrue );
+	RE_AddDynamicLightToScene( org, intensity, r, g, b, true );
 }
 
 /*
@@ -314,7 +314,7 @@ void RE_RenderScene( const refdef_t * fd ) {
 
 	// copy the areamask data over and note if it has changed, which
 	// will force a reset of the visible leafs even if the view hasn't moved
-	tr.refdef.areamaskModified = qfalse;
+	tr.refdef.areamaskModified = false;
 	if ( !( tr.refdef.rdflags & RDF_NOWORLDMODEL ) ) {
 		int		areaDiff;
 		int		i;
@@ -328,7 +328,7 @@ void RE_RenderScene( const refdef_t * fd ) {
 
 		if ( areaDiff ) {
 			// a door just opened or something
-			tr.refdef.areamaskModified = qtrue;
+			tr.refdef.areamaskModified = true;
 		}
 	}
 
@@ -376,7 +376,7 @@ void RE_RenderScene( const refdef_t * fd ) {
 	parms.viewportY = glConfig.vidHeight - ( tr.refdef.y + tr.refdef.height );
 	parms.viewportWidth = tr.refdef.width;
 	parms.viewportHeight = tr.refdef.height;
-	parms.isPortal = qfalse;
+	parms.isPortal = false;
 
 	parms.fovX = tr.refdef.fov_x;
 	parms.fovY = tr.refdef.fov_y;

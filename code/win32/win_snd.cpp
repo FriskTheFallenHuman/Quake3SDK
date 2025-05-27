@@ -34,7 +34,7 @@ HRESULT( WINAPI *pDirectSoundCreate )( GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplp
 #define SECONDARY_BUFFER_SIZE	0x10000
 
 
-static qboolean	dsound_init;
+static bool	dsound_init;
 static int		sample16;
 static DWORD	gSndBufSize;
 static DWORD	locksize;
@@ -102,7 +102,7 @@ void SNDDMA_Shutdown( void ) {
 	pDS = NULL;
 	pDSBuf = NULL;
 	pDSPBuf = NULL;
-	dsound_init = qfalse;
+	dsound_init = false;
 	memset( ( void * )&dma, 0, sizeof( dma ) );
 	CoUninitialize( );
 }
@@ -115,22 +115,22 @@ Initialize direct sound
 Returns false if failed
 ==================
 */
-qboolean SNDDMA_Init( void ) {
+bool SNDDMA_Init( void ) {
 
 	memset( ( void * )&dma, 0, sizeof( dma ) );
-	dsound_init = qfalse;
+	dsound_init = false;
 
 	CoInitialize( NULL );
 
 	if ( !SNDDMA_InitDS() ) {
-		return qfalse;
+		return false;
 	}
 
-	dsound_init = qtrue;
+	dsound_init = true;
 
 	Com_DPrintf( "Completed successfully\n" );
 
-	return qtrue;
+	return true;
 }
 
 #undef DEFINE_GUID
@@ -164,7 +164,7 @@ int SNDDMA_InitDS() {
 		if ( FAILED( hresult = CoCreateInstance( CCLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER, IIID_IDirectSound, ( void ** )&pDS ) ) ) {
 			Com_Printf( "failed\n" );
 			SNDDMA_Shutdown();
-			return qfalse;
+			return false;
 		}
 	}
 
@@ -177,7 +177,7 @@ int SNDDMA_InitDS() {
 	if ( DS_OK != pDS->SetCooperativeLevel( g_wv.hWnd, DSSCL_PRIORITY ) )	{
 		Com_Printf( "failed\n" );
 		SNDDMA_Shutdown();
-		return qfalse;
+		return false;
 	}
 	Com_DPrintf( "ok\n" );
 
@@ -229,7 +229,7 @@ int SNDDMA_InitDS() {
 		if ( DS_OK != pDS->CreateSoundBuffer( &dsbuf, &pDSBuf, NULL ) ) {
 			Com_Printf( "failed\n" );
 			SNDDMA_Shutdown();
-			return qfalse;
+			return false;
 		}
 		Com_DPrintf( "forced to software.  ok\n" );
 	}
@@ -238,14 +238,14 @@ int SNDDMA_InitDS() {
 	if ( DS_OK != pDSBuf->Play( 0, 0, DSBPLAY_LOOPING ) ) {
 		Com_Printf( "*** Looped sound play failed ***\n" );
 		SNDDMA_Shutdown();
-		return qfalse;
+		return false;
 	}
 
 	// get the returned buffer size
 	if ( DS_OK != pDSBuf->GetCaps( &dsbcaps ) ) {
 		Com_Printf( "*** GetCaps failed ***\n" );
 		SNDDMA_Shutdown();
-		return qfalse;
+		return false;
 	}
 
 	gSndBufSize = dsbcaps.dwBufferBytes;

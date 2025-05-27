@@ -138,7 +138,7 @@ Restart the server on a different map
 static void SV_Map_f( void ) {
 	char	*	cmd;
 	char	*	map;
-	qboolean	cheat;
+	bool	cheat;
 	char		expanded[MAX_QPATH];
 	char		mapname[MAX_QPATH];
 
@@ -160,9 +160,9 @@ static void SV_Map_f( void ) {
 
 	cmd = Cmd_Argv( 0 );
 	if ( !Q_stricmp( cmd, "devmap" ) ) {
-		cheat = qtrue;
+		cheat = true;
 	} else {
-		cheat = qfalse;
+		cheat = false;
 	}
 	if ( sv_gametype->integer == GT_SINGLE_PLAYER ) {
 		Cvar_SetValue( "g_gametype", GT_FFA );
@@ -252,7 +252,7 @@ static void SV_MapRestart_f( void ) {
 	// note that we do NOT set sv.state = SS_LOADING, so configstrings that
 	// had been changed from their default values will generate broadcast updates
 	sv.state = SS_LOADING;
-	sv.restarting = qtrue;
+	sv.restarting = true;
 
 	SV_RestartGameProgs();
 
@@ -263,7 +263,7 @@ static void SV_MapRestart_f( void ) {
 	}
 
 	sv.state = SS_GAME;
-	sv.restarting = qfalse;
+	sv.restarting = false;
 
 	// connect and begin all the clients
 	for ( i = 0 ; i < sv_maxclients->integer ; i++ ) {
@@ -278,7 +278,7 @@ static void SV_MapRestart_f( void ) {
 		SV_AddServerCommand( client, "map_restart\n" );
 
 		// connect the client again, without the firstTime flag
-		denied = game->ClientConnect( i, qfalse );
+		denied = game->ClientConnect( i, false );
 		if ( denied ) {
 			// this generally shouldn't happen, because the client
 			// was connected before the level change
@@ -566,12 +566,12 @@ SV_AddOperatorCommands
 ==================
 */
 void SV_AddOperatorCommands( void ) {
-	static qboolean	initialized;
+	static bool	initialized;
 
 	if ( initialized ) {
 		return;
 	}
-	initialized = qtrue;
+	initialized = true;
 
 	Cmd_AddCommand( "kick", SV_Kick_f );
 	Cmd_AddCommand( "clientkick", SV_KickNum_f );

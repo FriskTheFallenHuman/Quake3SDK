@@ -88,7 +88,7 @@ void R_DlightBmodel( bmodel_t * bmodel ) {
 		mask |= 1 << i;
 	}
 
-	tr.currentEntity->needDlights = qboolean( ( mask != 0 ) );
+	tr.currentEntity->needDlights = ( mask != 0 );
 
 	// set the dlight bits in all the surfaces
 	for ( i = 0 ; i < bmodel->numSurfaces ; i++ ) {
@@ -279,7 +279,7 @@ void R_SetupEntityLighting( const trRefdef_t * refdef, trRefEntity_t * ent ) {
 	if ( ent->lightingCalculated ) {
 		return;
 	}
-	ent->lightingCalculated = qtrue;
+	ent->lightingCalculated = true;
 
 	//
 	// trace a sample point down to find ambient light
@@ -368,7 +368,7 @@ int R_LightForPoint( vec3_t point, vec3_t ambientLight, vec3_t directedLight, ve
 
 	// bk010103 - this segfaults with -nolight maps
 	if ( tr.world->lightGridData == NULL ) {
-		return qfalse;
+		return false;
 	}
 
 	Com_Memset( &ent, 0, sizeof( ent ) );
@@ -378,5 +378,5 @@ int R_LightForPoint( vec3_t point, vec3_t ambientLight, vec3_t directedLight, ve
 	VectorCopy( ent.directedLight, directedLight );
 	VectorCopy( ent.lightDir, lightDir );
 
-	return qtrue;
+	return true;
 }

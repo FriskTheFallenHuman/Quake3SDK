@@ -59,7 +59,7 @@ static int		c_begins;
 static void R_DrawStripElements( int numIndexes, const glIndex_t * indexes, void ( APIENTRY *element )( GLint ) ) {
 	int i;
 	int last[3] = { -1, -1, -1 };
-	qboolean even;
+	bool even;
 
 	c_begins++;
 
@@ -79,7 +79,7 @@ static void R_DrawStripElements( int numIndexes, const glIndex_t * indexes, void
 	last[1] = indexes[1];
 	last[2] = indexes[2];
 
-	even = qfalse;
+	even = false;
 
 	for ( i = 3; i < numIndexes; i += 3 ) {
 		// odd numbered triangle in potential strip
@@ -89,7 +89,7 @@ static void R_DrawStripElements( int numIndexes, const glIndex_t * indexes, void
 				element( indexes[i + 2] );
 				c_vertexes++;
 				assert( indexes[i + 2] < tess.numVertexes );
-				even = qtrue;
+				even = true;
 			}
 			// otherwise we're done with this strip so finish it and start
 			// a new one
@@ -105,7 +105,7 @@ static void R_DrawStripElements( int numIndexes, const glIndex_t * indexes, void
 
 				c_vertexes += 3;
 
-				even = qfalse;
+				even = false;
 			}
 		} else {
 			// check previous triangle to see if we're continuing a strip
@@ -113,7 +113,7 @@ static void R_DrawStripElements( int numIndexes, const glIndex_t * indexes, void
 				element( indexes[i + 2] );
 				c_vertexes++;
 
-				even = qfalse;
+				even = false;
 			}
 			// otherwise we're done with this strip so finish it and start
 			// a new one
@@ -128,7 +128,7 @@ static void R_DrawStripElements( int numIndexes, const glIndex_t * indexes, void
 				element( indexes[i + 2] );
 				c_vertexes += 3;
 
-				even = qfalse;
+				even = false;
 			}
 		}
 
@@ -198,7 +198,7 @@ SURFACE SHADERS
 */
 
 shaderCommands_t	tess;
-static qboolean	setArraysOnce;
+static bool	setArraysOnce;
 
 /*
 =================
@@ -902,11 +902,11 @@ void RB_StageIteratorGeneric( void ) {
 	// during multipass rendering
 	//
 	if ( tess.numPasses > 1 || input->shader->multitextureEnv ) {
-		setArraysOnce = qfalse;
+		setArraysOnce = false;
 		glDisableClientState( GL_COLOR_ARRAY );
 		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 	} else {
-		setArraysOnce = qtrue;
+		setArraysOnce = true;
 
 		glEnableClientState( GL_COLOR_ARRAY );
 		glColorPointer( 4, GL_UNSIGNED_BYTE, 0, tess.svars.colors );

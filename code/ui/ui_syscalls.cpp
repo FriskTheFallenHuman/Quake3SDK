@@ -184,7 +184,7 @@ int trap_CM_LerpTag( orientation_t * tag, clipHandle_t mod, int startFrame, int 
 	return uiSyscalls->re_LerpTag( tag, mod, startFrame, endFrame, frac, tagName );
 }
 
-sfxHandle_t trap_S_RegisterSound( const char * sample, qboolean compressed ) {
+sfxHandle_t trap_S_RegisterSound( const char * sample, bool compressed ) {
 	return uiSyscalls->S_RegisterSound( sample, compressed );
 }
 
@@ -204,16 +204,16 @@ void trap_Key_SetBinding( int keynum, const char * binding ) {
 	uiSyscalls->Key_SetBinding( keynum, binding );
 }
 
-qboolean trap_Key_IsDown( int keynum ) {
+bool trap_Key_IsDown( int keynum ) {
 	return uiSyscalls->Key_IsDown( keynum );
 }
 
 bool trap_Key_GetOverstrikeMode( void ) {
-	return ( qboolean )( uiSyscalls->Key_GetOverstrikeMode() );
+	return uiSyscalls->Key_GetOverstrikeMode();
 }
 
 void trap_Key_SetOverstrikeMode( bool state ) {
-	uiSyscalls->Key_SetOverstrikeMode( ( qboolean )state );
+	uiSyscalls->Key_SetOverstrikeMode( state );
 }
 
 void trap_Key_ClearStates( void ) {
@@ -292,7 +292,7 @@ void trap_LAN_GetPingInfo( int n, char * buf, int buflen ) {
 	uiSyscalls->LAN_GetPingInfo( n, buf, buflen );
 }
 
-void trap_LAN_MarkServerVisible( int source, int n, qboolean visible ) {
+void trap_LAN_MarkServerVisible( int source, int n, bool visible ) {
 	uiSyscalls->LAN_MarkServerVisible( source, n, visible );
 }
 
@@ -300,7 +300,7 @@ int trap_LAN_ServerIsVisible( int source, int n ) {
 	return uiSyscalls->LAN_ServerIsVisible( source, n );
 }
 
-qboolean trap_LAN_UpdateVisiblePings( int source ) {
+bool trap_LAN_UpdateVisiblePings( int source ) {
 	return uiSyscalls->LAN_UpdateVisiblePings( source );
 }
 

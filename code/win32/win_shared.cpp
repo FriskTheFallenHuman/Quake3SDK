@@ -41,11 +41,11 @@ Sys_Milliseconds
 int			sys_timeBase;
 int Sys_Milliseconds( void ) {
 	int			sys_curtime;
-	static qboolean	initialized = qfalse;
+	static bool	initialized = false;
 
 	if ( !initialized ) {
 		sys_timeBase = timeGetTime();
-		initialized = qtrue;
+		initialized = true;
 	}
 	sys_curtime = timeGetTime() - sys_timeBase;
 
@@ -116,9 +116,9 @@ static int IsPentium( void ) {
 	}
 
 err:
-	return qfalse;
+	return false;
 good:
-	return qtrue;
+	return true;
 }
 
 static int Is3DNOW( void ) {
@@ -144,21 +144,21 @@ static int Is3DNOW( void ) {
 
 //  REMOVED because you can have 3DNow! on non-AMD systems
 //	if ( strcmp( processorString, "AuthenticAMD" ) )
-//		return qfalse;
+//		return false;
 
 	// check AMD-specific functions
 	CPUID( 0x80000000, regs );
 	if ( regs[0] < 0x80000000 ) {
-		return qfalse;
+		return false;
 	}
 
 	// bit 31 of EDX denotes 3DNOW! support
 	CPUID( 0x80000001, regs );
 	if ( regs[3] & ( 1 << 31 ) ) {
-		return qtrue;
+		return true;
 	}
 
-	return qfalse;
+	return false;
 }
 
 static int IsKNI( void ) {
@@ -169,10 +169,10 @@ static int IsKNI( void ) {
 
 	// bit 25 of EDX denotes KNI existence
 	if ( regs[3] & ( 1 << 25 ) ) {
-		return qtrue;
+		return true;
 	}
 
-	return qfalse;
+	return false;
 }
 
 static int IsMMX( void ) {
@@ -183,9 +183,9 @@ static int IsMMX( void ) {
 
 	// bit 23 of EDX denotes MMX existence
 	if ( regs[3] & ( 1 << 23 ) ) {
-		return qtrue;
+		return true;
 	}
-	return qfalse;
+	return false;
 }
 
 int Sys_GetProcessorId( void ) {

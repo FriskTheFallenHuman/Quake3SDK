@@ -157,30 +157,30 @@ void trap_SetBrushModel( gentity_t * ent, const char * name ) {
 }
 
 void trap_Trace( trace_t * results, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) {
-	gameSyscall->Trace( results, start, mins, maxs, end, passEntityNum, contentmask, qfalse );
+	gameSyscall->Trace( results, start, mins, maxs, end, passEntityNum, contentmask, false );
 }
 
 void trap_TraceCapsule( trace_t * results, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask ) {
-	gameSyscall->Trace( results, start, mins, maxs, end, passEntityNum, contentmask, qtrue );
+	gameSyscall->Trace( results, start, mins, maxs, end, passEntityNum, contentmask, true );
 }
 
 int trap_PointContents( const vec3_t point, int passEntityNum ) {
 	return gameSyscall->PointContents( point, passEntityNum );
 }
 
-qboolean trap_InPVS( const vec3_t p1, const vec3_t p2 ) {
+bool trap_InPVS( const vec3_t p1, const vec3_t p2 ) {
 	return gameSyscall->inPVS( p1, p2 );
 }
 
-qboolean trap_InPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
+bool trap_InPVSIgnorePortals( const vec3_t p1, const vec3_t p2 ) {
 	return gameSyscall->inPVSIgnorePortals( p1, p2 );
 }
 
-void trap_AdjustAreaPortalState( gentity_t * ent, qboolean open ) {
+void trap_AdjustAreaPortalState( gentity_t * ent, bool open ) {
 	gameSyscall->AdjustAreaPortalState( ( sharedEntity_t * )ent, open );
 }
 
-qboolean trap_AreasConnected( int area1, int area2 ) {
+bool trap_AreasConnected( int area1, int area2 ) {
 	return gameSyscall->AreasConnected( area1, area2 );
 }
 
@@ -196,20 +196,20 @@ int trap_EntitiesInBox( vec3_t mins, vec3_t maxs, int * list, int maxcount ) {
 	return gameSyscall->EntitiesInBox( mins, maxs, list, maxcount );
 }
 
-qboolean trap_EntityContact( vec3_t mins, vec3_t maxs, const gentity_t * ent ) {
-	return gameSyscall->EntityContact( mins, maxs, ( sharedEntity_t * )ent, qfalse );
+bool trap_EntityContact( vec3_t mins, vec3_t maxs, const gentity_t * ent ) {
+	return gameSyscall->EntityContact( mins, maxs, ( sharedEntity_t * )ent, false );
 }
 
-qboolean trap_EntityContactCapsule( vec3_t mins, vec3_t maxs, const gentity_t * ent ) {
-	return gameSyscall->EntityContact( mins, maxs, ( sharedEntity_t * )ent, qtrue );
+bool trap_EntityContactCapsule( vec3_t mins, vec3_t maxs, const gentity_t * ent ) {
+	return gameSyscall->EntityContact( mins, maxs, ( sharedEntity_t * )ent, true );
 }
 
 void trap_GetUsercmd( int clientNum, usercmd_t * cmd ) {
 	gameSyscall->GetUsercmd( clientNum, cmd );
 }
 
-qboolean trap_GetEntityToken( char * buffer, int bufferSize ) {
-	return qboolean( gameSyscall->GetEntityToken( buffer, bufferSize ) );
+bool trap_GetEntityToken( char * buffer, int bufferSize ) {
+	return gameSyscall->GetEntityToken( buffer, bufferSize );
 }
 
 int trap_RealTime( qtime_t * qtime ) {

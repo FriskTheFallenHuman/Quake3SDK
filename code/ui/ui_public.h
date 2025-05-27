@@ -72,14 +72,14 @@ typedef struct {
 	void ( *re_ModelBounds )( clipHandle_t model, vec3_t mins, vec3_t maxs );
 	void ( *SCR_UpdateScreen )( void );
 	int ( *re_LerpTag )( orientation_t * tag, clipHandle_t mod, int startFrame, int endFrame, float frac, const char * tagName );
-	sfxHandle_t( *S_RegisterSound )( const char * sample, qboolean compressed );
+	sfxHandle_t( *S_RegisterSound )( const char * sample, bool compressed );
 	void ( *S_StartLocalSound )( sfxHandle_t sfx, int channelNum );
 	void ( *Key_KeynumToStringBuf )( int keynum, char * buf, int buflen );
 	void ( *Key_GetBindingBuf )( int keynum, char * buf, int buflen );
 	void ( *Key_SetBinding )( int keynum, const char * binding );
-	qboolean( *Key_IsDown )( int keynum );
-	qboolean( *Key_GetOverstrikeMode )( void );
-	void ( *Key_SetOverstrikeMode )( qboolean state );
+	bool( *Key_IsDown )( int keynum );
+	bool( *Key_GetOverstrikeMode )( void );
+	void ( *Key_SetOverstrikeMode )( bool state );
 	void ( *Key_ClearStates )( void );
 	int ( *Key_GetCatcher )( void );
 	void ( *Key_SetCatcher )( int catcher );
@@ -99,9 +99,9 @@ typedef struct {
 	void ( *LAN_ClearPing )( int n );
 	void ( *LAN_GetPing )( int n, char * buf, int buflen, int * pingtime );
 	void ( *LAN_GetPingInfo )( int n, char * buf, int buflen );
-	void ( *LAN_MarkServerVisible )( int source, int n, qboolean visible );
+	void ( *LAN_MarkServerVisible )( int source, int n, bool visible );
 	int ( *LAN_ServerIsVisible )( int source, int n );
-	qboolean( *LAN_UpdateVisiblePings )( int source );
+	bool( *LAN_UpdateVisiblePings )( int source );
 	int ( *LAN_AddServer )( int source, const char * name, const char * addr );
 	void ( *LAN_RemoveServer )( int source, const char * addr );
 	int ( *LAN_CompareServers )( int source, int sortKey, int sortDir, int s1, int s2 );
@@ -137,10 +137,10 @@ typedef struct {
 	void ( *UI_KeyEvent )( int, int );
 	void ( *UI_MouseEvent )( int, int );
 	void ( *UI_Refresh )( int );
-	qboolean ( *UI_IsFullscreen )( void );
+	bool ( *UI_IsFullscreen )( void );
 	void ( *UI_SetActiveMenu )( uiMenuCommand_t );
-	qboolean ( *UI_ConsoleCommand )( int );
-	void ( *UI_DrawConnectScreen )( qboolean );
+	bool ( *UI_ConsoleCommand )( int );
+	void ( *UI_DrawConnectScreen )( bool );
 } uiExport_t;
 
 extern uiExport_t * ui;

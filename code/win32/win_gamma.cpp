@@ -38,7 +38,7 @@ static unsigned short s_oldHardwareGamma[3][256];
 void WG_CheckHardwareGamma( void ) {
 	HDC			hDC;
 
-	glConfig.deviceSupportsGamma = qfalse;
+	glConfig.deviceSupportsGamma = false;
 
 	// non-3Dfx standalone drivers don't support gamma changes, period
 	if ( glConfig.driverType == GLDRV_STANDALONE ) {
@@ -47,7 +47,7 @@ void WG_CheckHardwareGamma( void ) {
 
 	if ( !r_ignorehwgamma->integer ) {
 		hDC = GetDC( GetDesktopWindow() );
-		glConfig.deviceSupportsGamma = ( qboolean )GetDeviceGammaRamp( hDC, s_oldHardwareGamma );
+		glConfig.deviceSupportsGamma = GetDeviceGammaRamp( hDC, s_oldHardwareGamma );
 		ReleaseDC( GetDesktopWindow(), hDC );
 
 		if ( glConfig.deviceSupportsGamma ) {
@@ -57,7 +57,7 @@ void WG_CheckHardwareGamma( void ) {
 			if ( ( HIBYTE( s_oldHardwareGamma[0][255] ) <= HIBYTE( s_oldHardwareGamma[0][0] ) ) ||
 					( HIBYTE( s_oldHardwareGamma[1][255] ) <= HIBYTE( s_oldHardwareGamma[1][0] ) ) ||
 					( HIBYTE( s_oldHardwareGamma[2][255] ) <= HIBYTE( s_oldHardwareGamma[2][0] ) ) ) {
-				glConfig.deviceSupportsGamma = qfalse;
+				glConfig.deviceSupportsGamma = false;
 				ri.Warning( "device has broken gamma support, generated gamma.dat\n" );
 			}
 

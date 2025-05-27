@@ -147,11 +147,11 @@ clipHandle_t trap_CM_InlineModel( int index ) {
 }
 
 clipHandle_t trap_CM_TempBoxModel( const vec3_t mins, const vec3_t maxs ) {
-	return cgSyscall->CM_TempBoxModel( mins, maxs, qfalse );
+	return cgSyscall->CM_TempBoxModel( mins, maxs, false );
 }
 
 clipHandle_t trap_CM_TempCapsuleModel( const vec3_t mins, const vec3_t maxs ) {
-	return cgSyscall->CM_TempBoxModel( mins, maxs, qfalse );
+	return cgSyscall->CM_TempBoxModel( mins, maxs, false );
 }
 
 int trap_CM_PointContents( const vec3_t p, clipHandle_t model ) {
@@ -163,19 +163,19 @@ int trap_CM_TransformedPointContents( const vec3_t p, clipHandle_t model, const 
 }
 
 void trap_CM_BoxTrace( trace_t * results, const vec3_t start, const vec3_t end, vec3_t mins, vec3_t maxs, clipHandle_t model, int brushmask ) {
-	cgSyscall->CM_BoxTrace( results, start, end, mins, maxs, model, brushmask, qfalse );
+	cgSyscall->CM_BoxTrace( results, start, end, mins, maxs, model, brushmask, false );
 }
 
 void trap_CM_CapsuleTrace( trace_t * results, const vec3_t start, const vec3_t end, vec3_t mins, vec3_t maxs, clipHandle_t model, int brushmask ) {
-	cgSyscall->CM_BoxTrace( results, start, end, mins, maxs, model, brushmask, qtrue );
+	cgSyscall->CM_BoxTrace( results, start, end, mins, maxs, model, brushmask, true );
 }
 
 void trap_CM_TransformedBoxTrace( trace_t * results, const vec3_t start, const vec3_t end, vec3_t mins, vec3_t maxs, clipHandle_t model, int brushmask, const vec3_t origin, const vec3_t angles ) {
-	cgSyscall->CM_TransformedBoxTrace( results, start, end, mins, maxs, model, brushmask, origin, angles, qfalse );
+	cgSyscall->CM_TransformedBoxTrace( results, start, end, mins, maxs, model, brushmask, origin, angles, false );
 }
 
 void trap_CM_TransformedCapsuleTrace( trace_t * results, const vec3_t start, const vec3_t end, vec3_t mins, vec3_t maxs, clipHandle_t model, int brushmask, const vec3_t origin, const vec3_t angles ) {
-	cgSyscall->CM_TransformedBoxTrace( results, start, end, mins, maxs, model, brushmask, origin, angles, qtrue );
+	cgSyscall->CM_TransformedBoxTrace( results, start, end, mins, maxs, model, brushmask, origin, angles, true );
 }
 
 int trap_CM_MarkFragments( int numPoints, const vec3_t * points, const vec3_t projection, int maxPoints, vec3_t pointBuffer, int maxFragments, markFragment_t * fragmentBuffer ) {
@@ -190,7 +190,7 @@ void trap_S_StartLocalSound( sfxHandle_t sfx, int channelNum ) {
 	cgSyscall->S_StartLocalSound( sfx, channelNum );
 }
 
-void trap_S_ClearLoopingSounds( qboolean killall ) {
+void trap_S_ClearLoopingSounds( bool killall ) {
 	cgSyscall->S_ClearLoopingSounds( killall );
 }
 
@@ -214,7 +214,7 @@ void trap_S_Respatialize( int entityNum, const vec3_t origin, vec3_t axis[3], in
 	cgSyscall->S_Respatialize( entityNum, origin, axis, inwater );
 }
 
-sfxHandle_t trap_S_RegisterSound( const char * sample, qboolean compressed ) {
+sfxHandle_t trap_S_RegisterSound( const char * sample, bool compressed ) {
 	return cgSyscall->S_RegisterSound( sample, compressed );
 }
 
@@ -310,11 +310,11 @@ void trap_GetCurrentSnapshotNumber( int * snapshotNumber, int * serverTime ) {
 	cgSyscall->GetCurrentSnapshotNumber( snapshotNumber, serverTime );
 }
 
-qboolean trap_GetSnapshot( int snapshotNumber, snapshot_t * snapshot ) {
+bool trap_GetSnapshot( int snapshotNumber, snapshot_t * snapshot ) {
 	return cgSyscall->GetSnapshot( snapshotNumber, snapshot );
 }
 
-qboolean trap_GetServerCommand( int serverCommandNumber ) {
+bool trap_GetServerCommand( int serverCommandNumber ) {
 	return cgSyscall->GetServerCommand( serverCommandNumber );
 }
 
@@ -322,7 +322,7 @@ int trap_GetCurrentCmdNumber( void ) {
 	return cgSyscall->GetCurrentCmdNumber();
 }
 
-qboolean trap_GetUserCmd( int cmdNumber, usercmd_t * ucmd ) {
+bool trap_GetUserCmd( int cmdNumber, usercmd_t * ucmd ) {
 	return cgSyscall->GetUserCmd( cmdNumber, ucmd );
 }
 
@@ -334,7 +334,7 @@ int trap_MemoryRemaining( void ) {
 	return cgSyscall->MemoryRemaining();
 }
 
-qboolean trap_Key_IsDown( int keynum ) {
+bool trap_Key_IsDown( int keynum ) {
 	return cgSyscall->Key_IsDown( keynum );
 }
 
@@ -378,10 +378,10 @@ void trap_CIN_SetExtents( int handle, int x, int y, int w, int h ) {
 	cgSyscall->CIN_SetExtents( handle, x, y, w, h );
 }
 
-qboolean trap_GetEntityToken( char * buffer, int bufferSize ) {
+bool trap_GetEntityToken( char * buffer, int bufferSize ) {
 	return cgSyscall->GetEntityToken( buffer, bufferSize );
 }
 
-qboolean trap_R_inPVS( const vec3_t p1, const vec3_t p2 ) {
+bool trap_R_inPVS( const vec3_t p1, const vec3_t p2 ) {
 	return cgSyscall->R_inPVS( p1, p2 );
 }

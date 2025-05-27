@@ -49,7 +49,7 @@ void * UI_Alloc( int size ) {
 	char	* p;
 
 	if ( allocPoint + size > POOLSIZE ) {
-		outOfMemory = qtrue;
+		outOfMemory = true;
 		return NULL;
 	}
 
@@ -67,7 +67,7 @@ UI_InitMemory
 */
 void UI_InitMemory( void ) {
 	allocPoint = 0;
-	outOfMemory = qfalse;
+	outOfMemory = false;
 }
 
 /*
@@ -100,7 +100,7 @@ int UI_ParseInfos( char * buf, int max, char * infos[] ) {
 
 		info[0] = '\0';
 		while ( 1 ) {
-			token = COM_ParseExt( &buf, qtrue );
+			token = COM_ParseExt( &buf, true );
 			if ( !token[0] ) {
 				UI_Warning( "Unexpected end of info file\n" );
 				break;
@@ -110,7 +110,7 @@ int UI_ParseInfos( char * buf, int max, char * infos[] ) {
 			}
 			Q_strncpyz( key, token, sizeof( key ) );
 
-			token = COM_ParseExt( &buf, qfalse );
+			token = COM_ParseExt( &buf, false );
 			if ( !token[0] ) {
 				strcpy( token, "<NULL>" );
 			}

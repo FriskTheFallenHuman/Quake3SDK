@@ -56,12 +56,11 @@ void * Mem_HunkAlloc( int size ) {
 	return Hunk_Alloc( size, h_high );
 }
 
-//===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
-//===========================================================================
+/*
+=================
+GetMemory/GetMemoryDebug
+=================
+*/
 #ifdef MEMDEBUG
 void * GetMemoryDebug( unsigned long size, char * label, char * file, int line )
 #else
@@ -78,13 +77,13 @@ void * GetMemory( unsigned long size )
 	memid = ( unsigned long int * ) ptr;
 	*memid = MEM_ID;
 	return ( unsigned long int * )( ( char * ) ptr + sizeof( unsigned long int ) );
-} //end of the function GetMemory
-//===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
-//===========================================================================
+}
+
+/*
+=================
+GetClearedMemory/GetClearedMemoryDebug
+=================
+*/
 #ifdef MEMDEBUG
 void * GetClearedMemoryDebug( unsigned long size, char * label, char * file, int line )
 #else
@@ -99,13 +98,13 @@ void * GetClearedMemory( unsigned long size )
 #endif //MEMDEBUG
 	Com_Memset( ptr, 0, size );
 	return ptr;
-} //end of the function GetClearedMemory
-//===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
-//===========================================================================
+}
+
+/*
+=================
+GetHunkMemoryDebug/GetHunkMemory
+=================
+*/
 #ifdef MEMDEBUG
 void * GetHunkMemoryDebug( unsigned long size, char * label, char * file, int line )
 #else
@@ -122,13 +121,13 @@ void * GetHunkMemory( unsigned long size )
 	memid = ( unsigned long int * ) ptr;
 	*memid = HUNK_ID;
 	return ( unsigned long int * )( ( char * ) ptr + sizeof( unsigned long int ) );
-} //end of the function GetHunkMemory
-//===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
-//===========================================================================
+}
+
+/*
+=================
+GetClearedHunkMemoryDebug/GetClearedHunkMemory
+=================
+*/
 #ifdef MEMDEBUG
 void * GetClearedHunkMemoryDebug( unsigned long size, char * label, char * file, int line )
 #else
@@ -143,13 +142,13 @@ void * GetClearedHunkMemory( unsigned long size )
 #endif //MEMDEBUG
 	Com_Memset( ptr, 0, size );
 	return ptr;
-} //end of the function GetClearedHunkMemory
-//===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
-//===========================================================================
+}
+
+/*
+=================
+FreeMemory
+=================
+*/
 void FreeMemory( void * ptr ) {
 	unsigned long int * memid;
 
@@ -158,29 +157,29 @@ void FreeMemory( void * ptr ) {
 	if ( *memid == MEM_ID ) {
 		Z_Free( memid );
 	}
-} //end of the function FreeMemory
-//===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
-//===========================================================================
+}
+
+/*
+=================
+AvailableMemory
+=================
+*/
 int AvailableMemory( void ) {
 	return Z_AvailableMemory();
-} //end of the function AvailableMemory
-//===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
-//===========================================================================
+}
+
+/*
+=================
+PrintUsedMemorySize
+=================
+*/
 void PrintUsedMemorySize( void ) {
-} //end of the function PrintUsedMemorySize
-//===========================================================================
-//
-// Parameter:			-
-// Returns:				-
-// Changes Globals:		-
-//===========================================================================
+}
+
+/*
+=================
+PrintMemoryLabels
+=================
+*/
 void PrintMemoryLabels( void ) {
-} //end of the function PrintMemoryLabels
+}

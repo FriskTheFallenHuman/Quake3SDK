@@ -61,7 +61,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 typedef struct {
 	entityState_t	s;				// communicated by server to clients
 
-	qboolean	linked;				// qfalse if not in any good cluster
+	bool		linked;				// false if not in any good cluster
 	int			linkcount;
 
 	int			svFlags;			// SVF_NOCLIENT, SVF_BROADCAST, etc
@@ -70,7 +70,7 @@ typedef struct {
 	// if SVF_CLIENTMASK is set, use bitmask for clients to send to (maxclients must be <= 32, up to the mod to enforce this)
 	int			singleClient;
 
-	qboolean	bmodel;				// if false, assume an explicit mins / maxs bounding box
+	bool		bmodel;				// if false, assume an explicit mins / maxs bounding box
 	// only set by trap_SetBrushModel
 	vec3_t		mins, maxs;
 	int			contents;			// CONTENTS_TRIGGER, CONTENTS_SOLID, CONTENTS_BODY, etc
@@ -138,14 +138,14 @@ typedef struct {
 	void ( *SetBrushModel )( sharedEntity_t *, const char * );
 	void ( *Trace )( trace_t *, const vec3_t, vec3_t, vec3_t, const vec3_t, int, int, int );
 	int ( *PointContents )( const vec3_t, int );
-	qboolean ( *inPVS )( const vec3_t, const vec3_t );
-	qboolean ( *inPVSIgnorePortals )( const vec3_t, const vec3_t );
-	void ( *AdjustAreaPortalState )( sharedEntity_t *, qboolean );
-	qboolean ( *AreasConnected )( int, int );
+	bool ( *inPVS )( const vec3_t, const vec3_t );
+	bool ( *inPVSIgnorePortals )( const vec3_t, const vec3_t );
+	void ( *AdjustAreaPortalState )( sharedEntity_t *, bool );
+	bool ( *AreasConnected )( int, int );
 	void ( *LinkEntity )( sharedEntity_t * );
 	void ( *UnlinkEntity )( sharedEntity_t * );
 	int ( *EntitiesInBox )( const vec3_t, const vec3_t, int *, int );
-	qboolean ( *EntityContact )( vec3_t, vec3_t, const sharedEntity_t *, int );
+	bool ( *EntityContact )( vec3_t, vec3_t, const sharedEntity_t *, int );
 	void ( *GetUsercmd )( int, usercmd_t * );
 	int ( *GetEntityToken )( char *, int );
 	int ( *RealTime )( qtime_t * );
@@ -158,14 +158,14 @@ typedef struct {
 typedef struct {
 	void ( *G_InitGame )( int, int, int );
 	void ( *G_ShutdownGame )( int );
-	char * ( *ClientConnect )( int, qboolean );
+	char * ( *ClientConnect )( int, bool );
 	void ( *ClientThink )( int );
 	void ( *ClientUserinfoChanged )( int );
 	void ( *ClientDisconnect )( int );
 	void ( *ClientBegin )( int );
 	void ( *ClientCommand )( int );
 	void ( *G_RunFrame )( int );
-	qboolean ( *ConsoleCommand )( void );
+	bool ( *ConsoleCommand )( void );
 } gameExport_t;
 
 extern gameExport_t * game;

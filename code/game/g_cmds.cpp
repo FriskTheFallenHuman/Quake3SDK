@@ -106,16 +106,16 @@ void Cmd_Score_f( gentity_t * ent ) {
 CheatsOk
 ==================
 */
-qboolean	CheatsOk( gentity_t * ent ) {
+bool	CheatsOk( gentity_t * ent ) {
 	if ( !g_cheats.integer ) {
 		trap_SendServerCommand( ent - g_entities, va( "print \"Cheats are not enabled on this server.\n\"" ) );
-		return qfalse;
+		return false;
 	}
 	if ( ent->health <= 0 ) {
 		trap_SendServerCommand( ent - g_entities, va( "print \"You must be alive to use this command.\n\"" ) );
-		return qfalse;
+		return false;
 	}
-	return qtrue;
+	return true;
 }
 
 
@@ -231,7 +231,7 @@ void Cmd_Give_f( gentity_t * ent ) {
 	char	*	name;
 	gitem_t	*	it;
 	int			i;
-	qboolean	give_all;
+	bool		give_all;
 	gentity_t	*	it_ent;
 	trace_t		trace;
 
@@ -242,9 +242,9 @@ void Cmd_Give_f( gentity_t * ent ) {
 	name = ConcatArgs( 1 );
 
 	if ( Q_stricmp( name, "all" ) == 0 ) {
-		give_all = qtrue;
+		give_all = true;
 	} else {
-		give_all = qfalse;
+		give_all = false;
 	}
 
 	if ( give_all || Q_stricmp( name, "health" ) == 0 ) {
@@ -384,7 +384,7 @@ argv(0) noclip
 */
 void Cmd_Noclip_f( gentity_t * ent ) {
 	char	* msg;
-	qboolean enable;
+	bool	enable;
 
 	if ( !CheatsOk( ent ) ) {
 		return;
@@ -392,10 +392,10 @@ void Cmd_Noclip_f( gentity_t * ent ) {
 
 	if ( ent->client->noclip ) {
 		msg = "noclip OFF\n";
-		enable = qfalse;
+		enable = false;
 	} else {
 		msg = "noclip ON\n";
-		enable = qtrue;
+		enable = true;
 	}
 	ent->client->noclip = enable;
 
@@ -617,7 +617,7 @@ void SetTeam( gentity_t * ent, char * s ) {
 	client->sess.spectatorState = specState;
 	client->sess.spectatorClient = specClient;
 
-	client->sess.teamLeader = qfalse;
+	client->sess.teamLeader = false;
 	if ( team == TEAM_RED || team == TEAM_BLUE ) {
 		teamLeader = TeamLeader( team );
 		// if there is no team leader, set the this player has leader
@@ -905,7 +905,7 @@ void G_Say( gentity_t * ent, gentity_t * target, int mode, const char * chatText
 Cmd_Say_f
 ==================
 */
-static void Cmd_Say_f( gentity_t * ent, int mode, qboolean arg0 ) {
+static void Cmd_Say_f( gentity_t * ent, int mode, bool arg0 ) {
 	char	*	p;
 
 	if ( trap_Argc() < 2 && !arg0 ) {
@@ -958,7 +958,7 @@ static void Cmd_Tell_f( gentity_t * ent ) {
 }
 
 
-static void G_VoiceTo( gentity_t * ent, gentity_t * other, int mode, const char * id, qboolean voiceonly ) {
+static void G_VoiceTo( gentity_t * ent, gentity_t * other, int mode, const char * id, bool voiceonly ) {
 	int color;
 	char * cmd;
 
@@ -993,7 +993,7 @@ static void G_VoiceTo( gentity_t * ent, gentity_t * other, int mode, const char 
 	trap_SendServerCommand( other - g_entities, va( "%s %d %d %d %s", cmd, voiceonly, ent->s.number, color, id ) );
 }
 
-void G_Voice( gentity_t * ent, gentity_t * target, int mode, const char * id, qboolean voiceonly ) {
+void G_Voice( gentity_t * ent, gentity_t * target, int mode, const char * id, bool voiceonly ) {
 	int			j;
 	gentity_t	* other;
 
@@ -1023,7 +1023,7 @@ void G_Voice( gentity_t * ent, gentity_t * target, int mode, const char * id, qb
 Cmd_Voice_f
 ==================
 */
-static void Cmd_Voice_f( gentity_t * ent, int mode, qboolean arg0, qboolean voiceonly ) {
+static void Cmd_Voice_f( gentity_t * ent, int mode, bool arg0, bool voiceonly ) {
 	char	*	p;
 
 	if ( trap_Argc() < 2 && !arg0 ) {
@@ -1044,7 +1044,7 @@ static void Cmd_Voice_f( gentity_t * ent, int mode, qboolean arg0, qboolean voic
 Cmd_VoiceTell_f
 ==================
 */
-static void Cmd_VoiceTell_f( gentity_t * ent, qboolean voiceonly ) {
+static void Cmd_VoiceTell_f( gentity_t * ent, bool voiceonly ) {
 	int			targetNum;
 	gentity_t	* target;
 	char	*	id;
@@ -1087,7 +1087,7 @@ static void Cmd_VoiceTaunt_f( gentity_t * ent ) {
 	}
 
 	// just say something
-	G_Voice( ent, NULL, SAY_ALL, VOICECHAT_TAUNT, qfalse );
+	G_Voice( ent, NULL, SAY_ALL, VOICECHAT_TAUNT, false );
 }
 
 
@@ -1550,11 +1550,11 @@ void ClientCommand( int clientNum ) {
 	trap_Argv( 0, cmd, sizeof( cmd ) );
 
 	if ( Q_stricmp( cmd, "say" ) == 0 ) {
-		Cmd_Say_f( ent, SAY_ALL, qfalse );
+		Cmd_Say_f( ent, SAY_ALL, false );
 		return;
 	}
 	if ( Q_stricmp( cmd, "say_team" ) == 0 ) {
-		Cmd_Say_f( ent, SAY_TEAM, qfalse );
+		Cmd_Say_f( ent, SAY_TEAM, false );
 		return;
 	}
 	if ( Q_stricmp( cmd, "tell" ) == 0 ) {
@@ -1562,27 +1562,27 @@ void ClientCommand( int clientNum ) {
 		return;
 	}
 	if ( Q_stricmp( cmd, "vsay" ) == 0 ) {
-		Cmd_Voice_f( ent, SAY_ALL, qfalse, qfalse );
+		Cmd_Voice_f( ent, SAY_ALL, false, false );
 		return;
 	}
 	if ( Q_stricmp( cmd, "vsay_team" ) == 0 ) {
-		Cmd_Voice_f( ent, SAY_TEAM, qfalse, qfalse );
+		Cmd_Voice_f( ent, SAY_TEAM, false, false );
 		return;
 	}
 	if ( Q_stricmp( cmd, "vtell" ) == 0 ) {
-		Cmd_VoiceTell_f( ent, qfalse );
+		Cmd_VoiceTell_f( ent, false );
 		return;
 	}
 	if ( Q_stricmp( cmd, "vosay" ) == 0 ) {
-		Cmd_Voice_f( ent, SAY_ALL, qfalse, qtrue );
+		Cmd_Voice_f( ent, SAY_ALL, false, true );
 		return;
 	}
 	if ( Q_stricmp( cmd, "vosay_team" ) == 0 ) {
-		Cmd_Voice_f( ent, SAY_TEAM, qfalse, qtrue );
+		Cmd_Voice_f( ent, SAY_TEAM, false, true );
 		return;
 	}
 	if ( Q_stricmp( cmd, "votell" ) == 0 ) {
-		Cmd_VoiceTell_f( ent, qtrue );
+		Cmd_VoiceTell_f( ent, true );
 		return;
 	}
 	if ( Q_stricmp( cmd, "vtaunt" ) == 0 ) {
@@ -1596,7 +1596,7 @@ void ClientCommand( int clientNum ) {
 
 	// ignore all other commands when at intermission
 	if ( level.intermissiontime ) {
-		Cmd_Say_f( ent, qfalse, qtrue );
+		Cmd_Say_f( ent, false, true );
 		return;
 	}
 

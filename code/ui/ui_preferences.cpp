@@ -179,14 +179,14 @@ static void Crosshair_Draw( void * self ) {
 	float	*	color;
 	int			x, y;
 	int			style;
-	qboolean	focus;
+	bool	focus;
 
 	s = ( menulist_s * )self;
 	x = s->generic.x;
 	y =	s->generic.y;
 
 	style = UI_SMALLFONT;
-	focus = ( qboolean )( s->generic.parent->cursor == s->generic.menuPosition );
+	focus = ( s->generic.parent->cursor == s->generic.menuPosition );
 
 	if ( s->generic.flags & QMF_GRAYED ) {
 		color = text_color_disabled;
@@ -221,8 +221,8 @@ static void Preferences_MenuInit( void ) {
 
 	Preferences_Cache();
 
-	s_preferences.menu.wrapAround = qtrue;
-	s_preferences.menu.fullscreen = qtrue;
+	s_preferences.menu.wrapAround = true;
+	s_preferences.menu.fullscreen = true;
 
 	s_preferences.banner.generic.type  = MTYPE_BTEXT;
 	s_preferences.banner.generic.x	   = 320;

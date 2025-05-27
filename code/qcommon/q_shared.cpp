@@ -209,7 +209,7 @@ int COM_GetCurrentParseLine( void ) {
 }
 
 char * COM_Parse( char ** data_p ) {
-	return COM_ParseExt( data_p, qtrue );
+	return COM_ParseExt( data_p, true );
 }
 
 void COM_ParseError( char * format, ... ) {
@@ -241,12 +241,12 @@ COM_Parse
 Parse a token out of a string
 Will never return NULL, just empty strings
 
-If "allowLineBreaks" is qtrue then an empty
+If "allowLineBreaks" is true then an empty
 string will be returned if the next token is
 a newline.
 ==============
 */
-static char * SkipWhitespace( char * data, qboolean *hasNewLines ) {
+static char * SkipWhitespace( char * data, bool *hasNewLines ) {
 	int c;
 
 	while ( ( c = *data ) <= ' ' ) {
@@ -255,7 +255,7 @@ static char * SkipWhitespace( char * data, qboolean *hasNewLines ) {
 		}
 		if ( c == '\n' ) {
 			com_lines++;
-			*hasNewLines = qtrue;
+			*hasNewLines = true;
 		}
 		data++;
 	}
@@ -266,7 +266,7 @@ static char * SkipWhitespace( char * data, qboolean *hasNewLines ) {
 int COM_Compress( char * data_p ) {
 	char * in, * out;
 	int c;
-	qboolean newline = qfalse, whitespace = qfalse;
+	bool newline = false, whitespace = false;
 
 	in = out = data_p;
 	if ( in ) {
@@ -286,23 +286,23 @@ int COM_Compress( char * data_p ) {
 				}
 				// record when we hit a newline
 			} else if ( c == '\n' || c == '\r' ) {
-				newline = qtrue;
+				newline = true;
 				in++;
 				// record when we hit whitespace
 			} else if ( c == ' ' || c == '\t' ) {
-				whitespace = qtrue;
+				whitespace = true;
 				in++;
 				// an actual token
 			} else {
 				// if we have a pending newline, emit it (and it counts as whitespace)
 				if ( newline ) {
 					*out++ = '\n';
-					newline = qfalse;
-					whitespace = qfalse;
+					newline = false;
+					whitespace = false;
 				}
 				if ( whitespace ) {
 					*out++ = ' ';
-					whitespace = qfalse;
+					whitespace = false;
 				}
 
 				// copy quoted strings unmolested
@@ -334,9 +334,9 @@ int COM_Compress( char * data_p ) {
 	return out - data_p;
 }
 
-char * COM_ParseExt( char ** data_p, qboolean allowLineBreaks ) {
+char * COM_ParseExt( char ** data_p, bool allowLineBreaks ) {
 	int c = 0, len;
-	qboolean hasNewLines = qfalse;
+	bool hasNewLines = false;
 	char * data;
 
 	data = *data_p;
@@ -456,7 +456,7 @@ int COM_ParseInfos( char * buf, int max, char infos[][MAX_INFO_STRING] ) {
 
 		infos[count][0] = 0;
 		while ( 1 ) {
-			token = COM_ParseExt( &buf, qtrue );
+			token = COM_ParseExt( &buf, true );
 			if ( !token[0] ) {
 				Com_Printf( "Unexpected end of info file\n" );
 				break;
@@ -466,7 +466,7 @@ int COM_ParseInfos( char * buf, int max, char infos[][MAX_INFO_STRING] ) {
 			}
 			Q_strncpyz( key, token, sizeof( key ) );
 
-			token = COM_ParseExt( &buf, qfalse );
+			token = COM_ParseExt( &buf, false );
 			if ( !token[0] ) {
 				strcpy( token, "<NULL>" );
 			}
@@ -510,7 +510,7 @@ void SkipBracedSection( char ** program ) {
 
 	depth = 0;
 	do {
-		token = COM_ParseExt( program, qtrue );
+		token = COM_ParseExt( program, true );
 		if ( token[1] == 0 ) {
 			if ( token[0] == '{' ) {
 				depth++;
@@ -1082,14 +1082,14 @@ Some characters are illegal in info strings because they
 can mess up the server's parsing
 ==================
 */
-qboolean Info_Validate( const char * s ) {
+bool Info_Validate( const char * s ) {
 	if ( strchr( s, '\"' ) ) {
-		return qfalse;
+		return false;
 	}
 	if ( strchr( s, ';' ) ) {
-		return qfalse;
+		return false;
 	}
-	return qtrue;
+	return true;
 }
 
 /*
