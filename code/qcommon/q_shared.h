@@ -38,6 +38,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include <cstdarg>
 #include <cstring>
 #include <cstdlib>
+#include <cstdint>
 #include <ctime>
 #include <ctype.h>
 #include <climits>

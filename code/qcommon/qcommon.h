@@ -625,8 +625,8 @@ void		Com_EndRedirect( void );
 void 		Com_Quit_f( void );
 int			Com_EventLoop( void );
 int			Com_Milliseconds( void );	// will be journaled properly
-unsigned	Com_BlockChecksum( void * buffer, int length );
-unsigned	Com_BlockChecksumKey ( void * buffer, int length, int key );
+uint32_t	Com_BlockChecksum( const void * buffer, const size_t length );
+unsigned	Com_BlockChecksumKey( void * buffer, int length, int key );
 int			Com_HashKey( char * string, int maxlen );
 int			Com_Filter( char * filter, char * name, int casesensitive );
 int			Com_FilterPath( char * filter, char * name, int casesensitive );
