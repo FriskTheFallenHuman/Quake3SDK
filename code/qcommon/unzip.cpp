@@ -1074,7 +1074,6 @@ static void   zcfree  OF( ( voidp opaque, voidp ptr ) );
 #define SIZEZIPLOCALHEADER (0x1e)
 
 
-
 /* ===========================================================================
 	 Read a byte from a gz_stream; update next_in and avail_in. Return EOF
    for end of file.
@@ -1651,7 +1650,6 @@ static int unzlocal_GetCurrentFileInfoInternal( unzFile file,
 }
 
 
-
 /*
   Write info about the ZipFile in the *pglobal_info structure.
   No preparation of the structure is needed
@@ -2186,7 +2184,6 @@ extern int unzeof( unzFile file ) {
 		return 0;
 	}
 }
-
 
 
 /*
@@ -4066,7 +4063,6 @@ int inflateEnd( z_streamp z ) {
 }
 
 
-
 int inflateInit2_( z_streamp z, int w, const char * version, int stream_size ) {
 	if ( version == Z_NULL || version[0] != ZLIB_VERSION[0] ||
 			stream_size != sizeof( z_stream ) ) {
@@ -4350,5 +4346,4 @@ void  zcfree ( voidp opaque, voidp ptr ) {
 		return;    /* make compiler happy */
 	}
 }
-
 

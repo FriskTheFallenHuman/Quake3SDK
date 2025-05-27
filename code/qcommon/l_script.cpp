@@ -460,8 +460,7 @@ int PS_ReadString( script_t * script, token_t * token, int quote ) {
 			}
 			//step over the new leading double quote
 			script->script_p++;
-		}
-		else {
+		} else {
 			if ( *script->script_p == '\0' ) {
 				token->string[len] = 0;
 				ScriptError( script, "missing trailing quote" );
@@ -536,21 +535,18 @@ void NumberValue( char * string, int subtype, unsigned long int * intvalue,
 				*floatvalue = *floatvalue + ( long double )( *string - '0' ) /
 							  ( long double ) dotfound;
 				dotfound *= 10;
-			}
-			else {
+			} else {
 				*floatvalue = *floatvalue * 10.0 + ( long double )( *string - '0' );
 			}
 			string++;
 		}
 		*intvalue = ( unsigned long ) * floatvalue;
-	}
-	else if ( subtype & TT_DECIMAL ) {
+	} else if ( subtype & TT_DECIMAL ) {
 		while ( *string ) {
 			*intvalue = *intvalue * 10 + ( *string++ - '0' );
 		}
 		*floatvalue = *intvalue;
-	}
-	else if ( subtype & TT_HEX ) {
+	} else if ( subtype & TT_HEX ) {
 		//step over the leading 0x or 0X
 		string += 2;
 		while ( *string ) {
@@ -565,16 +561,14 @@ void NumberValue( char * string, int subtype, unsigned long int * intvalue,
 			string++;
 		}
 		*floatvalue = *intvalue;
-	}
-	else if ( subtype & TT_OCTAL ) {
+	} else if ( subtype & TT_OCTAL ) {
 		//step over the first zero
 		string += 1;
 		while ( *string ) {
 			*intvalue = ( *intvalue << 3 ) + ( *string++ - '0' );
 		}
 		*floatvalue = *intvalue;
-	}
-	else if ( subtype & TT_BINARY ) {
+	} else if ( subtype & TT_BINARY ) {
 		//step over the leading 0b or 0B
 		string += 2;
 		while ( *string ) {
@@ -711,8 +705,7 @@ int PS_ReadLiteral( script_t * script, token_t * token ) {
 		if ( !PS_ReadEscapeCharacter( script, &token->string[1] ) ) {
 			return 0;
 		}
-	}
-	else {
+	} else {
 		token->string[1] = *script->script_p++;
 	}
 	//check for trailing quote
@@ -953,8 +946,7 @@ int PS_ExpectTokenType( script_t * script, int type, int subtype, token_t * toke
 			ScriptError( script, "expected %s, found %s", str, token->string );
 			return 0;
 		}
-	}
-	else if ( token->type == TT_PUNCTUATION ) {
+	} else if ( token->type == TT_PUNCTUATION ) {
 		if ( subtype < 0 ) {
 			ScriptError( script, "BUG: wrong punctuation subtype" );
 			return 0;
@@ -977,8 +969,7 @@ int PS_ExpectAnyToken( script_t * script, token_t * token ) {
 	if ( !PS_ReadToken( script, token ) ) {
 		ScriptError( script, "couldn't read expected token" );
 		return 0;
-	}
-	else {
+	} else {
 		return 1;
 	}
 }
@@ -1070,8 +1061,7 @@ returns the next character of the read white space, returns NULL if none
 char PS_NextWhiteSpaceChar( script_t * script ) {
 	if ( script->whitespace_p != script->endwhitespace_p ) {
 		return *script->whitespace_p++;
-	}
-	else {
+	} else {
 		return 0;
 	}
 }
@@ -1117,8 +1107,7 @@ long double ReadSignedFloat( script_t * script ) {
 	if ( !strcmp( token.string, "-" ) ) {
 		sign = -1;
 		PS_ExpectTokenType( script, TT_NUMBER, 0, &token );
-	}
-	else if ( token.type != TT_NUMBER ) {
+	} else if ( token.type != TT_NUMBER ) {
 		ScriptError( script, "expected float value, found %s\n", token.string );
 	}
 	return sign * token.floatvalue;
@@ -1137,8 +1126,7 @@ signed long int ReadSignedInt( script_t * script ) {
 	if ( !strcmp( token.string, "-" ) ) {
 		sign = -1;
 		PS_ExpectTokenType( script, TT_NUMBER, TT_INTEGER, &token );
-	}
-	else if ( token.type != TT_NUMBER || token.subtype == TT_FLOAT ) {
+	} else if ( token.type != TT_NUMBER || token.subtype == TT_FLOAT ) {
 		ScriptError( script, "expected integer value, found %s\n", token.string );
 	}
 	return sign * token.intvalue;

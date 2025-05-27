@@ -51,7 +51,6 @@ void SP_info_player_intermission( gentity_t * ent ) {
 }
 
 
-
 /*
 =======================================================================
 
@@ -1286,5 +1285,4 @@ void ClientDisconnect( int clientNum ) {
 
 	CalculateRanks();
 }
-
 

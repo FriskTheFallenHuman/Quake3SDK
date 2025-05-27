@@ -1134,7 +1134,7 @@ G_RadiusDamage
 ============
 */
 bool G_RadiusDamage( vec3_t origin, gentity_t * attacker, float damage, float radius,
-						 gentity_t * ignore, int mod ) {
+					 gentity_t * ignore, int mod ) {
 	float		points, dist;
 	gentity_t	* ent;
 	int			entityList[MAX_GENTITIES];

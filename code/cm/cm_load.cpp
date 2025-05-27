@@ -56,7 +56,6 @@ cplane_t  *  box_planes;
 cbrush_t  *  box_brush;
 
 
-
 void    CM_InitBoxHull( void );
 void    CM_FloodAreaConnections( void );
 
@@ -828,5 +827,4 @@ void CM_ModelBounds( clipHandle_t model, vec3_t mins, vec3_t maxs ) {
 	VectorCopy( cmod->mins, mins );
 	VectorCopy( cmod->maxs, maxs );
 }
-
 

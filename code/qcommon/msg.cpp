@@ -238,7 +238,6 @@ int MSG_ReadBits( msg_t *msg, int bits ) {
 }
 
 
-
 //================================================================================
 
 //
@@ -519,7 +518,7 @@ delta functions
 */
 
 #ifndef DEDICATED
-extern cvar_t *cl_shownet;
+extern cvar_t * cl_shownet;
 
 #define	LOG(x) if( cl_shownet->integer == 4 ) { Com_Printf("%s ", x ); };
 #else

@@ -675,7 +675,6 @@ int Q_stricmpn( const char * s1, const char * s2, int n ) {
 	}
 
 
-
 	do {
 		c1 = *s1++;
 		c2 = *s2++;
@@ -1072,8 +1071,6 @@ void Info_RemoveKey_Big( char * s, const char * key ) {
 }
 
 
-
-
 /*
 ==================
 Info_Validate
@@ -1182,8 +1179,5 @@ void Info_SetValueForKey_Big( char * s, const char * key, const char * value ) {
 }
 
 
-
-
 //====================================================================
-
 

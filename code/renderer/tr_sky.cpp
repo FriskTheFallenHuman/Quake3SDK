@@ -742,8 +742,6 @@ void RB_DrawSun( void ) {
 }
 
 
-
-
 /*
 ================
 RB_StageIteratorSky

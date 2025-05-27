@@ -146,7 +146,6 @@ void IN_KeyUp( kbutton_t * b ) {
 }
 
 
-
 /*
 ===============
 CL_KeyState
@@ -181,7 +180,6 @@ float CL_KeyState( kbutton_t * key ) {
 
 	return val;
 }
-
 
 
 void IN_UpDown( void ) {

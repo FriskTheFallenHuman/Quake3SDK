@@ -1072,7 +1072,6 @@ static void CG_RegisterGraphics( void ) {
 }
 
 
-
 /*
 =======================
 CG_BuildSpectatorString
@@ -1409,7 +1408,6 @@ bool CG_Load_Menu( char ** p ) {
 }
 
 
-
 void CG_LoadMenus( const char * menuFile ) {
 	char	* token;
 	char * p;
@@ -1476,7 +1474,6 @@ void CG_LoadMenus( const char * menuFile ) {
 	trap_Print( "UI menu load time = %d milli seconds\n", trap_Milliseconds() - start );
 
 }
-
 
 
 static bool CG_OwnerDrawHandleKey( int ownerDraw, int flags, float * special, int key ) {
@@ -1952,7 +1949,6 @@ CG_EventHandling
 #ifndef MISSIONPACK
 void CG_EventHandling( int type ) {
 }
-
 
 
 void CG_KeyEvent( int key, bool down ) {

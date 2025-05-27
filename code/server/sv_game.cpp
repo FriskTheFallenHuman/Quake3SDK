@@ -132,7 +132,6 @@ void SV_SetBrushModel( sharedEntity_t * ent, const char * name ) {
 }
 
 
-
 /*
 =================
 SV_inPVS
@@ -320,7 +319,6 @@ static void SV_InitGameVM( bool restart ) {
 	// init for this gamestate
 	game->G_InitGame( svs.time, Com_Milliseconds(), restart );
 }
-
 
 
 /*

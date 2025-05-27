@@ -265,8 +265,6 @@ static void S_PaintChannelFrom16( channel_t * ch, const sfx_t *sc, int count, in
 		samples = chunk->sndChunk;
 
 
-
-
 		for ( i = 0 ; i < count ; i++ ) {
 
 			aoff = ooff;

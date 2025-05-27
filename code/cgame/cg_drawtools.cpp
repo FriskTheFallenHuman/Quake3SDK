@@ -91,7 +91,6 @@ void CG_DrawRect( float x, float y, float width, float height, float size, const
 }
 
 
-
 /*
 ================
 CG_DrawPic
@@ -103,7 +102,6 @@ void CG_DrawPic( float x, float y, float width, float height, qhandle_t hShader 
 	CG_AdjustFrom640( &x, &y, &width, &height );
 	trap_R_DrawStretchPic( x, y, width, height, 0, 0, 1, 1, hShader );
 }
-
 
 
 /*
@@ -275,7 +273,6 @@ static void CG_TileClearBox( int x, int y, int w, int h, qhandle_t hShader ) {
 }
 
 
-
 /*
 ==============
 CG_TileClear
@@ -312,7 +309,6 @@ void CG_TileClear( void ) {
 	// clear right of view screen
 	CG_TileClearBox( right, top, w - right, bottom - top + 1, cgs.media.backTileShader );
 }
-
 
 
 /*
@@ -370,7 +366,6 @@ float * CG_TeamColor( int team ) {
 }
 
 
-
 /*
 =================
 CG_GetColorForHealth
@@ -424,8 +419,6 @@ void CG_ColorForHealth( vec4_t hcolor ) {
 	CG_GetColorForHealth( cg.snap->ps.stats[STAT_HEALTH],
 						  cg.snap->ps.stats[STAT_ARMOR], hcolor );
 }
-
-
 
 
 // bk001205 - code below duplicated in q3_ui/ui-atoms.c

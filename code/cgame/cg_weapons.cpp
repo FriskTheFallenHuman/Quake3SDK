@@ -1674,7 +1674,6 @@ void CG_OutOfAmmoChange( void ) {
 }
 
 
-
 /*
 ===================================================================================================
 
@@ -1978,7 +1977,6 @@ void CG_MissileHitPlayer( int weapon, vec3_t origin, vec3_t dir, int entityNum )
 			break;
 	}
 }
-
 
 
 /*

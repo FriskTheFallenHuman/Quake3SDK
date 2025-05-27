@@ -88,7 +88,6 @@ void P_DamageFeedback( gentity_t * player ) {
 }
 
 
-
 /*
 =============
 P_WorldEffects
@@ -176,7 +175,6 @@ void P_WorldEffects( gentity_t * ent ) {
 }
 
 
-
 /*
 ===============
 G_SetClientSound
@@ -194,7 +192,6 @@ void G_SetClientSound( gentity_t * ent ) {
 			ent->client->ps.loopSound = 0;
 		}
 }
-
 
 
 //==============================================================
@@ -350,7 +347,6 @@ void SpectatorThink( gentity_t * ent, usercmd_t * ucmd ) {
 		Cmd_FollowCycle_f( ent, 1 );
 	}
 }
-
 
 
 /*
@@ -1218,5 +1214,4 @@ void ClientEndFrame( gentity_t * ent ) {
 //	i = trap_AAS_PointReachabilityAreaIndex( ent->client->ps.origin );
 //	ent->client->areabits[i >> 3] |= 1 << (i & 7);
 }
-
 

@@ -54,7 +54,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // (entityShared_t->singleClient)
 
 
-
 //===============================================================
 
 
@@ -94,13 +93,11 @@ typedef struct {
 } entityShared_t;
 
 
-
 // the server looks at a sharedEntity, which is the start of the game's gentity_t structure
 typedef struct {
 	entityState_t	s;				// communicated by server to clients
 	entityShared_t	r;				// shared by both the server system and game
 } sharedEntity_t;
-
 
 
 //===============================================================

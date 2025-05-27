@@ -24,7 +24,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "g_local.h"
 
 
-
 /*
 ===============================================================================
 
@@ -560,7 +559,6 @@ void MatchTeam( gentity_t * teamLeader, int moverState, int time ) {
 }
 
 
-
 /*
 ================
 ReturnToPos1
@@ -701,7 +699,6 @@ void Use_BinaryMover( gentity_t * ent, gentity_t * other, gentity_t * activator 
 		return;
 	}
 }
-
 
 
 /*
@@ -1242,7 +1239,6 @@ void SP_func_button( gentity_t * ent ) {
 }
 
 
-
 /*
 ===============================================================================
 
@@ -1375,7 +1371,6 @@ void Think_SetupTrainTargets( gentity_t * ent ) {
 }
 
 
-
 /*QUAKED path_corner (.5 .3 0) (-8 -8 -8) (8 8 8)
 Train path corners.
 Target: next path corner and other targets to fire
@@ -1390,7 +1385,6 @@ void SP_path_corner( gentity_t * self ) {
 	}
 	// path corners don't need to be linked in
 }
-
 
 
 /*QUAKED func_train (0 .5 .8) ? START_ON TOGGLE BLOCK_STOPS

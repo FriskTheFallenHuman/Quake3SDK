@@ -181,8 +181,6 @@ void CG_DamageFeedback( int yawByte, int pitchByte, int damage ) {
 }
 
 
-
-
 /*
 ================
 CG_Respawn

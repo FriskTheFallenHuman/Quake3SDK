@@ -130,7 +130,6 @@ void S_SoundInfo_f( void ) {
 }
 
 
-
 /*
 ================
 S_Init
@@ -679,9 +678,8 @@ void S_ClearSoundBuffer( void ) {
 	}
 
 	SNDDMA_BeginPainting();
-	if ( dma.buffer )
-	{
-		Com_Memset(dma.buffer, clear, dma.samples * dma.samplebits/8);
+	if ( dma.buffer ) {
+		Com_Memset( dma.buffer, clear, dma.samples * dma.samplebits / 8 );
 	}
 	SNDDMA_Submit();
 }
@@ -830,7 +828,6 @@ void S_AddRealLoopingSound( int entityNum, const vec3_t origin, const vec3_t vel
 	loopSounds[entityNum].kill = false;
 	loopSounds[entityNum].doppler = false;
 }
-
 
 
 /*
@@ -1263,7 +1260,6 @@ void S_Update_( void ) {
 	if ( endtime - s_soundtime > samps ) {
 		endtime = s_soundtime + samps;
 	}
-
 
 
 	SNDDMA_BeginPainting();

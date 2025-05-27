@@ -85,7 +85,6 @@ void CG_PositionRotatedEntityOnTag( refEntity_t * entity, const refEntity_t * pa
 }
 
 
-
 /*
 ==========================================================================
 

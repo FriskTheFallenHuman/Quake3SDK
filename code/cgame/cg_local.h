@@ -167,7 +167,6 @@ typedef struct {
 //=================================================
 
 
-
 // centity_t have a direct corespondence with gentity_t in the game, but
 // only the entityState_t is directly communicated to the cgame
 typedef struct centity_s {
@@ -1293,7 +1292,6 @@ bool CG_OtherTeamHasFlag();
 qhandle_t CG_StatusHandle( int task );
 
 
-
 //
 // cg_player.c
 //
@@ -1335,7 +1333,6 @@ void CG_PositionEntityOnTag( refEntity_t * entity, const refEntity_t * parent,
 							 qhandle_t parentModel, char * tagName );
 void CG_PositionRotatedEntityOnTag( refEntity_t * entity, const refEntity_t * parent,
 									qhandle_t parentModel, char * tagName );
-
 
 
 //

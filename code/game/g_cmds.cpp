@@ -100,7 +100,6 @@ void Cmd_Score_f( gentity_t * ent ) {
 }
 
 
-
 /*
 ==================
 CheatsOk
@@ -457,7 +456,6 @@ void Cmd_TeamTask_f( gentity_t * ent ) {
 	trap_SetUserinfo( client, userinfo );
 	ClientUserinfoChanged( client );
 }
-
 
 
 /*
@@ -1091,7 +1089,6 @@ static void Cmd_VoiceTaunt_f( gentity_t * ent ) {
 }
 
 
-
 static char	* gc_orders[] = {
 	"hold your position",
 	"hold this position",
@@ -1507,7 +1504,6 @@ void Cmd_SetViewpos_f( gentity_t * ent ) {
 
 	TeleportPlayer( ent, origin, angles );
 }
-
 
 
 /*

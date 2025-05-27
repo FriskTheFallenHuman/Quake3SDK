@@ -467,7 +467,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 }
 
 
-
 /*
 =================
 G_ShutdownGame
@@ -485,7 +484,6 @@ void G_ShutdownGame( int restart ) {
 	// write all the client session data so we can get it back
 	G_WriteSessionData();
 }
-
 
 
 //===================================================================
@@ -1315,7 +1313,6 @@ void CheckExitRules( void ) {
 		}
 	}
 }
-
 
 
 /*

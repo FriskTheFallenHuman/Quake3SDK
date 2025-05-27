@@ -30,7 +30,6 @@ extern menuDef_t * menuScoreboard;
 #endif
 
 
-
 void CG_TargetCommand_f( void ) {
 	int		targetNum;
 	char	test[4];
@@ -43,7 +42,6 @@ void CG_TargetCommand_f( void ) {
 	trap_Argv( 1, test, 4 );
 	trap_SendConsoleCommand( va( "gc %i %i", targetNum, atoi( test ) ) );
 }
-
 
 
 /*
@@ -350,7 +348,6 @@ static void CG_TaskSuicide_f( void ) {
 	Com_sprintf( command, 128, "tell %i suicide", clientNum );
 	trap_SendClientCommand( command );
 }
-
 
 
 /*

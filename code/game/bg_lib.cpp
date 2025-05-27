@@ -43,7 +43,7 @@ static const char rcsid[] =
 #endif /* LIBC_SCCS and not lint */
 
 // bk001127 - needed for DLL's
-typedef int		 cmp_t( const void *, const void * );
+	typedef int		 cmp_t( const void *, const void * );
 
 static char * med3( char *, char *, char *, cmp_t * );
 static void	 swapfunc( char *, char *, int, int );

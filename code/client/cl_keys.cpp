@@ -630,7 +630,6 @@ void Message_Key( int key ) {
 			}
 
 
-
 			CL_AddReliableCommand( buffer );
 		}
 		cls.keyCatchers &= ~KEYCATCH_MESSAGE;

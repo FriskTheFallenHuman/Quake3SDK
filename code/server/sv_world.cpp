@@ -47,7 +47,6 @@ clipHandle_t SV_ClipHandleForEntity( const sharedEntity_t * ent ) {
 }
 
 
-
 /*
 ===============================================================================
 
@@ -449,7 +448,6 @@ int SV_AreaEntities( const vec3_t mins, const vec3_t maxs, int * entityList, int
 }
 
 
-
 //===========================================================================
 
 
@@ -651,7 +649,6 @@ void SV_Trace( trace_t * results, const vec3_t start, vec3_t mins, vec3_t maxs, 
 }
 
 
-
 /*
 =============
 SV_PointContents
@@ -690,5 +687,4 @@ int SV_PointContents( const vec3_t p, int passEntityNum ) {
 
 	return contents;
 }
-
 

@@ -112,7 +112,6 @@ markPoly_t	* CG_AllocMark( void ) {
 }
 
 
-
 /*
 =================
 CG_ImpactMark

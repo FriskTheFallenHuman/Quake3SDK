@@ -235,7 +235,6 @@ void Con_ClearNotify( void ) {
 }
 
 
-
 /*
 ================
 Con_CheckResize
@@ -683,7 +682,6 @@ void Con_DrawSolidConsole( float frac ) {
 
 	re.SetColor( NULL );
 }
-
 
 
 /*

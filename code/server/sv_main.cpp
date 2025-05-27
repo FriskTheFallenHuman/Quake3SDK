@@ -142,8 +142,8 @@ void QDECL SV_SendServerCommand( client_t * cl, const char * fmt, ... ) {
 
 #ifdef DEDICATED
 	// hack to echo broadcast prints to console
-	if ( !strncmp( (char *)message, "print", 5) ) {
-		Com_Printf ("broadcast: %s\n", SV_ExpandNewlines((char *)message) );
+	if ( !strncmp( ( char * )message, "print", 5 ) ) {
+		Com_Printf( "broadcast: %s\n", SV_ExpandNewlines( ( char * )message ) );
 	}
 #endif
 
@@ -730,7 +730,7 @@ void SV_Frame( int msec ) {
 	if ( sv.timeResidual < frameMsec ) {
 		// NET_Sleep will give the OS time slices until either get a packet
 		// or time enough for a server frame has gone by
-		NET_Sleep(frameMsec - sv.timeResidual);
+		NET_Sleep( frameMsec - sv.timeResidual );
 		return;
 	}
 #endif

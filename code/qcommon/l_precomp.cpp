@@ -323,8 +323,7 @@ int PC_ReadDefineParms( source_t * source, define_t * define, token_t ** parms, 
 			if ( !strcmp( token.string, "(" ) ) {
 				indent++;
 				continue;
-			}
-			else if ( !strcmp( token.string, ")" ) ) {
+			} else if ( !strcmp( token.string, ")" ) ) {
 				if ( --indent <= 0 ) {
 					if ( !parms[define->numparms - 1] ) {
 						SourceWarning( source, "too few define parms" );
@@ -699,8 +698,7 @@ int PC_ExpandDefine( source_t * source, token_t * deftoken, define_t * define,
 				}
 				last = t;
 			}
-		}
-		else {
+		} else {
 			//if stringizing operator
 			if ( dt->string[0] == '#' && dt->string[1] == '\0' ) {
 				//the stringizing operator must be followed by a define parameter
@@ -719,13 +717,11 @@ int PC_ExpandDefine( source_t * source, token_t * deftoken, define_t * define,
 						return false;
 					}
 					t = PC_CopyToken( &token );
-				}
-				else {
+				} else {
 					SourceWarning( source, "stringizing operator without define parameter" );
 					continue;
 				}
-			}
-			else {
+			} else {
 				t = PC_CopyToken( dt );
 			}
 			//add the token to the list
@@ -809,8 +805,7 @@ void PC_ConvertPath( char * path ) {
 		if ( ( *ptr == '\\' || *ptr == '/' ) &&
 				( *( ptr + 1 ) == '\\' || *( ptr + 1 ) == '/' ) ) {
 			strcpy( ptr, ptr + 1 );
-		}
-		else {
+		} else {
 			ptr++;
 		}
 	}
@@ -854,8 +849,7 @@ int PC_Directive_include( source_t * source ) {
 			strcat( path, token.string );
 			script = LoadScriptFile( path );
 		}
-	}
-	else if ( token.type == TT_PUNCTUATION && *token.string == '<' ) {
+	} else if ( token.type == TT_PUNCTUATION && *token.string == '<' ) {
 		strcpy( path, source->includepath );
 		while ( PC_ReadSourceToken( source, &token ) ) {
 			if ( token.linescrossed > 0 ) {
@@ -876,8 +870,7 @@ int PC_Directive_include( source_t * source ) {
 		}
 		PC_ConvertPath( path );
 		script = LoadScriptFile( path );
-	}
-	else {
+	} else {
 		SourceError( source, "#include without file name" );
 		return false;
 	}
@@ -964,8 +957,7 @@ int PC_Directive_undef( source_t * source ) {
 		if ( !strcmp( define->name, token.string ) ) {
 			if ( define->flags & DEFINE_FIXED ) {
 				SourceWarning( source, "can't undef %s", token.string );
-			}
-			else {
+			} else {
 				if ( lastdefine ) {
 					lastdefine->hashnext = define->hashnext;
 				} else {
@@ -982,8 +974,7 @@ int PC_Directive_undef( source_t * source ) {
 		if ( !strcmp( define->name, token.string ) ) {
 			if ( define->flags & DEFINE_FIXED ) {
 				SourceWarning( source, "can't undef %s", token.string );
-			}
-			else {
+			} else {
 				if ( lastdefine ) {
 					lastdefine->next = define->next;
 				} else {
@@ -1581,8 +1572,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 				{
 					v->intvalue = 1;
 					v->floatvalue = 1;
-				}
-				else {
+				} else {
 					v->intvalue = 0;
 					v->floatvalue = 0;
 				}
@@ -1619,8 +1609,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 				if ( negativevalue ) {
 					v->intvalue = - ( signed int ) t->intvalue;
 					v->floatvalue = - t->floatvalue;
-				}
-				else {
+				} else {
 					v->intvalue = t->intvalue;
 					v->floatvalue = t->floatvalue;
 				}
@@ -1648,8 +1637,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 				if ( t->subtype == P_PARENTHESESOPEN ) {
 					parentheses++;
 					break;
-				}
-				else if ( t->subtype == P_PARENTHESESCLOSE ) {
+				} else if ( t->subtype == P_PARENTHESESCLOSE ) {
 					parentheses--;
 					if ( parentheses < 0 ) {
 						SourceError( source, "too many ) in #if/#elsif" );
@@ -1759,8 +1747,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 		if ( !lastwasvalue ) {
 			SourceError( source, "trailing operator in #if/#elif" );
 			error = 1;
-		}
-		else if ( parentheses ) {
+		} else if ( parentheses ) {
 			SourceError( source, "too many ( in #if/#elif" );
 			error = 1;
 		}
@@ -1809,8 +1796,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 			if ( v2 ) {
 				Log_Write( "value2 = %d", v2->intvalue );
 			}
-		}
-		else {
+		} else {
 			Log_Write( "operator %s, value1 = %f", PunctuationFromNum( source->scriptstack, o->boperator ), v1->floatvalue );
 			if ( v2 ) {
 				Log_Write( "value2 = %f", v2->floatvalue );
@@ -1911,8 +1897,7 @@ int PC_EvaluateTokens( source_t * source, token_t * tokens, signed long int * in
 					if ( !questmarkintvalue ) {
 						v1->intvalue = v2->intvalue;
 					}
-				}
-				else {
+				} else {
 					if ( !questmarkfloatvalue ) {
 						v1->floatvalue = v2->floatvalue;
 					}
@@ -2046,8 +2031,7 @@ int PC_Evaluate( source_t * source, signed long int * intvalue,
 					firsttoken = t;
 				}
 				lasttoken = t;
-			}
-			else if ( !strcmp( token.string, "defined" ) ) {
+			} else if ( !strcmp( token.string, "defined" ) ) {
 				defined = true;
 				t = PC_CopyToken( &token );
 				t->next = NULL;
@@ -2057,8 +2041,7 @@ int PC_Evaluate( source_t * source, signed long int * intvalue,
 					firsttoken = t;
 				}
 				lasttoken = t;
-			}
-			else {
+			} else {
 				//then it must be a define
 #if DEFINEHASHING
 				define = PC_FindHashedDefine( source->definehash, token.string );
@@ -2084,8 +2067,7 @@ int PC_Evaluate( source_t * source, signed long int * intvalue,
 				firsttoken = t;
 			}
 			lasttoken = t;
-		}
-		else { //can't evaluate the token
+		} else { //can't evaluate the token
 			SourceError( source, "can't evaluate %s", token.string );
 			return false;
 		}
@@ -2159,8 +2141,7 @@ int PC_DollarEvaluate( source_t * source, signed long int * intvalue,
 					firsttoken = t;
 				}
 				lasttoken = t;
-			}
-			else if ( !strcmp( token.string, "defined" ) ) {
+			} else if ( !strcmp( token.string, "defined" ) ) {
 				defined = true;
 				t = PC_CopyToken( &token );
 				t->next = NULL;
@@ -2170,8 +2151,7 @@ int PC_DollarEvaluate( source_t * source, signed long int * intvalue,
 					firsttoken = t;
 				}
 				lasttoken = t;
-			}
-			else {
+			} else {
 				//then it must be a define
 #if DEFINEHASHING
 				define = PC_FindHashedDefine( source->definehash, token.string );
@@ -2205,8 +2185,7 @@ int PC_DollarEvaluate( source_t * source, signed long int * intvalue,
 				firsttoken = t;
 			}
 			lasttoken = t;
-		}
-		else { //can't evaluate the token
+		} else { //can't evaluate the token
 			SourceError( source, "can't evaluate %s", token.string );
 			return false;
 		}
@@ -2690,8 +2669,7 @@ int PC_ExpectTokenType( source_t * source, int type, int subtype, token_t * toke
 			SourceError( source, "expected %s, found %s", str, token->string );
 			return false;
 		}
-	}
-	else if ( token->type == TT_PUNCTUATION ) {
+	} else if ( token->type == TT_PUNCTUATION ) {
 		if ( token->subtype != subtype ) {
 			SourceError( source, "found %s", token->string );
 			return false;
@@ -2709,8 +2687,7 @@ int PC_ExpectAnyToken( source_t * source, token_t * token ) {
 	if ( !PC_ReadToken( source, token ) ) {
 		SourceError( source, "couldn't read expected token" );
 		return false;
-	}
-	else {
+	} else {
 		return true;
 	}
 } //end of the function PC_ExpectAnyToken

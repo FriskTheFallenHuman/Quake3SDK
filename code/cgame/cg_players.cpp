@@ -70,7 +70,6 @@ sfxHandle_t	CG_CustomSound( int clientNum, const char * soundName ) {
 }
 
 
-
 /*
 =============================================================================
 
@@ -1034,7 +1033,6 @@ void CG_NewClientInfo( int clientNum ) {
 }
 
 
-
 /*
 ======================
 CG_LoadDeferredPlayers
@@ -1896,7 +1894,6 @@ static void CG_PlayerFloatSprite( centity_t * cent, qhandle_t shader ) {
 }
 
 
-
 /*
 ===============
 CG_PlayerSprites
@@ -2102,7 +2099,6 @@ static void CG_PlayerSplash( centity_t * cent ) {
 
 	trap_R_AddPolyToScene( cgs.media.wakeMarkShader, 4, verts );
 }
-
 
 
 /*

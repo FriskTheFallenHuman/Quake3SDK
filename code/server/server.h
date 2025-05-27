@@ -84,9 +84,6 @@ typedef struct {
 } server_t;
 
 
-
-
-
 typedef struct {
 	int				areabytes;
 	byte			areabits[MAX_MAP_AREA_BYTES];		// portalarea visibility bits
@@ -253,11 +250,9 @@ void QDECL SV_SendServerCommand( client_t * cl, const char * fmt, ... );
 void SV_AddOperatorCommands ( void );
 
 #ifdef DEDICATED
-void SV_MasterHeartbeat (void);
-void SV_MasterShutdown (void);
+void SV_MasterHeartbeat ( void );
+void SV_MasterShutdown ( void );
 #endif
-
-
 
 
 //
@@ -271,7 +266,6 @@ void SV_GetUserinfo( int index, char * buffer, int bufferSize );
 
 void SV_ChangeMaxClients( void );
 void SV_SpawnServer( char * server );
-
 
 
 //

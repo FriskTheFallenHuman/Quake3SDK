@@ -22,7 +22,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "tr_local.h"
 
 
-
 /*
 =================
 R_CullTriSurf
@@ -237,7 +236,6 @@ static int R_DlightSurface( msurface_t * surf, int dlightBits ) {
 
 	return dlightBits;
 }
-
 
 
 /*

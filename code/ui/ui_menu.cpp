@@ -82,7 +82,6 @@ static void MainMenu_ExitAction( bool result ) {
 }
 
 
-
 /*
 =================
 Main_MenuEvent

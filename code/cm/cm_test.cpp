@@ -300,7 +300,6 @@ int	CM_TransformedPointContents( const vec3_t p, clipHandle_t model, const vec3_
 }
 
 
-
 /*
 ===============================================================================
 
@@ -316,7 +315,6 @@ byte	* CM_ClusterPVS( int cluster ) {
 
 	return cm.visibility + cluster * cm.clusterBytes;
 }
-
 
 
 /*
@@ -453,8 +451,7 @@ int CM_WriteAreaBits( byte *buffer, int area ) {
 
 	bytes = ( cm.numAreas + 7 ) >> 3;
 
-	if ( cm_noAreas->integer || area == -1 )
-	{
+	if ( cm_noAreas->integer || area == -1 ) {
 		// for debugging, send everything
 		Com_Memset( buffer, 255, bytes );
 	} else {

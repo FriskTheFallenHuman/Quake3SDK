@@ -232,7 +232,6 @@ void CM_TestBoxInBrush( traceWork_t * tw, cbrush_t * brush ) {
 }
 
 
-
 /*
 ================
 CM_TestInLeaf

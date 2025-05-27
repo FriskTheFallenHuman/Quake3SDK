@@ -275,7 +275,6 @@ void RB_SurfaceTriangles( srfTriangles_t * srf ) {
 }
 
 
-
 /*
 ==============
 RB_SurfaceBeam
@@ -555,7 +554,6 @@ static void VectorArrayNormalize( vec4_t * normals, unsigned int count ) {
 		normals++;
 	}
 }
-
 
 
 /*
@@ -1081,7 +1079,6 @@ void RB_SurfaceFlare( srfFlare_t * surf ) {
 }
 
 #endif
-
 
 
 void RB_SurfaceDisplayList( srfDisplayList_t * surf ) {

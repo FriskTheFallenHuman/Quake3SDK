@@ -509,7 +509,6 @@ void RE_RegisterFont( const char * fontName, int pointSize, fontInfo_t * font ) 
 }
 
 
-
 void R_InitFreeType() {
 #ifdef BUILD_FREETYPE
 	if ( FT_Init_FreeType( &ftLibrary ) ) {

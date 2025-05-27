@@ -41,7 +41,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // Used when interleaved
 
 
-
 #define SB_LEFT_BOTICON_X	(SCOREBOARD_X+0)
 #define SB_LEFT_HEAD_X		(SCOREBOARD_X+32)
 #define SB_RIGHT_BOTICON_X	(SCOREBOARD_X+64)

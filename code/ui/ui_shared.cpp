@@ -123,9 +123,6 @@ qboolean UI_OutOfMemory() {
 }
 
 
-
-
-
 #define HASH_TABLE_SIZE 2048
 /*
 ================
@@ -560,7 +557,6 @@ void Init_Display( displayContextDef_t * dc ) {
 }
 
 
-
 // type and style painting
 
 void GradientBar_Paint( rectDef_t * rect, vec4_t color ) {
@@ -607,7 +603,6 @@ void Fade( int * flags, float * f, float clamp, int * nextTime, int offsetTime, 
 		}
 	}
 }
-
 
 
 void Window_Paint( Window *w, float fadeAmount, float fadeClamp, float fadeCycle ) {
@@ -847,7 +842,6 @@ itemDef_t * Menu_GetMatchingItemByNumber( menuDef_t * menu, int index, const cha
 }
 
 
-
 void Script_SetColor( itemDef_t * item, char ** args ) {
 	const char * name;
 	int i;
@@ -894,8 +888,6 @@ void Script_SetBackground( itemDef_t * item, char ** args ) {
 		item->window.background = DC->registerShaderNoMip( name );
 	}
 }
-
-
 
 
 itemDef_t * Menu_FindItemByName( menuDef_t * menu, const char * p ) {
@@ -1078,7 +1070,6 @@ void Script_FadeOut( itemDef_t * item, char ** args ) {
 }
 
 
-
 void Script_Open( itemDef_t * item, char ** args ) {
 	const char * name;
 	if ( String_Parse( args, &name ) ) {
@@ -1174,7 +1165,6 @@ void Script_Orbit( itemDef_t * item, char ** args ) {
 		}
 	}
 }
-
 
 
 void Script_SetFocus( itemDef_t * item, char ** args ) {
@@ -3000,7 +2990,6 @@ void Item_Text_Paint( itemDef_t * item ) {
 }
 
 
-
 //float			trap_Cvar_VariableValue( const char *var_name );
 //void			trap_Cvar_VariableStringBuffer( const char *var_name, char *buffer, int bufsize );
 
@@ -3503,7 +3492,6 @@ qboolean Item_Bind_HandleKey( itemDef_t * item, int key, qboolean down ) {
 
 	return qtrue;
 }
-
 
 
 void AdjustFrom640( float * x, float * y, float * w, float * h ) {
@@ -4053,7 +4041,6 @@ void Menu_ScrollFeeder( menuDef_t * menu, int feeder, qboolean down ) {
 }
 
 
-
 void Menu_SetFeederSelection( menuDef_t * menu, int feeder, int index, const char * name ) {
 	if ( menu == NULL ) {
 		if ( name == NULL ) {
@@ -4157,7 +4144,6 @@ void Menu_HandleMouseMove( menuDef_t * menu, float x, float y ) {
 			if ( menu->items[i]->cvarFlags & ( CVAR_SHOW | CVAR_HIDE ) && !Item_EnableShowViaCvar( menu->items[i], CVAR_SHOW ) ) {
 				continue;
 			}
-
 
 
 			if ( Rect_ContainsPoint( &menu->items[i]->window.rect, x, y ) ) {
@@ -4860,7 +4846,6 @@ qboolean ItemParse_maxPaintChars( itemDef_t * item, int handle ) {
 }
 
 
-
 qboolean ItemParse_cvarFloat( itemDef_t * item, int handle ) {
 	editFieldDef_t * editPtr;
 
@@ -4975,7 +4960,6 @@ qboolean ItemParse_cvarFloatList( itemDef_t * item, int handle ) {
 	}
 	return qfalse; 	// bk001205 - LCC missing return value
 }
-
 
 
 qboolean ItemParse_addColorRange( itemDef_t * item, int handle ) {
@@ -5265,7 +5249,6 @@ qboolean MenuParse_onESC( itemDef_t * item, int handle ) {
 	}
 	return qtrue;
 }
-
 
 
 qboolean MenuParse_border( itemDef_t * item, int handle ) {

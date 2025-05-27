@@ -168,7 +168,6 @@ static void CG_AddTestModel( void ) {
 }
 
 
-
 //============================================================================
 
 
@@ -554,7 +553,6 @@ static int CG_CalcFov( void ) {
 
 	return inwater;
 }
-
 
 
 /*

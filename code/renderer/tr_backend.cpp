@@ -336,7 +336,6 @@ void GL_State( unsigned long stateBits ) {
 }
 
 
-
 /*
 ================
 RB_Hyperspace

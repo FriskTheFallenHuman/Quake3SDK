@@ -762,7 +762,6 @@ void Cvar_Restart_f( void ) {
 }
 
 
-
 /*
 =====================
 Cvar_InfoString
@@ -802,7 +801,6 @@ char	* Cvar_InfoString_Big( int bit ) {
 	}
 	return info;
 }
-
 
 
 /*

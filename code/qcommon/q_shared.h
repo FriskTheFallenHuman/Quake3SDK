@@ -921,7 +921,6 @@ typedef struct {
 } markFragment_t;
 
 
-
 typedef struct {
 	vec3_t		origin;
 	vec3_t		axis[3];
@@ -1295,7 +1294,6 @@ typedef enum _flag_status {
 	FLAG_TAKEN_BLUE,	// One Flag CTF
 	FLAG_DROPPED
 } flagStatus_t;
-
 
 
 #define	MAX_GLOBAL_SERVERS				4096

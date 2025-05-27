@@ -386,7 +386,6 @@ static void CG_TouchTriggerPrediction( void ) {
 }
 
 
-
 /*
 =================
 CG_PredictPlayerState
@@ -624,5 +623,4 @@ void CG_PredictPlayerState( void ) {
 		}
 	}
 }
-
 

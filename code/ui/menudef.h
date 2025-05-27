@@ -127,8 +127,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define UI_SHOW_NOTFAVORITESERVERS				0x00001000
 
 
-
-
 // owner draw types
 // ideally these should be done outside of this file but
 // this makes it much easier for the macro expansion to
@@ -209,8 +207,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #define CG_1STPLACE 67
 #define CG_2NDPLACE 68
 #define CG_CAPTURES 69
-
-
 
 
 #define UI_OWNERDRAW_BASE 200

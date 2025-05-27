@@ -456,7 +456,6 @@ void CG_PainEvent( centity_t * cent, int health ) {
 }
 
 
-
 /*
 ==============
 CG_EntityEvent

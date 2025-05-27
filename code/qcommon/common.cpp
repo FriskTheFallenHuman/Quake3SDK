@@ -162,9 +162,10 @@ void QDECL Com_VPrintf( const char * fmt, va_list args ) {
 	}
 
 	// don't overflow
-	if ( Q_vsnprintf( msg+timeLength, MAXPRINTMSG-timeLength-1, fmt, args ) < 0 ) {
-		msg[sizeof(msg)-2] = '\n'; msg[sizeof(msg)-1] = '\0'; // avoid output garbling
-		Com_Printf("Com_VPrintf: truncated to %d characters\n", strlen(msg)-1 );
+	if ( Q_vsnprintf( msg + timeLength, MAXPRINTMSG - timeLength - 1, fmt, args ) < 0 ) {
+		msg[sizeof( msg ) -2] = '\n';
+		msg[sizeof( msg ) -1] = '\0'; // avoid output garbling
+		Com_Printf( "Com_VPrintf: truncated to %d characters\n", strlen( msg ) -1 );
 	}
 
 	if ( rd_buffer ) {
@@ -413,7 +414,6 @@ void Com_Quit_f( void ) {
 	}
 	Sys_Quit();
 }
-
 
 
 /*
@@ -1425,7 +1425,6 @@ void Com_TouchMemory( void ) {
 
 	Com_Printf( "Com_TouchMemory: %i msec\n", end - start );
 }
-
 
 
 /*
@@ -2589,9 +2588,6 @@ void Com_Frame( void ) {
 	int           timeBeforeEvents;
 	int           timeBeforeClient;
 	int           timeAfter;
-
-
-
 
 
 	if ( setjmp ( abortframe ) ) {

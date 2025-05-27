@@ -70,7 +70,6 @@ bool	G_SpawnVector( const char * key, const char * defaultString, float * out ) 
 }
 
 
-
 //
 // fields are needed for spawning from the entity string
 //
@@ -339,8 +338,6 @@ char * G_NewString( const char * string ) {
 }
 
 
-
-
 /*
 ===============
 G_ParseField
@@ -390,8 +387,6 @@ void G_ParseField( const char * key, const char * value, gentity_t * ent ) {
 		}
 	}
 }
-
-
 
 
 /*
@@ -475,7 +470,6 @@ void G_SpawnGEntityFromSpawnVars( void ) {
 }
 
 
-
 /*
 ====================
 G_AddSpawnVarToken
@@ -553,7 +547,6 @@ bool G_ParseSpawnVars( void ) {
 
 	return true;
 }
-
 
 
 /*QUAKED worldspawn (0 0 0) ?

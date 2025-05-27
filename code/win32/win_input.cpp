@@ -74,7 +74,6 @@ typedef struct {
 static	joystickInfo_t	joy;
 
 
-
 cvar_t	* in_midi;
 cvar_t	* in_midiport;
 cvar_t	* in_midichannel;
@@ -448,7 +447,6 @@ void IN_DeactivateMouse( void ) {
 	IN_DeactivateDIMouse();
 	IN_DeactivateWin32Mouse();
 }
-
 
 
 /*

@@ -246,7 +246,6 @@ void SP_target_speaker( gentity_t * ent ) {
 }
 
 
-
 //==========================================================
 
 /*QUAKED target_laser (0 .5 .8) (-8 -8 -8) (8 8 8) START_ON

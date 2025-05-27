@@ -113,7 +113,6 @@ static void SV_EmitPacketEntities( clientSnapshot_t * from, clientSnapshot_t * t
 }
 
 
-
 /*
 ==================
 SV_WriteSnapshotToClient

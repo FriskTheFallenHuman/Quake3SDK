@@ -74,14 +74,13 @@ glwstate_t glw_state;
 cvar_t	* r_maskMinidriver;		// allow a different dll name to be treated as if it were opengl32.dll
 
 
-
 /*
 ** GLW_StartDriverAndSetMode
 */
 static bool GLW_StartDriverAndSetMode( const char * drivername,
-		int mode,
-		int colorbits,
-		bool cdsFullscreen ) {
+									   int mode,
+									   int colorbits,
+									   bool cdsFullscreen ) {
 	rserr_t err;
 
 	err = GLW_SetMode( drivername, r_mode->integer, colorbits, cdsFullscreen );

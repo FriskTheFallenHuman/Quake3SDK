@@ -1114,7 +1114,6 @@ void ParseSort( char ** text ) {
 }
 
 
-
 // this table is also present in q3map
 
 typedef struct {
@@ -1952,7 +1951,6 @@ static shader_t * FinishShader( void ) {
 		//if (pStage->rgbGen == CGEN_VERTEX) {
 		//  vertexLightmap = true;
 		//}
-
 
 
 		//

@@ -794,7 +794,6 @@ void CalcMuzzlePointOrigin( gentity_t * ent, vec3_t origin, vec3_t forward, vec3
 }
 
 
-
 /*
 ===============
 FireWeapon

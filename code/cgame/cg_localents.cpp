@@ -464,7 +464,6 @@ static void CG_AddFallScaleFade( localEntity_t * le ) {
 }
 
 
-
 /*
 ================
 CG_AddExplosion
@@ -792,8 +791,6 @@ void CG_AddScorePlum( localEntity_t * le ) {
 }
 
 
-
-
 //==============================================================================
 
 /*
@@ -874,7 +871,4 @@ void CG_AddLocalEntities( void ) {
 		}
 	}
 }
-
-
-
 

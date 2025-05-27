@@ -598,8 +598,8 @@ Returns true if it should be mirrored
 =================
 */
 bool R_GetPortalOrientations( drawSurf_t * drawSurf, int entityNum,
-								  orientation_t * surface, orientation_t * camera,
-								  vec3_t pvsOrigin, bool *mirror ) {
+							  orientation_t * surface, orientation_t * camera,
+							  vec3_t pvsOrigin, bool *mirror ) {
 	int			i;
 	cplane_t	originalPlane, plane;
 	trRefEntity_t	* e;
@@ -1432,6 +1432,4 @@ void R_RenderView( viewParms_t * parms ) {
 	// draw main system development information (surface outlines, etc)
 	R_DebugGraphics();
 }
-
-
 

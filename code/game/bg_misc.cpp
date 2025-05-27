@@ -1129,7 +1129,6 @@ bool	BG_PlayerTouchesItem( playerState_t * ps, entityState_t * item, int atTime 
 }
 
 
-
 /*
 ================
 BG_CanItemBeGrabbed

@@ -717,7 +717,6 @@ void FS_SV_Rename( const char * from, const char * to ) {
 }
 
 
-
 /*
 ===========
 FS_Rename
@@ -1596,7 +1595,6 @@ void FS_WriteFile( const char * qpath, const void * buffer, int size ) {
 }
 
 
-
 /*
 ==========================================================================
 
@@ -2139,8 +2137,6 @@ int	FS_GetModList( char * listbuf, int bufsize ) {
 
 	return nMods;
 }
-
-
 
 
 //============================================================================

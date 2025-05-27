@@ -434,7 +434,6 @@ void RotateAroundDirection( vec3_t axis[3], float yaw ) {
 }
 
 
-
 void vectoangles( const vec3_t value1, vec3_t angles ) {
 	float	forward;
 	float	yaw, pitch;
@@ -1190,7 +1189,6 @@ int Q_log2( int val ) {
 }
 
 
-
 /*
 =================
 PlaneTypeForNormal
@@ -1300,5 +1298,4 @@ void PerpendicularVector( vec3_t dst, const vec3_t src ) {
 	*/
 	VectorNormalize( dst );
 }
-
 

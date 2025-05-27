@@ -586,6 +586,6 @@ void SV_AddOperatorCommands( void ) {
 	Cmd_AddCommand( "killserver", SV_KillServer_f );
 #ifdef DEDICATED
 	Cmd_AddCommand( "heartbeat", SV_Heartbeat_f );
-    Cmd_AddCommand( "say", SV_ConSay_f );
+	Cmd_AddCommand( "say", SV_ConSay_f );
 #endif
 }

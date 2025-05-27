@@ -1011,11 +1011,11 @@ void R_Init( void ) {
 		max_polyverts = MAX_POLYVERTS;
 	}
 
-	ptr = ( byte * )ri.Hunk_Alloc( sizeof( backEndData_t ) + sizeof(srfPoly_t) * max_polys + sizeof(polyVert_t) * max_polyverts, h_low);
-	backEndData = (backEndData_t *) ptr;
-	backEndData->polys = (srfPoly_t *) ((char *) ptr + sizeof( backEndData_t ));
-	backEndData->polyVerts = (polyVert_t *) ((char *) ptr + sizeof( backEndData_t ) + sizeof(srfPoly_t) * max_polys);
-    R_ResetFrameCounts();
+	ptr = ( byte * )ri.Hunk_Alloc( sizeof( backEndData_t ) + sizeof( srfPoly_t ) * max_polys + sizeof( polyVert_t ) * max_polyverts, h_low );
+	backEndData = ( backEndData_t * ) ptr;
+	backEndData->polys = ( srfPoly_t * ) ( ( char * ) ptr + sizeof( backEndData_t ) );
+	backEndData->polyVerts = ( polyVert_t * ) ( ( char * ) ptr + sizeof( backEndData_t ) + sizeof( srfPoly_t ) * max_polys );
+	R_ResetFrameCounts();
 
 	InitOpenGL();
 

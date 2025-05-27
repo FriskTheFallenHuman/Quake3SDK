@@ -587,7 +587,6 @@ typedef struct srfGridMesh_s {
 } srfGridMesh_t;
 
 
-
 #define	VERTEXSIZE	8
 typedef struct {
 	surfaceType_t	surfaceType;
@@ -652,7 +651,6 @@ typedef struct msurface_s {
 
 	surfaceType_t	*	data;			// any of srf*_t
 } msurface_t;
-
 
 
 #define	CONTENTS_NODE		-1

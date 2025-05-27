@@ -1802,7 +1802,6 @@ static void CG_DrawLagometer( void ) {
 }
 
 
-
 /*
 ===============================================================================
 
@@ -1910,7 +1909,6 @@ static void CG_DrawCenterString( void ) {
 }
 
 
-
 /*
 ================================================================================
 
@@ -1978,7 +1976,6 @@ static void CG_DrawCrosshair( void ) {
 						   y + cg.refdef.y + 0.5 * ( cg.refdef.height - h ),
 						   w, h, 0, 0, 1, 1, hShader );
 }
-
 
 
 /*
@@ -2262,7 +2259,6 @@ static bool CG_DrawFollow( void ) {
 
 	return true;
 }
-
 
 
 /*
@@ -2661,6 +2657,4 @@ void CG_DrawActive( stereoFrame_t stereoView ) {
 	// draw status bar and other floating elements
 	CG_Draw2D();
 }
-
-
 

@@ -277,7 +277,6 @@ static void PM_Accelerate( vec3_t wishdir, float wishspeed, float accel ) {
 }
 
 
-
 /*
 ============
 PM_CmdScale
@@ -1303,7 +1302,6 @@ static void PM_CheckDuck( void ) {
 		pm->ps->viewheight = DEFAULT_VIEWHEIGHT;
 	}
 }
-
 
 
 //===================================================================

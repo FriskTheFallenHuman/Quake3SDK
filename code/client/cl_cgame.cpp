@@ -558,7 +558,6 @@ bool CL_GameCommand( void ) {
 }
 
 
-
 /*
 =====================
 CL_CGameRendering
@@ -794,6 +793,4 @@ void CL_SetCGameTime( void ) {
 	}
 
 }
-
-
 

@@ -519,7 +519,6 @@ void CG_Bleed( vec3_t origin, int entityNum ) {
 }
 
 
-
 /*
 ==================
 CG_LaunchGib

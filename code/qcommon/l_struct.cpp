@@ -132,8 +132,7 @@ bool ReadNumber( source_t * source, fielddef_t * fd, void * p ) {
 			SourceError( source, "value %d out of range [%d, %d]", intval, intmin, intmax );
 			return false;
 		}
-	}
-	else if ( ( fd->type & FT_TYPE ) == FT_FLOAT ) {
+	} else if ( ( fd->type & FT_TYPE ) == FT_FLOAT ) {
 		if ( fd->type & FT_BOUNDED ) {
 			if ( intval < fd->floatmin || intval > fd->floatmax ) {
 				SourceError( source, "value %d out of range [%f, %f]", intval, fd->floatmin, fd->floatmax );
@@ -148,15 +147,13 @@ bool ReadNumber( source_t * source, fielddef_t * fd, void * p ) {
 		} else {
 			*( char * ) p = ( char ) intval;
 		}
-	}
-	else if ( ( fd->type & FT_TYPE ) == FT_INT ) {
+	} else if ( ( fd->type & FT_TYPE ) == FT_INT ) {
 		if ( fd->type & FT_UNSIGNED ) {
 			*( unsigned int * ) p = ( unsigned int ) intval;
 		} else {
 			*( int * ) p = ( int ) intval;
 		}
-	}
-	else if ( ( fd->type & FT_TYPE ) == FT_FLOAT ) {
+	} else if ( ( fd->type & FT_TYPE ) == FT_FLOAT ) {
 		*( float * ) p = ( float ) intval;
 	}
 	return true;
@@ -178,8 +175,7 @@ bool ReadChar( source_t * source, fielddef_t * fd, void * p ) {
 	if ( token.type == TT_LITERAL ) {
 		StripSingleQuotes( token.string );
 		*( char * ) p = token.string[0];
-	}
-	else {
+	} else {
 		PC_UnreadLastToken( source );
 		if ( !ReadNumber( source, fd, p ) ) {
 			return false;
@@ -202,7 +198,7 @@ int ReadString( source_t * source, fielddef_t * fd, void * p ) {
 	//remove the double quotes
 	StripDoubleQuotes( token.string );
 	//copy the string
-	Q_strncpyz((char *) p, token.string, MAX_STRINGFIELD);
+	Q_strncpyz( ( char * ) p, token.string, MAX_STRINGFIELD );
 	//
 	return 1;
 }
@@ -240,8 +236,7 @@ int ReadStructure( source_t * source, structdef_t * def, char * structure ) {
 			if ( !PC_ExpectTokenString( source, "{" ) ) {
 				return false;
 			}
-		}
-		else {
+		} else {
 			num = 1;
 		}
 		p = ( void * )( structure + fd->offset );
@@ -382,8 +377,7 @@ int WriteStructWithIndent( FILE *fp, structdef_t * def, char * structure, int in
 			if ( fprintf( fp, "{" ) < 0 ) {
 				return false;
 			}
-		}
-		else {
+		} else {
 			num = 1;
 		}
 		while ( num-- > 0 ) {
@@ -429,8 +423,7 @@ int WriteStructWithIndent( FILE *fp, structdef_t * def, char * structure, int in
 					if ( fprintf( fp, "," ) < 0 ) {
 						return false;
 					}
-				}
-				else {
+				} else {
 					if ( fprintf( fp, "}" ) < 0 ) {
 						return false;
 					}

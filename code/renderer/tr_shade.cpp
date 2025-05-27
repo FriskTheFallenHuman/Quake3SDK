@@ -142,7 +142,6 @@ static void R_DrawStripElements( int numIndexes, const glIndex_t * indexes, void
 }
 
 
-
 /*
 ==================
 R_DrawElements
@@ -379,7 +378,6 @@ static void DrawMultitextured( shaderCommands_t * input, int stage ) {
 
 	GL_SelectTexture( 0 );
 }
-
 
 
 /*

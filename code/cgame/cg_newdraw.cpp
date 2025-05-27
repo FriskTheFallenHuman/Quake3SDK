@@ -272,7 +272,6 @@ static void CG_DrawPlayerAmmoValue( rectDef_t * rect, float scale, vec4_t color,
 }
 
 
-
 static void CG_DrawPlayerHead( rectDef_t * rect, bool draw2D ) {
 	vec3_t		angles;
 	float		size, stretch;
@@ -451,7 +450,6 @@ static void CG_DrawPlayerLocation( rectDef_t * rect, float scale, vec4_t color, 
 		CG_Text_Paint( rect->x, rect->y + rect->h, scale, color, p, 0, 0, textStyle );
 	}
 }
-
 
 
 static void CG_DrawSelectedPlayerWeapon( rectDef_t * rect ) {
@@ -819,7 +817,6 @@ static void CG_DrawCTFPowerUp( rectDef_t * rect ) {
 }
 
 
-
 static void CG_DrawTeamColor( rectDef_t * rect, vec4_t color ) {
 	CG_DrawTeamBackground( rect->x, rect->y, rect->w, rect->h, color[3], cg.snap->ps.persistant[PERS_TEAM] );
 }
@@ -1104,7 +1101,6 @@ bool CG_OwnerDrawVisible( int flags ) {
 }
 
 
-
 static void CG_DrawPlayerHasFlag( rectDef_t * rect, bool force2D ) {
 	int adj = ( force2D ) ? 0 : 2;
 	if ( cg.predictedPlayerState.powerups[PW_REDFLAG] ) {
@@ -1264,7 +1260,6 @@ static void CG_Text_Paint_Limit( float * maxX, float x, float y, float scale, ve
 }
 
 
-
 #define PIC_WIDTH 12
 
 void CG_DrawNewTeamInfo( rectDef_t * rect, float text_x, float text_y, float scale, vec4_t color, qhandle_t shader ) {
@@ -1366,7 +1361,6 @@ void CG_DrawNewTeamInfo( rectDef_t * rect, float text_x, float text_y, float sca
 			maxx = xx + leftOver / 3;
 
 
-
 			CG_Text_Paint_Limit( &maxx, xx, y + text_y, scale, color, ci->name, 0, 0 );
 
 			p = CG_ConfigString( CS_LOCATIONS + ci->location );
@@ -1444,7 +1438,6 @@ void CG_DrawTeamSpectators( rectDef_t * rect, float scale, vec4_t color, qhandle
 
 	}
 }
-
 
 
 void CG_DrawMedal( int ownerDraw, rectDef_t * rect, float scale, vec4_t color, qhandle_t shader ) {
@@ -1767,7 +1760,6 @@ void CG_EventHandling( int type ) {
 }
 
 
-
 void CG_KeyEvent( int key, bool down ) {
 
 	if ( !down ) {
@@ -1785,7 +1777,6 @@ void CG_KeyEvent( int key, bool down ) {
 	//  CG_EventHandling(CGAME_EVENT_NONE);
 	//  trap_Key_SetCatcher(0);
 	//}
-
 
 
 	Display_HandleKey( key, down, cgs.cursorX, cgs.cursorY );

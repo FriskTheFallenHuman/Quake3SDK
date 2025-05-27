@@ -1515,7 +1515,6 @@ static	void R_LoadSurfaces( lump_t * surfs, lump_t * verts, lump_t * indexLump )
 }
 
 
-
 /*
 =================
 R_LoadSubmodels
@@ -1554,7 +1553,6 @@ static	void R_LoadSubmodels( lump_t * l ) {
 		out->numSurfaces = LittleLong( in->numSurfaces );
 	}
 }
-
 
 
 //==================================================================
