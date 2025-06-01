@@ -79,6 +79,7 @@ cvar_t	* com_showtrace;
 cvar_t	* com_version;
 cvar_t	* com_blood;
 cvar_t	* com_buildScript;	// for automated data building scripts
+cvar_t * con_drawnotify;
 cvar_t	* com_introPlayed;
 cvar_t	* cl_paused;
 cvar_t	* sv_paused;
@@ -139,17 +140,15 @@ A raw string should NEVER be passed as fmt, because of "%f" type crashes.
 =============
 */
 void QDECL Com_VPrintf( const char * fmt, va_list args ) {
-	va_list		argptr;
-	char		msg[MAXPRINTMSG];
-	int			timeLength;
+	char msg[MAXPRINTMSG];
+	int timeLength = 0;
 	static bool opening_qconsole = false;
 
-	va_start( argptr, fmt );
-	Q_vsnprintf( msg, sizeof( msg ), fmt, argptr );
-	va_end( argptr );
+	va_list args_copy;
+	va_copy( args_copy, args );
+	Q_vsnprintf( msg, sizeof( msg ), fmt, args_copy );
+	va_end( args_copy );
 
-	// optionally put a timestamp at the beginning of each print,
-	// so we can see how long different init sections are taking
 	if ( com_timestampPrints && com_timestampPrints->integer ) {
 		int	t = Sys_Milliseconds();
 		if ( com_timestampPrints->integer == 1 ) {
@@ -157,21 +156,23 @@ void QDECL Com_VPrintf( const char * fmt, va_list args ) {
 		}
 		sprintf( msg, "[%i]", t );
 		timeLength = strlen( msg );
-	} else {
-		timeLength = 0;
 	}
 
+	va_list args_copy2;
+	va_copy( args_copy2, args );
+
 	// don't overflow
-	if ( Q_vsnprintf( msg + timeLength, MAXPRINTMSG - timeLength - 1, fmt, args ) < 0 ) {
+	if ( Q_vsnprintf( msg + timeLength, MAXPRINTMSG - timeLength - 1, fmt, args_copy2 ) < 0 ) {
 		msg[sizeof( msg ) -2] = '\n';
 		msg[sizeof( msg ) -1] = '\0'; // avoid output garbling
-		Com_Printf( "Com_VPrintf: truncated to %d characters\n", strlen( msg ) -1 );
+		Com_Printf( "Com_VPrintf: truncated to %d characters\n", ( int )strlen( msg ) -1 );
 	}
+	va_end( args_copy2 );
 
 	if ( rd_buffer ) {
 		if ( ( strlen( msg ) + strlen( rd_buffer ) ) > ( rd_buffersize - 1 ) ) {
 			rd_flush( rd_buffer );
-			*rd_buffer = 0;
+			*rd_buffer = '\0';
 		}
 		Q_strcat( rd_buffer, rd_buffersize, msg );
 		// TTimo nooo .. that would defeat the purpose
@@ -2393,6 +2394,8 @@ void Com_Init( char * commandLine ) {
 	com_sv_running = Cvar_Get ( "sv_running", "0", CVAR_ROM );
 	com_cl_running = Cvar_Get ( "cl_running", "0", CVAR_ROM );
 	com_buildScript = Cvar_Get( "com_buildScript", "0", 0 );
+
+	con_drawnotify = Cvar_Get( "con_drawnotify", "0", CVAR_CHEAT );
 
 	com_introPlayed = Cvar_Get( "com_introplayed", "0", CVAR_ARCHIVE );
 
