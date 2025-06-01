@@ -266,7 +266,7 @@ void PM_StepSlideMove( bool gravity ) {
 	pm->trace( &trace, start_o, pm->mins, pm->maxs, up, pm->ps->clientNum, pm->tracemask );
 	if ( trace.allsolid ) {
 		if ( pm->debugLevel ) {
-			trap_Print( "%i:bend can't step\n", c_pmove );
+			Com_Printf( "%i:bend can't step\n", c_pmove );
 		}
 		return;		// can't step up
 	}
@@ -297,7 +297,7 @@ void PM_StepSlideMove( bool gravity ) {
 		VectorCopy( down_o, pm->ps->origin );
 		VectorCopy( down_v, pm->ps->velocity );
 		if ( pm->debugLevel ) {
-			trap_Print( "%i:bend\n", c_pmove );
+			Com_Printf( "%i:bend\n", c_pmove );
 		}
 	} else
 #endif
@@ -318,7 +318,7 @@ void PM_StepSlideMove( bool gravity ) {
 			}
 		}
 		if ( pm->debugLevel ) {
-			trap_Print( "%i:stepped\n", c_pmove );
+			Com_Printf( "%i:stepped\n", c_pmove );
 		}
 	}
 }

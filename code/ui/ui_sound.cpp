@@ -104,33 +104,33 @@ static void UI_SoundOptionsMenu_Event( void * ptr, int event ) {
 			break;
 
 		case ID_EFFECTSVOLUME:
-			trap_Cvar_SetValue( "s_volume", soundOptionsInfo.sfxvolume.curvalue / 10 );
+			uiLocal->Cvar_SetValue( "s_volume", soundOptionsInfo.sfxvolume.curvalue / 10 );
 			break;
 
 		case ID_MUSICVOLUME:
-			trap_Cvar_SetValue( "s_musicvolume", soundOptionsInfo.musicvolume.curvalue / 10 );
+			uiLocal->Cvar_SetValue( "s_musicvolume", soundOptionsInfo.musicvolume.curvalue / 10 );
 			break;
 
 		case ID_QUALITY:
 			if ( soundOptionsInfo.quality.curvalue ) {
-				trap_Cvar_SetValue( "s_khz", 22 );
-				trap_Cvar_SetValue( "s_compression", 0 );
+				uiLocal->Cvar_SetValue( "s_khz", 22 );
+				uiLocal->Cvar_SetValue( "s_compression", 0 );
 			} else {
-				trap_Cvar_SetValue( "s_khz", 11 );
-				trap_Cvar_SetValue( "s_compression", 1 );
+				uiLocal->Cvar_SetValue( "s_khz", 11 );
+				uiLocal->Cvar_SetValue( "s_compression", 1 );
 			}
 			UI_ForceMenuOff();
-			trap_Cmd_ExecuteText( EXEC_APPEND, "snd_restart\n" );
+			uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "snd_restart\n" );
 			break;
 		/*
 			case ID_A3D:
 				if( soundOptionsInfo.a3d.curvalue ) {
-					trap_Cmd_ExecuteText( EXEC_NOW, "s_enable_a3d\n" );
+					uiLocal->Cbuf_ExecuteText( EXEC_NOW, "s_enable_a3d\n" );
 				}
 				else {
-					trap_Cmd_ExecuteText( EXEC_NOW, "s_disable_a3d\n" );
+					uiLocal->Cbuf_ExecuteText( EXEC_NOW, "s_disable_a3d\n" );
 				}
-				soundOptionsInfo.a3d.curvalue = (int)trap_Cvar_VariableValue( "s_usingA3D" );
+				soundOptionsInfo.a3d.curvalue = (int)uiLocal->Cvar_VariableValue( "s_usingA3D" );
 				break;
 		*/
 		case ID_BACK:
@@ -283,10 +283,10 @@ static void UI_SoundOptionsMenu_Init( void ) {
 //	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.a3d );
 	Menu_AddItem( &soundOptionsInfo.menu, ( void * ) &soundOptionsInfo.back );
 
-	soundOptionsInfo.sfxvolume.curvalue = trap_Cvar_VariableValue( "s_volume" ) * 10;
-	soundOptionsInfo.musicvolume.curvalue = trap_Cvar_VariableValue( "s_musicvolume" ) * 10;
-	soundOptionsInfo.quality.curvalue = !trap_Cvar_VariableValue( "s_compression" );
-//	soundOptionsInfo.a3d.curvalue = (int)trap_Cvar_VariableValue( "s_usingA3D" );
+	soundOptionsInfo.sfxvolume.curvalue = uiLocal->Cvar_VariableValue( "s_volume" ) * 10;
+	soundOptionsInfo.musicvolume.curvalue = uiLocal->Cvar_VariableValue( "s_musicvolume" ) * 10;
+	soundOptionsInfo.quality.curvalue = !uiLocal->Cvar_VariableValue( "s_compression" );
+//	soundOptionsInfo.a3d.curvalue = (int)uiLocal->Cvar_VariableValue( "s_usingA3D" );
 }
 
 
@@ -296,10 +296,10 @@ UI_SoundOptionsMenu_Cache
 ===============
 */
 void UI_SoundOptionsMenu_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
-	trap_R_RegisterShaderNoMip( ART_BACK0 );
-	trap_R_RegisterShaderNoMip( ART_BACK1 );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMEL );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMER );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK0 );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK1 );
 }
 
 

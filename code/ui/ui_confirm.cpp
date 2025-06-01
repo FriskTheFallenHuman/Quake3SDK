@@ -159,7 +159,7 @@ ConfirmMenu_Cache
 =================
 */
 void ConfirmMenu_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_CONFIRM_FRAME );
+	uiLocal->re_RegisterShaderNoMip( ART_CONFIRM_FRAME );
 }
 
 
@@ -195,7 +195,7 @@ void UI_ConfirmMenu_Style( const char * question, int style, void ( *draw )( voi
 	s_confirm.menu.key        = ConfirmMenu_Key;
 	s_confirm.menu.wrapAround = true;
 
-	trap_GetClientState( &cstate );
+	uiLocal->GetClientState( &cstate );
 	if ( cstate.connState >= CA_CONNECTED ) {
 		s_confirm.menu.fullscreen = false;
 	} else {
@@ -264,7 +264,7 @@ void UI_Message( const char ** lines ) {
 	s_confirm.menu.key        = ConfirmMenu_Key;
 	s_confirm.menu.wrapAround = true;
 
-	trap_GetClientState( &cstate );
+	uiLocal->GetClientState( &cstate );
 	if ( cstate.connState >= CA_CONNECTED ) {
 		s_confirm.menu.fullscreen = false;
 	} else {

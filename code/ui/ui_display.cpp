@@ -96,11 +96,11 @@ static void UI_DisplayOptionsMenu_Event( void * ptr, int event ) {
 			break;
 
 		case ID_BRIGHTNESS:
-			trap_Cvar_SetValue( "r_gamma", displayOptionsInfo.brightness.curvalue / 10.0f );
+			uiLocal->Cvar_SetValue( "r_gamma", displayOptionsInfo.brightness.curvalue / 10.0f );
 			break;
 
 		case ID_SCREENSIZE:
-			trap_Cvar_SetValue( "cg_viewsize", displayOptionsInfo.screensize.curvalue * 10 );
+			uiLocal->Cvar_SetValue( "cg_viewsize", displayOptionsInfo.screensize.curvalue * 10 );
 			break;
 
 		case ID_BACK:
@@ -235,8 +235,8 @@ static void UI_DisplayOptionsMenu_Init( void ) {
 	Menu_AddItem( &displayOptionsInfo.menu, ( void * ) &displayOptionsInfo.screensize );
 	Menu_AddItem( &displayOptionsInfo.menu, ( void * ) &displayOptionsInfo.back );
 
-	displayOptionsInfo.brightness.curvalue  = trap_Cvar_VariableValue( "r_gamma" ) * 10;
-	displayOptionsInfo.screensize.curvalue  = trap_Cvar_VariableValue( "cg_viewsize" ) / 10;
+	displayOptionsInfo.brightness.curvalue  = uiLocal->Cvar_VariableValue( "r_gamma" ) * 10;
+	displayOptionsInfo.screensize.curvalue  = uiLocal->Cvar_VariableValue( "cg_viewsize" ) / 10;
 }
 
 
@@ -246,10 +246,10 @@ UI_DisplayOptionsMenu_Cache
 ===============
 */
 void UI_DisplayOptionsMenu_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
-	trap_R_RegisterShaderNoMip( ART_BACK0 );
-	trap_R_RegisterShaderNoMip( ART_BACK1 );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMEL );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMER );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK0 );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK1 );
 }
 
 

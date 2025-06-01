@@ -169,7 +169,7 @@ void CG_ImpactMark( qhandle_t markShader, const vec3_t origin, const vec3_t dir,
 
 	// get the fragments
 	VectorScale( dir, -20, projection );
-	numFragments = trap_CM_MarkFragments( 4, ( const vec3_t * )originalPoints,
+	numFragments = cgameLocal->CM_MarkFragments( 4, ( const vec3_t * )originalPoints,
 										  projection, MAX_MARK_POINTS, markPoints[0],
 										  MAX_MARK_FRAGMENTS, markFragments );
 
@@ -201,7 +201,7 @@ void CG_ImpactMark( qhandle_t markShader, const vec3_t origin, const vec3_t dir,
 
 		// if it is a temporary (shadow) mark, add it immediately and forget about it
 		if ( temporary ) {
-			trap_R_AddPolyToScene( markShader, mf->numPoints, verts );
+			cgameLocal->R_AddPolyToScene( markShader, mf->numPoints, verts, 1 );
 			continue;
 		}
 
@@ -287,7 +287,7 @@ void CG_AddMarks( void ) {
 		}
 
 
-		trap_R_AddPolyToScene( mp->markShader, mp->poly.numVerts, mp->verts );
+		cgameLocal->R_AddPolyToScene( mp->markShader, mp->poly.numVerts, mp->verts, 1 );
 	}
 }
 
@@ -411,7 +411,7 @@ void CG_ClearParticles ( void ) {
 		int j;
 
 		for ( j = 0; j < shaderAnimCounts[i]; j++ ) {
-			shaderAnims[i][j] = trap_R_RegisterShader( va( "%s%i", shaderAnimNames[i], j + 1 ) );
+			shaderAnims[i][j] = cgameLocal->R_RegisterShader( va( "%s%i", shaderAnimNames[i], j + 1 ) );
 		}
 	}
 	numShaderAnims = i;
@@ -1030,9 +1030,9 @@ void CG_AddParticleToScene ( cparticle_t * p, vec3_t org, float alpha ) {
 	}
 
 	if ( p->type == P_WEATHER || p->type == P_WEATHER_TURBULENT || p->type == P_WEATHER_FLURRY ) {
-		trap_R_AddPolyToScene( p->pshader, 3, TRIverts );
+		cgameLocal->R_AddPolyToScene( p->pshader, 3, TRIverts, 1 );
 	} else {
-		trap_R_AddPolyToScene( p->pshader, 4, verts );
+		cgameLocal->R_AddPolyToScene( p->pshader, 4, verts, 1 );
 	}
 
 }

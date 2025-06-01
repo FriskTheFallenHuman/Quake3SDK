@@ -733,43 +733,6 @@ extern	vmCvar_t	g_enableBreath;
 extern	vmCvar_t	g_singlePlayer;
 extern	vmCvar_t	g_proxMineTimeout;
 
-int		trap_Milliseconds( void );
-int		trap_Argc( void );
-void	trap_Argv( int n, char * buffer, int bufferLength );
-void	trap_Args( char * buffer, int bufferLength );
-int		trap_FS_FOpenFile( const char * qpath, fileHandle_t * f, fsMode_t mode );
-void	trap_FS_Read( void * buffer, int len, fileHandle_t f );
-void	trap_FS_Write( const void * buffer, int len, fileHandle_t f );
-void	trap_FS_FCloseFile( fileHandle_t f );
-int		trap_FS_GetFileList( const char * path, const char * extension, char * listbuf, int bufsize );
-int		trap_FS_Seek( fileHandle_t f, long offset, int origin ); // fsOrigin_t
-void	trap_SendConsoleCommand( int exec_when, const char * text );
-void	trap_Cvar_Register( vmCvar_t * cvar, const char * var_name, const char * value, int flags );
-void	trap_Cvar_Update( vmCvar_t * cvar );
-void	trap_Cvar_Set( const char * var_name, const char * value );
-int		trap_Cvar_VariableIntegerValue( const char * var_name );
-float	trap_Cvar_VariableValue( const char * var_name );
-void	trap_Cvar_VariableStringBuffer( const char * var_name, char * buffer, int bufsize );
-void	trap_LocateGameData( gentity_t * gEnts, int numGEntities, int sizeofGEntity_t, playerState_t * gameClients, int sizeofGameClient );
-void	trap_DropClient( int clientNum, const char * reason );
-void	trap_SendServerCommand( int clientNum, const char * text );
-void	trap_SetConfigstring( int num, const char * string );
-void	trap_GetConfigstring( int num, char * buffer, int bufferSize );
-void	trap_GetUserinfo( int num, char * buffer, int bufferSize );
-void	trap_SetUserinfo( int num, const char * buffer );
-void	trap_GetServerinfo( char * buffer, int bufferSize );
-void	trap_SetBrushModel( gentity_t * ent, const char * name );
-void	trap_Trace( trace_t * results, const vec3_t start, vec3_t mins, vec3_t maxs, const vec3_t end, int passEntityNum, int contentmask );
-int		trap_PointContents( const vec3_t point, int passEntityNum );
-bool	trap_InPVS( const vec3_t p1, const vec3_t p2 );
-bool	trap_InPVSIgnorePortals( const vec3_t p1, const vec3_t p2 );
-void	trap_AdjustAreaPortalState( gentity_t * ent, bool open );
-bool	trap_AreasConnected( int area1, int area2 );
-void	trap_LinkEntity( gentity_t * ent );
-void	trap_UnlinkEntity( gentity_t * ent );
-int		trap_EntitiesInBox( vec3_t mins, vec3_t maxs, int * entityList, int maxcount );
-bool	trap_EntityContact( vec3_t mins, vec3_t maxs, const gentity_t * ent );
-void	trap_GetUsercmd( int clientNum, usercmd_t * cmd );
-bool	trap_GetEntityToken( char * buffer, int bufferSize );
+extern gameImport_t * gameLocal;
 
 #endif /* !__G_LOCAL_H__ */

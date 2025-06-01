@@ -124,7 +124,7 @@ void DriverInfo_Cache( void ) {
 		if ( !driverinfo_artlist[i] ) {
 			break;
 		}
-		trap_R_RegisterShaderNoMip( driverinfo_artlist[i] );
+		uiLocal->re_RegisterShaderNoMip( driverinfo_artlist[i] );
 	}
 }
 
@@ -450,56 +450,56 @@ static void GraphicsOptions_ApplyChanges( void * unused, int notification ) {
 
 	switch ( s_graphicsoptions.texturebits.curvalue ) {
 		case 0:
-			trap_Cvar_SetValue( "r_texturebits", 0 );
+			uiLocal->Cvar_SetValue( "r_texturebits", 0 );
 			break;
 		case 1:
-			trap_Cvar_SetValue( "r_texturebits", 16 );
+			uiLocal->Cvar_SetValue( "r_texturebits", 16 );
 			break;
 		case 2:
-			trap_Cvar_SetValue( "r_texturebits", 32 );
+			uiLocal->Cvar_SetValue( "r_texturebits", 32 );
 			break;
 	}
-	trap_Cvar_SetValue( "r_picmip", 3 - s_graphicsoptions.tq.curvalue );
-	trap_Cvar_SetValue( "r_allowExtensions", s_graphicsoptions.allow_extensions.curvalue );
-	trap_Cvar_SetValue( "r_mode", s_graphicsoptions.mode.curvalue );
-	trap_Cvar_SetValue( "r_fullscreen", s_graphicsoptions.fs.curvalue );
-	trap_Cvar_Set( "r_glDriver", ( char * ) s_drivers[s_graphicsoptions.driver.curvalue] );
+	uiLocal->Cvar_SetValue( "r_picmip", 3 - s_graphicsoptions.tq.curvalue );
+	uiLocal->Cvar_SetValue( "r_allowExtensions", s_graphicsoptions.allow_extensions.curvalue );
+	uiLocal->Cvar_SetValue( "r_mode", s_graphicsoptions.mode.curvalue );
+	uiLocal->Cvar_SetValue( "r_fullscreen", s_graphicsoptions.fs.curvalue );
+	uiLocal->Cvar_Set( "r_glDriver", ( char * ) s_drivers[s_graphicsoptions.driver.curvalue] );
 	switch ( s_graphicsoptions.colordepth.curvalue ) {
 		case 0:
-			trap_Cvar_SetValue( "r_colorbits", 0 );
-			trap_Cvar_SetValue( "r_depthbits", 0 );
-			trap_Cvar_SetValue( "r_stencilbits", 0 );
+			uiLocal->Cvar_SetValue( "r_colorbits", 0 );
+			uiLocal->Cvar_SetValue( "r_depthbits", 0 );
+			uiLocal->Cvar_SetValue( "r_stencilbits", 0 );
 			break;
 		case 1:
-			trap_Cvar_SetValue( "r_colorbits", 16 );
-			trap_Cvar_SetValue( "r_depthbits", 16 );
-			trap_Cvar_SetValue( "r_stencilbits", 0 );
+			uiLocal->Cvar_SetValue( "r_colorbits", 16 );
+			uiLocal->Cvar_SetValue( "r_depthbits", 16 );
+			uiLocal->Cvar_SetValue( "r_stencilbits", 0 );
 			break;
 		case 2:
-			trap_Cvar_SetValue( "r_colorbits", 32 );
-			trap_Cvar_SetValue( "r_depthbits", 24 );
+			uiLocal->Cvar_SetValue( "r_colorbits", 32 );
+			uiLocal->Cvar_SetValue( "r_depthbits", 24 );
 			break;
 	}
-	trap_Cvar_SetValue( "r_vertexLight", s_graphicsoptions.lighting.curvalue );
+	uiLocal->Cvar_SetValue( "r_vertexLight", s_graphicsoptions.lighting.curvalue );
 
 	if ( s_graphicsoptions.geometry.curvalue == 2 ) {
-		trap_Cvar_SetValue( "r_lodBias", 0 );
-		trap_Cvar_SetValue( "r_subdivisions", 4 );
+		uiLocal->Cvar_SetValue( "r_lodBias", 0 );
+		uiLocal->Cvar_SetValue( "r_subdivisions", 4 );
 	} else if ( s_graphicsoptions.geometry.curvalue == 1 ) {
-		trap_Cvar_SetValue( "r_lodBias", 1 );
-		trap_Cvar_SetValue( "r_subdivisions", 12 );
+		uiLocal->Cvar_SetValue( "r_lodBias", 1 );
+		uiLocal->Cvar_SetValue( "r_subdivisions", 12 );
 	} else {
-		trap_Cvar_SetValue( "r_lodBias", 1 );
-		trap_Cvar_SetValue( "r_subdivisions", 20 );
+		uiLocal->Cvar_SetValue( "r_lodBias", 1 );
+		uiLocal->Cvar_SetValue( "r_subdivisions", 20 );
 	}
 
 	if ( s_graphicsoptions.filter.curvalue ) {
-		trap_Cvar_Set( "r_textureMode", "GL_LINEAR_MIPMAP_LINEAR" );
+		uiLocal->Cvar_Set( "r_textureMode", "GL_LINEAR_MIPMAP_LINEAR" );
 	} else {
-		trap_Cvar_Set( "r_textureMode", "GL_LINEAR_MIPMAP_NEAREST" );
+		uiLocal->Cvar_Set( "r_textureMode", "GL_LINEAR_MIPMAP_NEAREST" );
 	}
 
-	trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart\n" );
+	uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "vid_restart\n" );
 }
 
 /*
@@ -599,21 +599,21 @@ GraphicsOptions_SetMenuItems
 =================
 */
 static void GraphicsOptions_SetMenuItems( void ) {
-	s_graphicsoptions.mode.curvalue = trap_Cvar_VariableValue( "r_mode" );
+	s_graphicsoptions.mode.curvalue = uiLocal->Cvar_VariableValue( "r_mode" );
 	if ( s_graphicsoptions.mode.curvalue < 0 ) {
 		s_graphicsoptions.mode.curvalue = 3;
 	}
-	s_graphicsoptions.fs.curvalue = trap_Cvar_VariableValue( "r_fullscreen" );
-	s_graphicsoptions.allow_extensions.curvalue = trap_Cvar_VariableValue( "r_allowExtensions" );
-	s_graphicsoptions.tq.curvalue = 3 - trap_Cvar_VariableValue( "r_picmip" );
+	s_graphicsoptions.fs.curvalue = uiLocal->Cvar_VariableValue( "r_fullscreen" );
+	s_graphicsoptions.allow_extensions.curvalue = uiLocal->Cvar_VariableValue( "r_allowExtensions" );
+	s_graphicsoptions.tq.curvalue = 3 - uiLocal->Cvar_VariableValue( "r_picmip" );
 	if ( s_graphicsoptions.tq.curvalue < 0 ) {
 		s_graphicsoptions.tq.curvalue = 0;
 	} else if ( s_graphicsoptions.tq.curvalue > 3 ) {
 		s_graphicsoptions.tq.curvalue = 3;
 	}
 
-	s_graphicsoptions.lighting.curvalue = trap_Cvar_VariableValue( "r_vertexLight" ) != 0;
-	switch ( ( int ) trap_Cvar_VariableValue( "r_texturebits" ) ) {
+	s_graphicsoptions.lighting.curvalue = uiLocal->Cvar_VariableValue( "r_vertexLight" ) != 0;
+	switch ( ( int ) uiLocal->Cvar_VariableValue( "r_texturebits" ) ) {
 		default:
 		case 0:
 			s_graphicsoptions.texturebits.curvalue = 0;
@@ -632,8 +632,8 @@ static void GraphicsOptions_SetMenuItems( void ) {
 		s_graphicsoptions.filter.curvalue = 1;
 	}
 
-	if ( trap_Cvar_VariableValue( "r_lodBias" ) > 0 ) {
-		if ( trap_Cvar_VariableValue( "r_subdivisions" ) >= 20 ) {
+	if ( uiLocal->Cvar_VariableValue( "r_lodBias" ) > 0 ) {
+		if ( uiLocal->Cvar_VariableValue( "r_subdivisions" ) >= 20 ) {
 			s_graphicsoptions.geometry.curvalue = 0;
 		} else {
 			s_graphicsoptions.geometry.curvalue = 1;
@@ -642,7 +642,7 @@ static void GraphicsOptions_SetMenuItems( void ) {
 		s_graphicsoptions.geometry.curvalue = 2;
 	}
 
-	switch ( ( int ) trap_Cvar_VariableValue( "r_colorbits" ) ) {
+	switch ( ( int ) uiLocal->Cvar_VariableValue( "r_colorbits" ) ) {
 		default:
 		case 0:
 			s_graphicsoptions.colordepth.curvalue = 0;
@@ -988,12 +988,12 @@ GraphicsOptions_Cache
 =================
 */
 void GraphicsOptions_Cache( void ) {
-	trap_R_RegisterShaderNoMip( GRAPHICSOPTIONS_FRAMEL );
-	trap_R_RegisterShaderNoMip( GRAPHICSOPTIONS_FRAMER );
-	trap_R_RegisterShaderNoMip( GRAPHICSOPTIONS_BACK0 );
-	trap_R_RegisterShaderNoMip( GRAPHICSOPTIONS_BACK1 );
-	trap_R_RegisterShaderNoMip( GRAPHICSOPTIONS_ACCEPT0 );
-	trap_R_RegisterShaderNoMip( GRAPHICSOPTIONS_ACCEPT1 );
+	uiLocal->re_RegisterShaderNoMip( GRAPHICSOPTIONS_FRAMEL );
+	uiLocal->re_RegisterShaderNoMip( GRAPHICSOPTIONS_FRAMER );
+	uiLocal->re_RegisterShaderNoMip( GRAPHICSOPTIONS_BACK0 );
+	uiLocal->re_RegisterShaderNoMip( GRAPHICSOPTIONS_BACK1 );
+	uiLocal->re_RegisterShaderNoMip( GRAPHICSOPTIONS_ACCEPT0 );
+	uiLocal->re_RegisterShaderNoMip( GRAPHICSOPTIONS_ACCEPT1 );
 }
 
 

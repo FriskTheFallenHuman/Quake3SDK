@@ -102,7 +102,7 @@ static void CG_ClipMoveToEntities( const vec3_t start, const vec3_t mins, const 
 
 		if ( ent->solid == SOLID_BMODEL ) {
 			// special value for bmodel
-			cmodel = trap_CM_InlineModel( ent->modelindex );
+			cmodel = cgameLocal->CM_InlineModel( ent->modelindex );
 			VectorCopy( cent->lerpAngles, angles );
 			BG_EvaluateTrajectory( &cent->currentState.pos, cg.physicsTime, origin );
 		} else {
@@ -116,14 +116,14 @@ static void CG_ClipMoveToEntities( const vec3_t start, const vec3_t mins, const 
 			bmins[2] = -zd;
 			bmaxs[2] = zu;
 
-			cmodel = trap_CM_TempBoxModel( bmins, bmaxs );
+			cmodel = cgameLocal->CM_TempBoxModel( bmins, bmaxs, false );
 			VectorCopy( vec3_origin, angles );
 			VectorCopy( cent->lerpOrigin, origin );
 		}
 
 
-		trap_CM_TransformedBoxTrace( &trace, start, end,
-									 ( vec_t * )mins, ( vec_t * )maxs, cmodel,  mask, origin, angles );
+		cgameLocal->CM_TransformedBoxTrace( &trace, start, end,
+									 ( vec_t * )mins, ( vec_t * )maxs, cmodel,  mask, origin, angles, false );
 
 		if ( trace.allsolid || trace.fraction < tr->fraction ) {
 			trace.entityNum = ent->number;
@@ -146,7 +146,7 @@ void	CG_Trace( trace_t * result, const vec3_t start, vec3_t mins, vec3_t maxs, c
 				int skipNumber, int mask ) {
 	trace_t	t;
 
-	trap_CM_BoxTrace( &t, start, end, mins, maxs, 0, mask );
+	cgameLocal->CM_BoxTrace( &t, start, end, mins, maxs, 0, mask, false );
 	t.entityNum = t.fraction != 1.0 ? ENTITYNUM_WORLD : ENTITYNUM_NONE;
 	// check all other solid models
 	CG_ClipMoveToEntities( start, mins, maxs, end, skipNumber, mask, &t );
@@ -166,7 +166,7 @@ int		CG_PointContents( const vec3_t point, int passEntityNum ) {
 	clipHandle_t cmodel;
 	int			contents;
 
-	contents = trap_CM_PointContents( point, 0 );
+	contents = cgameLocal->CM_PointContents( point, 0 );
 
 	for ( i = 0 ; i < cg_numSolidEntities ; i++ ) {
 		cent = cg_solidEntities[ i ];
@@ -181,12 +181,12 @@ int		CG_PointContents( const vec3_t point, int passEntityNum ) {
 			continue;
 		}
 
-		cmodel = trap_CM_InlineModel( ent->modelindex );
+		cmodel = cgameLocal->CM_InlineModel( ent->modelindex );
 		if ( !cmodel ) {
 			continue;
 		}
 
-		contents |= trap_CM_TransformedPointContents( point, cmodel, ent->origin, ent->angles );
+		contents |= cgameLocal->CM_TransformedPointContents( point, cmodel, ent->origin, ent->angles );
 	}
 
 	return contents;
@@ -218,8 +218,8 @@ static void CG_InterpolatePlayerState( bool grabAngles ) {
 		usercmd_t	cmd;
 		int			cmdNum;
 
-		cmdNum = trap_GetCurrentCmdNumber();
-		trap_GetUserCmd( cmdNum, &cmd );
+		cmdNum = cgameLocal->GetCurrentCmdNumber();
+		cgameLocal->GetUserCmd( cmdNum, &cmd );
 
 		PM_UpdateViewAngles( out, &cmd );
 	}
@@ -359,13 +359,13 @@ static void CG_TouchTriggerPrediction( void ) {
 			continue;
 		}
 
-		cmodel = trap_CM_InlineModel( ent->modelindex );
+		cmodel = cgameLocal->CM_InlineModel( ent->modelindex );
 		if ( !cmodel ) {
 			continue;
 		}
 
-		trap_CM_BoxTrace( &trace, cg.predictedPlayerState.origin, cg.predictedPlayerState.origin,
-						  cg_pmove.mins, cg_pmove.maxs, cmodel, -1 );
+		cgameLocal->CM_BoxTrace( &trace, cg.predictedPlayerState.origin, cg.predictedPlayerState.origin,
+						  cg_pmove.mins, cg_pmove.maxs, cmodel, -1, false );
 
 		if ( !trace.startsolid ) {
 			continue;
@@ -459,13 +459,13 @@ void CG_PredictPlayerState( void ) {
 	// save the state before the pmove so we can detect transitions
 	oldPlayerState = cg.predictedPlayerState;
 
-	current = trap_GetCurrentCmdNumber();
+	current = cgameLocal->GetCurrentCmdNumber();
 
 	// if we don't have the commands right after the snapshot, we
 	// can't accurately predict a current position, so just freeze at
 	// the last good position we had
 	cmdNum = current - CMD_BACKUP + 1;
-	trap_GetUserCmd( cmdNum, &oldestCmd );
+	cgameLocal->GetUserCmd( cmdNum, &oldestCmd );
 	if ( oldestCmd.serverTime > cg.snap->ps.commandTime
 			&& oldestCmd.serverTime < cg.time ) {	// special check for map_restart
 		if ( cg_showmiss.integer ) {
@@ -475,7 +475,7 @@ void CG_PredictPlayerState( void ) {
 	}
 
 	// get the latest command so we can know which commands are from previous map_restarts
-	trap_GetUserCmd( current, &latestCmd );
+	cgameLocal->GetUserCmd( current, &latestCmd );
 
 	// get the most recent information we have, even if
 	// the server time is beyond our current cg.time,
@@ -490,9 +490,9 @@ void CG_PredictPlayerState( void ) {
 	}
 
 	if ( pmove_msec.integer < 8 ) {
-		trap_Cvar_Set( "pmove_msec", "8" );
+		cgameLocal->Cvar_Set( "pmove_msec", "8" );
 	} else if ( pmove_msec.integer > 33 ) {
-		trap_Cvar_Set( "pmove_msec", "33" );
+		cgameLocal->Cvar_Set( "pmove_msec", "33" );
 	}
 
 	cg_pmove.pmove_fixed = pmove_fixed.integer;// | cg_pmove_fixed.integer;
@@ -502,7 +502,7 @@ void CG_PredictPlayerState( void ) {
 	moved = false;
 	for ( cmdNum = current - CMD_BACKUP + 1 ; cmdNum <= current ; cmdNum++ ) {
 		// get the command
-		trap_GetUserCmd( cmdNum, &cg_pmove.cmd );
+		cgameLocal->GetUserCmd( cmdNum, &cg_pmove.cmd );
 
 		if ( cg_pmove.pmove_fixed ) {
 			PM_UpdateViewAngles( cg_pmove.ps, &cg_pmove.cmd );

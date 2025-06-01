@@ -114,8 +114,8 @@ void Main_MenuEvent ( void * ptr, int event ) {
 			break;
 
 		case ID_TEAMARENA:
-			trap_Cvar_Set( "fs_game", "missionpack" );
-			trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart;" );
+			uiLocal->Cvar_Set( "fs_game", "missionpack" );
+			uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "vid_restart;" );
 			break;
 
 		case ID_EXIT:
@@ -131,11 +131,11 @@ MainMenu_Cache
 ===============
 */
 void MainMenu_Cache( void ) {
-	s_main.bannerModel = trap_R_RegisterModel( MAIN_BANNER_MODEL );
+	s_main.bannerModel = uiLocal->re_RegisterModel( MAIN_BANNER_MODEL );
 }
 
 sfxHandle_t ErrorMessage_Key( int key ) {
-	trap_Cvar_Set( "com_errorMessage", "" );
+	uiLocal->Cvar_Set( "com_errorMessage", "" );
 	UI_MainMenu();
 	return ( menu_null_sound );
 }
@@ -184,7 +184,7 @@ static void Main_MenuDraw( void ) {
 	origin[1] = 0;
 	origin[2] = -32;
 
-	trap_R_ClearScene();
+	uiLocal->re_ClearScene();
 
 	// add the model
 
@@ -199,9 +199,9 @@ static void Main_MenuDraw( void ) {
 	ent.renderfx = RF_LIGHTING_ORIGIN | RF_NOSHADOW;
 	VectorCopy( ent.origin, ent.oldorigin );
 
-	trap_R_AddRefEntityToScene( &ent );
+	uiLocal->re_AddRefEntityToScene( &ent );
 
-	trap_R_RenderScene( &refdef );
+	uiLocal->re_RenderScene( &refdef );
 
 	if ( strlen( s_errorMessage.errorMessage ) ) {
 		UI_DrawProportionalString_AutoWrapped( 320, 192, 600, 20, s_errorMessage.errorMessage, UI_CENTER | UI_SMALLFONT | UI_DROPSHADOW, menu_text_color );
@@ -227,7 +227,7 @@ static bool UI_TeamArenaExists( void ) {
 	int		i;
 	int		dirlen;
 
-	numdirs = trap_FS_GetFileList( "$modlist", "", dirlist, sizeof( dirlist ) );
+	numdirs = uiLocal->FS_GetFileList( "$modlist", "", dirlist, sizeof( dirlist ) );
 	dirptr  = dirlist;
 	for ( i = 0; i < numdirs; i++ ) {
 		dirlen = strlen( dirptr ) + 1;
@@ -255,7 +255,7 @@ void UI_MainMenu( void ) {
 	bool teamArena = false;
 	int		style = UI_CENTER | UI_DROPSHADOW;
 
-	trap_Cvar_Set( "sv_killserver", "1" );
+	uiLocal->Cvar_Set( "sv_killserver", "1" );
 
 	memset( &s_main, 0, sizeof( mainmenu_t ) );
 	memset( &s_errorMessage, 0, sizeof( errorMessage_t ) );
@@ -263,7 +263,7 @@ void UI_MainMenu( void ) {
 	// com_errorMessage would need that too
 	MainMenu_Cache();
 
-	trap_Cvar_VariableStringBuffer( "com_errorMessage", s_errorMessage.errorMessage, sizeof( s_errorMessage.errorMessage ) );
+	uiLocal->Cvar_VariableStringBuffer( "com_errorMessage", s_errorMessage.errorMessage, sizeof( s_errorMessage.errorMessage ) );
 	if ( strlen( s_errorMessage.errorMessage ) ) {
 		s_errorMessage.menu.draw = Main_MenuDraw;
 		s_errorMessage.menu.key = ErrorMessage_Key;
@@ -271,7 +271,7 @@ void UI_MainMenu( void ) {
 		s_errorMessage.menu.wrapAround = true;
 		s_errorMessage.menu.showlogo = true;
 
-		trap_Key_SetCatcher( KEYCATCH_UI );
+		uiLocal->Key_SetCatcher( KEYCATCH_UI );
 		uis.menusp = 0;
 		UI_PushMenu ( &s_errorMessage.menu );
 
@@ -373,7 +373,7 @@ void UI_MainMenu( void ) {
 	Menu_AddItem( &s_main.menu,	&s_main.mods );
 	Menu_AddItem( &s_main.menu,	&s_main.exit );
 
-	trap_Key_SetCatcher( KEYCATCH_UI );
+	uiLocal->Key_SetCatcher( KEYCATCH_UI );
 	uis.menusp = 0;
 	UI_PushMenu ( &s_main.menu );
 

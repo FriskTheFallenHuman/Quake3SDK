@@ -181,10 +181,10 @@ PlayerModel_SaveChanges
 =================
 */
 static void PlayerModel_SaveChanges( void ) {
-	trap_Cvar_Set( "model", s_playermodel.modelskin );
-	trap_Cvar_Set( "headmodel", s_playermodel.modelskin );
-	trap_Cvar_Set( "team_model", s_playermodel.modelskin );
-	trap_Cvar_Set( "team_headmodel", s_playermodel.modelskin );
+	uiLocal->Cvar_Set( "model", s_playermodel.modelskin );
+	uiLocal->Cvar_Set( "headmodel", s_playermodel.modelskin );
+	uiLocal->Cvar_Set( "team_model", s_playermodel.modelskin );
+	uiLocal->Cvar_Set( "team_headmodel", s_playermodel.modelskin );
 }
 
 /*
@@ -331,7 +331,7 @@ static void PlayerModel_PicEvent( void * ptr, int event ) {
 
 		s_playermodel.selectedmodel = modelnum;
 
-		if ( trap_MemoryRemaining() > LOW_MEMORY ) {
+		if ( uiLocal->Hunk_MemoryRemaining() > LOW_MEMORY ) {
 			PlayerModel_UpdateModel();
 		}
 	}
@@ -347,7 +347,7 @@ static void PlayerModel_DrawPlayer( void * self ) {
 
 	b = ( menubitmap_s * ) self;
 
-	if ( trap_MemoryRemaining() <= LOW_MEMORY ) {
+	if ( uiLocal->Hunk_MemoryRemaining() <= LOW_MEMORY ) {
 		UI_DrawProportionalString( b->generic.x, b->generic.y + b->height / 2, "LOW MEMORY", UI_LEFT, color_red );
 		return;
 	}
@@ -374,13 +374,13 @@ static void PlayerModel_BuildList( void ) {
 	int		filelen;
 	bool precache;
 
-	precache = trap_Cvar_VariableValue( "com_buildscript" ) > 1.0f ? true : false;
+	precache = uiLocal->Cvar_VariableValue( "com_buildscript" ) > 1.0f ? true : false;
 
 	s_playermodel.modelpage = 0;
 	s_playermodel.nummodels = 0;
 
 	// iterate directory of all player models
-	numdirs = trap_FS_GetFileList( "models/players", "/", dirlist, 2048 );
+	numdirs = uiLocal->FS_GetFileList( "models/players", "/", dirlist, 2048 );
 	dirptr  = dirlist;
 	for ( i = 0; i < numdirs && s_playermodel.nummodels < MAX_PLAYERMODELS; i++, dirptr += dirlen + 1 ) {
 		dirlen = strlen( dirptr );
@@ -394,7 +394,7 @@ static void PlayerModel_BuildList( void ) {
 		}
 
 		// iterate all skin files in directory
-		numfiles = trap_FS_GetFileList( va( "models/players/%s", dirptr ), "tga", filelist, 2048 );
+		numfiles = uiLocal->FS_GetFileList( va( "models/players/%s", dirptr ), "tga", filelist, 2048 );
 		fileptr  = filelist;
 		for ( j = 0; j < numfiles && s_playermodel.nummodels < MAX_PLAYERMODELS; j++, fileptr += filelen + 1 ) {
 			filelen = strlen( fileptr );
@@ -411,7 +411,7 @@ static void PlayerModel_BuildList( void ) {
 			}
 
 			if ( precache ) {
-				trap_S_RegisterSound( va( "sound/player/announce/%s_wins.wav", skinname ), false );
+				uiLocal->S_RegisterSound( va( "sound/player/announce/%s_wins.wav", skinname ), false );
 			}
 		}
 	}
@@ -437,11 +437,11 @@ static void PlayerModel_SetMenuItems( void ) {
 	char		*	pdest;
 
 	// name
-	trap_Cvar_VariableStringBuffer( "name", s_playermodel.playername.string, 16 );
+	uiLocal->Cvar_VariableStringBuffer( "name", s_playermodel.playername.string, 16 );
 	Q_CleanStr( s_playermodel.playername.string );
 
 	// model
-	trap_Cvar_VariableStringBuffer( "model", s_playermodel.modelskin, 64 );
+	uiLocal->Cvar_VariableStringBuffer( "model", s_playermodel.modelskin, 64 );
 
 	// find model in our list
 	for ( i = 0; i < s_playermodel.nummodels; i++ ) {
@@ -678,12 +678,12 @@ void PlayerModel_Cache( void ) {
 	int	i;
 
 	for ( i = 0; playermodel_artlist[i]; i++ ) {
-		trap_R_RegisterShaderNoMip( playermodel_artlist[i] );
+		uiLocal->re_RegisterShaderNoMip( playermodel_artlist[i] );
 	}
 
 	PlayerModel_BuildList();
 	for ( i = 0; i < s_playermodel.nummodels; i++ ) {
-		trap_R_RegisterShaderNoMip( s_playermodel.modelnames[i] );
+		uiLocal->re_RegisterShaderNoMip( s_playermodel.modelnames[i] );
 	}
 }
 

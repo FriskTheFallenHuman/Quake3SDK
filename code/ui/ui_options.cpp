@@ -100,10 +100,10 @@ SystemConfig_Cache
 ===============
 */
 void SystemConfig_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
-	trap_R_RegisterShaderNoMip( ART_BACK0 );
-	trap_R_RegisterShaderNoMip( ART_BACK1 );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMEL );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMER );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK0 );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK1 );
 }
 
 /*
@@ -120,7 +120,7 @@ void Options_MenuInit( void ) {
 	SystemConfig_Cache();
 	s_options.menu.wrapAround = true;
 
-	trap_GetClientState( &cstate );
+	uiLocal->GetClientState( &cstate );
 	if ( cstate.connState >= CA_CONNECTED ) {
 		s_options.menu.fullscreen = false;
 	} else {

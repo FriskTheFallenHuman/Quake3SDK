@@ -77,9 +77,9 @@ static void Setup_ResetDefaults_Action( bool result ) {
 	if ( !result ) {
 		return;
 	}
-	trap_Cmd_ExecuteText( EXEC_APPEND, "exec default.cfg\n" );
-	trap_Cmd_ExecuteText( EXEC_APPEND, "cvar_restart\n" );
-	trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart\n" );
+	uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "exec default.cfg\n" );
+	uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "cvar_restart\n" );
+	uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "vid_restart\n" );
 }
 
 
@@ -221,7 +221,7 @@ static void UI_SetupMenu_Init( void ) {
 	setupMenuInfo.game.color						= color_red;
 	setupMenuInfo.game.style						= UI_CENTER;
 
-	if ( !trap_Cvar_VariableValue( "cl_paused" ) ) {
+	if ( !uiLocal->Cvar_VariableValue( "cl_paused" ) ) {
 #if 0
 		y += SETUP_MENU_VERTICAL_SPACING;
 		setupMenuInfo.load.generic.type					= MTYPE_PTEXT;
@@ -278,7 +278,7 @@ static void UI_SetupMenu_Init( void ) {
 	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.game );
 //	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.load );
 //	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.save );
-	if ( !trap_Cvar_VariableValue( "cl_paused" ) ) {
+	if ( !uiLocal->Cvar_VariableValue( "cl_paused" ) ) {
 		Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.defaults );
 	}
 	Menu_AddItem( &setupMenuInfo.menu, &setupMenuInfo.back );
@@ -291,10 +291,10 @@ UI_SetupMenu_Cache
 =================
 */
 void UI_SetupMenu_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_BACK0 );
-	trap_R_RegisterShaderNoMip( ART_BACK1 );
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK0 );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK1 );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMEL );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMER );
 }
 
 

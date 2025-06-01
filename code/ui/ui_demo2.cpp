@@ -91,7 +91,7 @@ static void Demos_MenuEvent( void * ptr, int event ) {
 	switch ( ( ( menucommon_s * )ptr )->id ) {
 		case ID_GO:
 			UI_ForceMenuOff ();
-			trap_Cmd_ExecuteText( EXEC_APPEND, va( "demo %s\n",
+			uiLocal->Cbuf_ExecuteText( EXEC_APPEND, va( "demo %s\n",
 												   s_demos.list.itemnames[s_demos.list.curvalue] ) );
 			break;
 
@@ -223,8 +223,8 @@ static void Demos_MenuInit( void ) {
 	s_demos.list.generic.y			= 130;
 	s_demos.list.width				= 16;
 	s_demos.list.height				= 14;
-	Com_sprintf( extension, sizeof( extension ), "dm_%d", ( int )trap_Cvar_VariableValue( "protocol" ) );
-	s_demos.list.numitems			= trap_FS_GetFileList( "demos", extension, s_demos.names, NAMEBUFSIZE );
+	Com_sprintf( extension, sizeof( extension ), "dm_%d", ( int )uiLocal->Cvar_VariableValue( "protocol" ) );
+	s_demos.list.numitems			= uiLocal->FS_GetFileList( "demos", extension, s_demos.names, NAMEBUFSIZE );
 	s_demos.list.itemnames			= ( const char ** )s_demos.demolist;
 	s_demos.list.columns			= 3;
 
@@ -270,15 +270,15 @@ Demos_Cache
 =================
 */
 void Demos_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_BACK0 );
-	trap_R_RegisterShaderNoMip( ART_BACK1 );
-	trap_R_RegisterShaderNoMip( ART_GO0 );
-	trap_R_RegisterShaderNoMip( ART_GO1 );
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
-	trap_R_RegisterShaderNoMip( ART_ARROWS );
-	trap_R_RegisterShaderNoMip( ART_ARROWLEFT );
-	trap_R_RegisterShaderNoMip( ART_ARROWRIGHT );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK0 );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK1 );
+	uiLocal->re_RegisterShaderNoMip( ART_GO0 );
+	uiLocal->re_RegisterShaderNoMip( ART_GO1 );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMEL );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMER );
+	uiLocal->re_RegisterShaderNoMip( ART_ARROWS );
+	uiLocal->re_RegisterShaderNoMip( ART_ARROWLEFT );
+	uiLocal->re_RegisterShaderNoMip( ART_ARROWRIGHT );
 }
 
 /*

@@ -75,8 +75,8 @@ static void UI_Mods_MenuEvent( void * ptr, int event ) {
 
 	switch ( ( ( menucommon_s * )ptr )->id ) {
 		case ID_GO:
-			trap_Cvar_Set( "fs_game", s_mods.fs_gameList[s_mods.list.curvalue] );
-			trap_Cmd_ExecuteText( EXEC_APPEND, "vid_restart;" );
+			uiLocal->Cvar_Set( "fs_game", s_mods.fs_gameList[s_mods.list.curvalue] );
+			uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "vid_restart;" );
 			UI_PopMenu();
 			break;
 
@@ -117,20 +117,20 @@ static void UI_Mods_LoadModsFromFile( char * filename ) {
 	fileHandle_t	f;
 	char			buf[1024];
 
-	len = trap_FS_FOpenFile( filename, &f, FS_READ );
+	len = uiLocal->FS_FOpenFileByMode( filename, &f, FS_READ );
 	if ( !f ) {
-		trap_Warning( va( "file not found: %s\n", filename ) );
+		uiLocal->Warning( va( "file not found: %s\n", filename ) );
 		return;
 	}
 	if ( len >= sizeof( buf ) ) {
-		trap_Warning( va( "file too large: %s is %i, max allowed is %i", filename, len, sizeof( buf ) ) );
-		trap_FS_FCloseFile( f );
+		uiLocal->Warning( va( "file too large: %s is %i, max allowed is %i", filename, len, sizeof( buf ) ) );
+		uiLocal->FS_FCloseFile( f );
 		return;
 	}
 
-	trap_FS_Read( buf, len, f );
+	uiLocal->FS_Read2( buf, len, f );
 	buf[len] = 0;
-	trap_FS_FCloseFile( f );
+	uiLocal->FS_FCloseFile( f );
 
 	len = strlen( filename );
 	if ( !Q_stricmp( filename +  len - 4, ".mod" ) ) {
@@ -164,7 +164,7 @@ static void UI_Mods_LoadMods( void ) {
 	s_mods.list.itemnames[0] = s_mods.descriptionList[0] = "Quake III Arena";
 	s_mods.fs_gameList[0] = "";
 
-	numdirs = trap_FS_GetFileList( "$modlist", "", dirlist, sizeof( dirlist ) );
+	numdirs = uiLocal->FS_GetFileList( "$modlist", "", dirlist, sizeof( dirlist ) );
 	dirptr  = dirlist;
 	for ( i = 0; i < numdirs; i++ ) {
 		dirlen = strlen( dirptr ) + 1;
@@ -263,12 +263,12 @@ UI_Mods_Cache
 =================
 */
 void UI_ModsMenu_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_BACK0 );
-	trap_R_RegisterShaderNoMip( ART_BACK1 );
-	trap_R_RegisterShaderNoMip( ART_FIGHT0 );
-	trap_R_RegisterShaderNoMip( ART_FIGHT1 );
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK0 );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK1 );
+	uiLocal->re_RegisterShaderNoMip( ART_FIGHT0 );
+	uiLocal->re_RegisterShaderNoMip( ART_FIGHT1 );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMEL );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMER );
 }
 
 

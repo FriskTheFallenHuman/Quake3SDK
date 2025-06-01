@@ -136,20 +136,20 @@ static void UI_LoadArenasFromFile( char * filename ) {
 	fileHandle_t	f;
 	char			buf[MAX_ARENAS_TEXT];
 
-	len = trap_FS_FOpenFile( filename, &f, FS_READ );
+	len = uiLocal->FS_FOpenFileByMode( filename, &f, FS_READ );
 	if ( !f ) {
 		UI_Error( va( "file not found: %s\n", filename ) );
 		return;
 	}
 	if ( len >= MAX_ARENAS_TEXT ) {
 		UI_Error( va( "file too large: %s is %i, max allowed is %i", filename, len, MAX_ARENAS_TEXT ) );
-		trap_FS_FCloseFile( f );
+		uiLocal->FS_FCloseFile( f );
 		return;
 	}
 
-	trap_FS_Read( buf, len, f );
+	uiLocal->FS_Read2( buf, len, f );
 	buf[len] = 0;
-	trap_FS_FCloseFile( f );
+	uiLocal->FS_FCloseFile( f );
 
 	ui_numArenas += UI_ParseInfos( buf, MAX_ARENAS - ui_numArenas, &ui_arenaInfos[ui_numArenas] );
 }
@@ -172,7 +172,7 @@ static void UI_LoadArenas( void ) {
 
 	ui_numArenas = 0;
 
-	trap_Cvar_Register( &arenasFile, "g_arenasFile", "", CVAR_INIT | CVAR_ROM );
+	uiLocal->Cvar_Register( &arenasFile, "g_arenasFile", "", CVAR_INIT | CVAR_ROM );
 	if ( *arenasFile.string ) {
 		UI_LoadArenasFromFile( arenasFile.string );
 	} else {
@@ -180,7 +180,7 @@ static void UI_LoadArenas( void ) {
 	}
 
 	// get all arenas from .arena files
-	numdirs = trap_FS_GetFileList( "scripts", ".arena", dirlist, 1024 );
+	numdirs = uiLocal->FS_GetFileList( "scripts", ".arena", dirlist, 1024 );
 	dirptr  = dirlist;
 	for ( i = 0; i < numdirs; i++, dirptr += dirlen + 1 ) {
 		dirlen = strlen( dirptr );
@@ -315,7 +315,7 @@ void UI_GetBestScore( int level, int * score, int * skill ) {
 	bestScoreSkill = 0;
 
 	for ( n = 1; n <= 5; n++ ) {
-		trap_Cvar_VariableStringBuffer( va( "g_spScores%i", n ), scores, MAX_INFO_VALUE );
+		uiLocal->Cvar_VariableStringBuffer( va( "g_spScores%i", n ), scores, MAX_INFO_VALUE );
 
 		Com_sprintf( arenaKey, sizeof( arenaKey ), "l%i", level );
 		skillScore = atoi( Info_ValueForKey( scores, arenaKey ) );

@@ -77,9 +77,9 @@ static void UI_DisplayDownloadInfo( const char * downloadName ) {
 	int style = UI_LEFT | UI_SMALLFONT | UI_DROPSHADOW;
 	const char * s;
 
-	downloadSize = trap_Cvar_VariableValue( "cl_downloadSize" );
-	downloadCount = trap_Cvar_VariableValue( "cl_downloadCount" );
-	downloadTime = trap_Cvar_VariableValue( "cl_downloadTime" );
+	downloadSize = uiLocal->Cvar_VariableValue( "cl_downloadSize" );
+	downloadCount = uiLocal->Cvar_VariableValue( "cl_downloadCount" );
+	downloadTime = uiLocal->Cvar_VariableValue( "cl_downloadTime" );
 
 #if 0 // bk010104
 	fprintf( stderr, "\n\n-----------------------------------------------\n" );
@@ -192,10 +192,10 @@ void UI_DrawConnectScreen( bool overlay ) {
 	}
 
 	// see what information we should display
-	trap_GetClientState( &cstate );
+	uiLocal->GetClientState( &cstate );
 
 	info[0] = '\0';
-	if ( trap_GetConfigString( CS_SERVERINFO, info, sizeof( info ) ) ) {
+	if ( uiLocal->GetConfigString( CS_SERVERINFO, info, sizeof( info ) ) ) {
 		UI_DrawProportionalString( 320, 16, va( "Loading %s", Info_ValueForKey( info, "mapname" ) ), UI_BIGFONT | UI_CENTER | UI_DROPSHADOW, color_white );
 	}
 
@@ -250,7 +250,7 @@ void UI_DrawConnectScreen( bool overlay ) {
 		case CA_CONNECTED: {
 			char downloadName[MAX_INFO_VALUE];
 
-			trap_Cvar_VariableStringBuffer( "cl_downloadName", downloadName, sizeof( downloadName ) );
+			uiLocal->Cvar_VariableStringBuffer( "cl_downloadName", downloadName, sizeof( downloadName ) );
 			if ( *downloadName ) {
 				UI_DisplayDownloadInfo( downloadName );
 				return;
@@ -279,7 +279,7 @@ UI_KeyConnect
 */
 void UI_KeyConnect( int key ) {
 	if ( key == K_ESCAPE ) {
-		trap_Cmd_ExecuteText( EXEC_APPEND, "disconnect\n" );
+		uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "disconnect\n" );
 		return;
 	}
 }

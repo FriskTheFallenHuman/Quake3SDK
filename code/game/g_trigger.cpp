@@ -28,8 +28,8 @@ void InitTrigger( gentity_t * self ) {
 		G_SetMovedir( self->s.angles, self->movedir );
 	}
 
-	trap_SetBrushModel( self, self->model );
-	self->r.contents = CONTENTS_TRIGGER;		// replaces the -1 from trap_SetBrushModel
+	gameLocal->SetBrushModel( (sharedEntity_t *)self, self->model );
+	self->r.contents = CONTENTS_TRIGGER;		// replaces the -1 from gameLocal->SetBrushModel
 	self->r.svFlags = SVF_NOCLIENT;
 }
 
@@ -105,7 +105,7 @@ void SP_trigger_multiple( gentity_t * ent ) {
 	ent->use = Use_Multi;
 
 	InitTrigger( ent );
-	trap_LinkEntity( ent );
+	gameLocal->LinkEntity( (sharedEntity_t *)ent );
 }
 
 
@@ -209,7 +209,7 @@ void SP_trigger_push( gentity_t * self ) {
 	self->touch = trigger_push_touch;
 	self->think = AimAtTarget;
 	self->nextthink = level.time + FRAMETIME;
-	trap_LinkEntity( self );
+	gameLocal->LinkEntity( (sharedEntity_t *)self );
 }
 
 
@@ -319,7 +319,7 @@ void SP_trigger_teleport( gentity_t * self ) {
 	self->s.eType = ET_TELEPORT_TRIGGER;
 	self->touch = trigger_teleporter_touch;
 
-	trap_LinkEntity( self );
+	gameLocal->LinkEntity( (sharedEntity_t *)self );
 }
 
 
@@ -345,9 +345,9 @@ NO_PROTECTION	*nothing* stops the damage
 */
 void hurt_use( gentity_t * self, gentity_t * other, gentity_t * activator ) {
 	if ( self->r.linked ) {
-		trap_UnlinkEntity( self );
+		gameLocal->UnlinkEntity( (sharedEntity_t *)self );
 	} else {
-		trap_LinkEntity( self );
+		gameLocal->LinkEntity( (sharedEntity_t *)self );
 	}
 }
 
@@ -399,7 +399,7 @@ void SP_trigger_hurt( gentity_t * self ) {
 
 	// link in to the world if starting active
 	if ( !( self->spawnflags & 1 ) ) {
-		trap_LinkEntity( self );
+		gameLocal->LinkEntity( (sharedEntity_t *)self );
 	}
 }
 

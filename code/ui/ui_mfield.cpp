@@ -60,7 +60,7 @@ void MField_Draw( mfield_t * edit, int x, int y, int style, vec4_t color ) {
 
 	// extract <drawLen> characters from the field at <prestep>
 	if ( drawLen >= MAX_STRING_CHARS ) {
-		trap_Error( "drawLen >= MAX_STRING_CHARS" );
+		UI_Error( "drawLen >= MAX_STRING_CHARS" );
 	}
 	memcpy( str, edit->buffer + prestep, drawLen );
 	str[ drawLen ] = 0;
@@ -72,7 +72,7 @@ void MField_Draw( mfield_t * edit, int x, int y, int style, vec4_t color ) {
 		return;
 	}
 
-	if ( trap_Key_GetOverstrikeMode() ) {
+	if ( uiLocal->Key_GetOverstrikeMode() ) {
 		cursorChar = 11;
 	} else {
 		cursorChar = 10;
@@ -109,7 +109,7 @@ void MField_Paste( mfield_t * edit ) {
 	char	pasteBuffer[64];
 	int		pasteLen, i;
 
-	trap_GetClipboardData( pasteBuffer, 64 );
+	uiLocal->GetClipboardData( pasteBuffer, 64 );
 
 	// send as if typed, so insert / overstrike works properly
 	pasteLen = strlen( pasteBuffer );
@@ -132,7 +132,7 @@ void MField_KeyDownEvent( mfield_t * edit, int key ) {
 	int		len;
 
 	// shift-insert is paste
-	if ( ( ( key == K_INS ) || ( key == K_KP_INS ) ) && trap_Key_IsDown( K_SHIFT ) ) {
+	if ( ( ( key == K_INS ) || ( key == K_KP_INS ) ) && uiLocal->Key_IsDown( K_SHIFT ) ) {
 		MField_Paste( edit );
 		return;
 	}
@@ -167,13 +167,13 @@ void MField_KeyDownEvent( mfield_t * edit, int key ) {
 		return;
 	}
 
-	if ( key == K_HOME || key == K_KP_HOME || ( tolower( key ) == 'a' && trap_Key_IsDown( K_CTRL ) ) ) {
+	if ( key == K_HOME || key == K_KP_HOME || ( tolower( key ) == 'a' && uiLocal->Key_IsDown( K_CTRL ) ) ) {
 		edit->cursor = 0;
 		edit->scroll = 0;
 		return;
 	}
 
-	if ( key == K_END || key == K_KP_END || ( tolower( key ) == 'e' && trap_Key_IsDown( K_CTRL ) ) ) {
+	if ( key == K_END || key == K_KP_END || ( tolower( key ) == 'e' && uiLocal->Key_IsDown( K_CTRL ) ) ) {
 		edit->cursor = len;
 		edit->scroll = len - edit->widthInChars + 1;
 		if ( edit->scroll < 0 ) {
@@ -183,7 +183,7 @@ void MField_KeyDownEvent( mfield_t * edit, int key ) {
 	}
 
 	if ( key == K_INS || key == K_KP_INS ) {
-		trap_Key_SetOverstrikeMode( !trap_Key_GetOverstrikeMode() );
+		uiLocal->Key_SetOverstrikeMode( !uiLocal->Key_GetOverstrikeMode() );
 		return;
 	}
 }
@@ -242,7 +242,7 @@ void MField_CharEvent( mfield_t * edit, int ch ) {
 		return;
 	}
 
-	if ( !trap_Key_GetOverstrikeMode() ) {
+	if ( !uiLocal->Key_GetOverstrikeMode() ) {
 		if ( ( edit->cursor == MAX_EDIT_LINE - 1 ) || ( edit->maxchars && edit->cursor >= edit->maxchars ) ) {
 			return;
 		}

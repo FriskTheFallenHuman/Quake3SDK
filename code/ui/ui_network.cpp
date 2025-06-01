@@ -104,15 +104,15 @@ static void UI_NetworkOptionsMenu_Event( void * ptr, int event ) {
 
 		case ID_RATE:
 			if ( networkOptionsInfo.rate.curvalue == 0 ) {
-				trap_Cvar_SetValue( "rate", 2500 );
+				uiLocal->Cvar_SetValue( "rate", 2500 );
 			} else if ( networkOptionsInfo.rate.curvalue == 1 ) {
-				trap_Cvar_SetValue( "rate", 3000 );
+				uiLocal->Cvar_SetValue( "rate", 3000 );
 			} else if ( networkOptionsInfo.rate.curvalue == 2 ) {
-				trap_Cvar_SetValue( "rate", 4000 );
+				uiLocal->Cvar_SetValue( "rate", 4000 );
 			} else if ( networkOptionsInfo.rate.curvalue == 3 ) {
-				trap_Cvar_SetValue( "rate", 5000 );
+				uiLocal->Cvar_SetValue( "rate", 5000 );
 			} else if ( networkOptionsInfo.rate.curvalue == 4 ) {
-				trap_Cvar_SetValue( "rate", 25000 );
+				uiLocal->Cvar_SetValue( "rate", 25000 );
 			}
 			break;
 
@@ -233,7 +233,7 @@ static void UI_NetworkOptionsMenu_Init( void ) {
 	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.rate );
 	Menu_AddItem( &networkOptionsInfo.menu, ( void * ) &networkOptionsInfo.back );
 
-	rate = trap_Cvar_VariableValue( "rate" );
+	rate = uiLocal->Cvar_VariableValue( "rate" );
 	if ( rate <= 2500 ) {
 		networkOptionsInfo.rate.curvalue = 0;
 	} else if ( rate <= 3000 ) {
@@ -254,10 +254,10 @@ UI_NetworkOptionsMenu_Cache
 ===============
 */
 void UI_NetworkOptionsMenu_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_FRAMEL );
-	trap_R_RegisterShaderNoMip( ART_FRAMER );
-	trap_R_RegisterShaderNoMip( ART_BACK0 );
-	trap_R_RegisterShaderNoMip( ART_BACK1 );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMEL );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAMER );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK0 );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK1 );
 }
 
 

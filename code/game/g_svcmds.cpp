@@ -157,7 +157,7 @@ static void UpdateIPBans ( void ) {
 		}
 	}
 
-	trap_Cvar_Set( "g_banIPs", iplist_final );
+	gameLocal->Cvar_Set( "g_banIPs", iplist_final );
 }
 
 /*
@@ -257,12 +257,12 @@ Svcmd_AddIP_f
 void Svcmd_AddIP_f ( void ) {
 	char		str[MAX_TOKEN_CHARS];
 
-	if ( trap_Argc() < 2 ) {
+	if ( gameLocal->Argc() < 2 ) {
 		G_Printf( "Usage:  addip <ip-mask>\n" );
 		return;
 	}
 
-	trap_Argv( 1, str, sizeof( str ) );
+	gameLocal->Argv( 1, str, sizeof( str ) );
 
 	AddIP( str );
 
@@ -278,12 +278,12 @@ void Svcmd_RemoveIP_f ( void ) {
 	int			i;
 	char		str[MAX_TOKEN_CHARS];
 
-	if ( trap_Argc() < 2 ) {
+	if ( gameLocal->Argc() < 2 ) {
 		G_Printf( "Usage:  sv removeip <ip-mask>\n" );
 		return;
 	}
 
-	trap_Argv( 1, str, sizeof( str ) );
+	gameLocal->Argv( 1, str, sizeof( str ) );
 
 	if ( !StringToFilter ( str, &f ) ) {
 		return;
@@ -416,14 +416,14 @@ void	Svcmd_ForceTeam_f( void ) {
 	char		str[MAX_TOKEN_CHARS];
 
 	// find the player
-	trap_Argv( 1, str, sizeof( str ) );
+	gameLocal->Argv( 1, str, sizeof( str ) );
 	cl = ClientForString( str );
 	if ( !cl ) {
 		return;
 	}
 
 	// set the team
-	trap_Argv( 2, str, sizeof( str ) );
+	gameLocal->Argv( 2, str, sizeof( str ) );
 	SetTeam( &g_entities[cl - level.clients], str );
 }
 
@@ -438,7 +438,7 @@ ConsoleCommand
 bool	ConsoleCommand( void ) {
 	char	cmd[MAX_TOKEN_CHARS];
 
-	trap_Argv( 0, cmd, sizeof( cmd ) );
+	gameLocal->Argv( 0, cmd, sizeof( cmd ) );
 
 	if ( Q_stricmp ( cmd, "entitylist" ) == 0 ) {
 		Svcmd_EntityList_f();
@@ -471,17 +471,17 @@ bool	ConsoleCommand( void ) {
 	}
 
 	if ( Q_stricmp ( cmd, "listip" ) == 0 ) {
-		trap_SendConsoleCommand( EXEC_NOW, "g_banIPs\n" );
+		gameLocal->SendConsoleCommand( EXEC_NOW, "g_banIPs\n" );
 		return true;
 	}
 
 	if ( g_dedicated.integer ) {
 		if ( Q_stricmp ( cmd, "say" ) == 0 ) {
-			trap_SendServerCommand( -1, va( "print \"server: %s\"", ConcatArgs( 1 ) ) );
+			gameLocal->SendServerCommand( -1, va( "print \"server: %s\"", ConcatArgs( 1 ) ) );
 			return true;
 		}
 		// everything else will also be printed as a say command
-		trap_SendServerCommand( -1, va( "print \"server: %s\"", ConcatArgs( 0 ) ) );
+		gameLocal->SendServerCommand( -1, va( "print \"server: %s\"", ConcatArgs( 0 ) ) );
 		return true;
 	}
 

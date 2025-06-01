@@ -293,21 +293,21 @@ void Bitmap_Draw( menubitmap_s *b ) {
 
 	// used to refresh shader
 	if ( b->generic.name && !b->shader ) {
-		b->shader = trap_R_RegisterShaderNoMip( b->generic.name );
+		b->shader = uiLocal->re_RegisterShaderNoMip( b->generic.name );
 		if ( !b->shader && b->errorpic ) {
-			b->shader = trap_R_RegisterShaderNoMip( b->errorpic );
+			b->shader = uiLocal->re_RegisterShaderNoMip( b->errorpic );
 		}
 	}
 
 	if ( b->focuspic && !b->focusshader ) {
-		b->focusshader = trap_R_RegisterShaderNoMip( b->focuspic );
+		b->focusshader = uiLocal->re_RegisterShaderNoMip( b->focuspic );
 	}
 
 	if ( b->generic.flags & QMF_GRAYED ) {
 		if ( b->shader ) {
-			trap_R_SetColor( colorMdGrey );
+			uiLocal->re_SetColor( colorMdGrey );
 			UI_DrawHandlePic( x, y, w, h, b->shader );
-			trap_R_SetColor( NULL );
+			uiLocal->re_SetColor( NULL );
 		}
 	} else {
 		if ( b->shader ) {
@@ -328,14 +328,14 @@ void Bitmap_Draw( menubitmap_s *b ) {
 			}
 			color[3] = 0.5 + 0.5 * sin( uis.realtime / PULSE_DIVISOR );
 
-			trap_R_SetColor( color );
+			uiLocal->re_SetColor( color );
 			UI_DrawHandlePic( x, y, w, h, b->focusshader );
-			trap_R_SetColor( NULL );
+			uiLocal->re_SetColor( NULL );
 		} else if ( ( b->generic.flags & QMF_HIGHLIGHT ) || ( ( b->generic.flags & QMF_HIGHLIGHT_IF_FOCUS ) && ( Menu_ItemAtCursor( b->generic.parent ) == b ) ) ) {
 			if ( b->focuscolor ) {
-				trap_R_SetColor( b->focuscolor );
+				uiLocal->re_SetColor( b->focuscolor );
 				UI_DrawHandlePic( x, y, w, h, b->focusshader );
-				trap_R_SetColor( NULL );
+				uiLocal->re_SetColor( NULL );
 			} else {
 				UI_DrawHandlePic( x, y, w, h, b->focusshader );
 			}
@@ -1197,7 +1197,7 @@ void Menu_AddItem( menuframework_s *menu, void * item ) {
 	menucommon_s	*itemptr;
 
 	if ( menu->nitems >= MAX_MENUITEMS ) {
-		trap_Error( "Menu_AddItem: excessive items" );
+		UI_Error( "Menu_AddItem: excessive items" );
 	}
 
 	menu->items[menu->nitems] = item;
@@ -1250,7 +1250,7 @@ void Menu_AddItem( menuframework_s *menu, void * item ) {
 				break;
 
 			default:
-				trap_Error( va( "Menu_Init: unknown type %d", itemptr->type ) );
+				UI_Error( "Menu_Init: unknown type %d", itemptr->type );
 		}
 	}
 
@@ -1430,7 +1430,7 @@ void Menu_Draw( menuframework_s *menu ) {
 					break;
 
 				default:
-					trap_Error( va( "Menu_Draw: unknown type %d", itemptr->type ) );
+					UI_Error( "Menu_Draw: unknown type %d", itemptr->type );
 			}
 		}
 #ifndef NDEBUG
@@ -1552,7 +1552,7 @@ sfxHandle_t Menu_DefaultKey( menuframework_s *m, int key ) {
 			break;
 
 		case K_F12:
-			trap_Cmd_ExecuteText( EXEC_APPEND, "screenshot\n" );
+			uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "screenshot\n" );
 			break;
 #endif
 		case K_KP_UPARROW:
@@ -1626,34 +1626,34 @@ Menu_Cache
 =================
 */
 void Menu_Cache( void ) {
-	uis.charset			= trap_R_RegisterShaderNoMip( "gfx/2d/bigchars" );
-	uis.charsetProp		= trap_R_RegisterShaderNoMip( "menu/art/font1_prop.tga" );
-	uis.charsetPropGlow	= trap_R_RegisterShaderNoMip( "menu/art/font1_prop_glo.tga" );
-	uis.charsetPropB	= trap_R_RegisterShaderNoMip( "menu/art/font2_prop.tga" );
-	uis.cursor          = trap_R_RegisterShaderNoMip( "menu/art/3_cursor2" );
-	uis.rb_on           = trap_R_RegisterShaderNoMip( "menu/art/switch_on" );
-	uis.rb_off          = trap_R_RegisterShaderNoMip( "menu/art/switch_off" );
+	uis.charset			= uiLocal->re_RegisterShaderNoMip( "gfx/2d/bigchars" );
+	uis.charsetProp		= uiLocal->re_RegisterShaderNoMip( "menu/art/font1_prop.tga" );
+	uis.charsetPropGlow	= uiLocal->re_RegisterShaderNoMip( "menu/art/font1_prop_glo.tga" );
+	uis.charsetPropB	= uiLocal->re_RegisterShaderNoMip( "menu/art/font2_prop.tga" );
+	uis.cursor          = uiLocal->re_RegisterShaderNoMip( "menu/art/3_cursor2" );
+	uis.rb_on           = uiLocal->re_RegisterShaderNoMip( "menu/art/switch_on" );
+	uis.rb_off          = uiLocal->re_RegisterShaderNoMip( "menu/art/switch_off" );
 
-	uis.whiteShader = trap_R_RegisterShaderNoMip( "white" );
+	uis.whiteShader = uiLocal->re_RegisterShaderNoMip( "white" );
 	if ( uis.glconfig.hardwareType == GLHW_RAGEPRO ) {
 		// the blend effect turns to shit with the normal
-		uis.menuBackShader	= trap_R_RegisterShaderNoMip( "menubackRagePro" );
+		uis.menuBackShader	= uiLocal->re_RegisterShaderNoMip( "menubackRagePro" );
 	} else {
-		uis.menuBackShader	= trap_R_RegisterShaderNoMip( "menuback" );
+		uis.menuBackShader	= uiLocal->re_RegisterShaderNoMip( "menuback" );
 	}
-	uis.menuBackNoLogoShader = trap_R_RegisterShaderNoMip( "menubacknologo" );
+	uis.menuBackNoLogoShader = uiLocal->re_RegisterShaderNoMip( "menubacknologo" );
 
-	menu_in_sound	= trap_S_RegisterSound( "sound/misc/menu1.wav", false );
-	menu_move_sound	= trap_S_RegisterSound( "sound/misc/menu2.wav", false );
-	menu_out_sound	= trap_S_RegisterSound( "sound/misc/menu3.wav", false );
-	menu_buzz_sound	= trap_S_RegisterSound( "sound/misc/menu4.wav", false );
-	weaponChangeSound	= trap_S_RegisterSound( "sound/weapons/change.wav", false );
+	menu_in_sound	= uiLocal->S_RegisterSound( "sound/misc/menu1.wav", false );
+	menu_move_sound	= uiLocal->S_RegisterSound( "sound/misc/menu2.wav", false );
+	menu_out_sound	= uiLocal->S_RegisterSound( "sound/misc/menu3.wav", false );
+	menu_buzz_sound	= uiLocal->S_RegisterSound( "sound/misc/menu4.wav", false );
+	weaponChangeSound	= uiLocal->S_RegisterSound( "sound/weapons/change.wav", false );
 
 	// need a nonzero sound, make an empty sound for this
 	menu_null_sound = -1;
 
-	sliderBar = trap_R_RegisterShaderNoMip( "menu/art/slider2" );
-	sliderButton_0 = trap_R_RegisterShaderNoMip( "menu/art/sliderbutt_0" );
-	sliderButton_1 = trap_R_RegisterShaderNoMip( "menu/art/sliderbutt_1" );
+	sliderBar = uiLocal->re_RegisterShaderNoMip( "menu/art/slider2" );
+	sliderButton_0 = uiLocal->re_RegisterShaderNoMip( "menu/art/sliderbutt_0" );
+	sliderButton_1 = uiLocal->re_RegisterShaderNoMip( "menu/art/sliderbutt_1" );
 }
 

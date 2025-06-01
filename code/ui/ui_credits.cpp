@@ -49,7 +49,7 @@ static sfxHandle_t UI_CreditMenu_Key( int key ) {
 		return 0;
 	}
 
-	trap_Cmd_ExecuteText( EXEC_APPEND, "quit\n" );
+	uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "quit\n" );
 	return 0;
 }
 

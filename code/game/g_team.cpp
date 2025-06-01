@@ -121,7 +121,7 @@ void QDECL PrintMsg( gentity_t * ent, const char * fmt, ... ) {
 		*p = '\'';
 	}
 
-	trap_SendServerCommand ( ( ( ent == NULL ) ? -1 : ent - g_entities ), va( "print \"%s\"", msg ) );
+	gameLocal->SendServerCommand ( ( ( ent == NULL ) ? -1 : ent - g_entities ), va( "print \"%s\"", msg ) );
 }
 
 /*
@@ -229,7 +229,7 @@ void Team_SetFlagStatus( int team, flagStatus_t status ) {
 			st[1] = 0;
 		}
 
-		trap_SetConfigstring( CS_FLAGSTATUS, st );
+		gameLocal->SetConfigstring( CS_FLAGSTATUS, st );
 	}
 }
 
@@ -457,9 +457,9 @@ void Team_FragBonuses( gentity_t * targ, gentity_t * inflictor, gentity_t * atta
 	VectorSubtract( attacker->r.currentOrigin, flag->r.currentOrigin, v2 );
 
 	if ( ( ( VectorLength( v1 ) < CTF_TARGET_PROTECT_RADIUS &&
-			 trap_InPVS( flag->r.currentOrigin, targ->r.currentOrigin ) ) ||
+			 gameLocal->inPVS( flag->r.currentOrigin, targ->r.currentOrigin ) ) ||
 			( VectorLength( v2 ) < CTF_TARGET_PROTECT_RADIUS &&
-			  trap_InPVS( flag->r.currentOrigin, attacker->r.currentOrigin ) ) ) &&
+			  gameLocal->inPVS( flag->r.currentOrigin, attacker->r.currentOrigin ) ) ) &&
 			attacker->client->sess.sessionTeam != targ->client->sess.sessionTeam ) {
 
 		// we defended the base flag
@@ -480,9 +480,9 @@ void Team_FragBonuses( gentity_t * targ, gentity_t * inflictor, gentity_t * atta
 		VectorSubtract( attacker->r.currentOrigin, carrier->r.currentOrigin, v1 );
 
 		if ( ( ( VectorLength( v1 ) < CTF_ATTACKER_PROTECT_RADIUS &&
-				 trap_InPVS( carrier->r.currentOrigin, targ->r.currentOrigin ) ) ||
+				 gameLocal->inPVS( carrier->r.currentOrigin, targ->r.currentOrigin ) ) ||
 				( VectorLength( v2 ) < CTF_ATTACKER_PROTECT_RADIUS &&
-				  trap_InPVS( carrier->r.currentOrigin, attacker->r.currentOrigin ) ) ) &&
+				  gameLocal->inPVS( carrier->r.currentOrigin, attacker->r.currentOrigin ) ) ) &&
 				attacker->client->sess.sessionTeam != targ->client->sess.sessionTeam ) {
 			AddScore( attacker, targ->r.currentOrigin, CTF_CARRIER_PROTECT_BONUS );
 			attacker->client->pers.teamState.carrierdefense++;
@@ -930,7 +930,7 @@ gentity_t * Team_GetLocation( gentity_t * ent ) {
 			continue;
 		}
 
-		if ( !trap_InPVS( origin, eloc->r.currentOrigin ) ) {
+		if ( !gameLocal->inPVS( origin, eloc->r.currentOrigin ) ) {
 			continue;
 		}
 
@@ -1130,7 +1130,7 @@ void TeamplayInfoMessage( gentity_t * ent ) {
 		}
 	}
 
-	trap_SendServerCommand( ent - g_entities, va( "tinfo %i %s", cnt, string ) );
+	gameLocal->SendServerCommand( ent - g_entities, va( "tinfo %i %s", cnt, string ) );
 }
 
 void CheckTeamStatus( void ) {
@@ -1359,7 +1359,7 @@ gentity_t * SpawnObelisk( vec3_t origin, int team, int spawnflags ) {
 
 		// drop to floor
 		VectorSet( dest, ent->s.origin[0], ent->s.origin[1], ent->s.origin[2] - 4096 );
-		trap_Trace( &tr, ent->s.origin, ent->r.mins, ent->r.maxs, dest, ent->s.number, MASK_SOLID );
+		gameLocal->Trace( &tr, ent->s.origin, ent->r.mins, ent->r.maxs, dest, ent->s.number, MASK_SOLID );
 		if ( tr.startsolid ) {
 			ent->s.origin[2] -= 1;
 			G_Printf( "SpawnObelisk: %s startsolid at %s\n", ent->classname, vtos( ent->s.origin ) );
@@ -1375,7 +1375,7 @@ gentity_t * SpawnObelisk( vec3_t origin, int team, int spawnflags ) {
 
 	ent->spawnflags = team;
 
-	trap_LinkEntity( ent );
+	gameLocal->LinkEntity( ent );
 
 	return ent;
 }
@@ -1402,7 +1402,7 @@ void SP_team_redobelisk( gentity_t * ent ) {
 		obelisk->activator = ent;
 	}
 	ent->s.modelindex = TEAM_RED;
-	trap_LinkEntity( ent );
+	gameLocal->LinkEntity( ent );
 }
 
 /*QUAKED team_blueobelisk (0 0 1) (-16 -16 0) (16 16 88)
@@ -1427,7 +1427,7 @@ void SP_team_blueobelisk( gentity_t * ent ) {
 		obelisk->activator = ent;
 	}
 	ent->s.modelindex = TEAM_BLUE;
-	trap_LinkEntity( ent );
+	gameLocal->LinkEntity( ent );
 }
 
 /*QUAKED team_neutralobelisk (0 0 1) (-16 -16 0) (16 16 88)
@@ -1443,7 +1443,7 @@ void SP_team_neutralobelisk( gentity_t * ent ) {
 		neutralObelisk->spawnflags = TEAM_FREE;
 	}
 	ent->s.modelindex = TEAM_FREE;
-	trap_LinkEntity( ent );
+	gameLocal->LinkEntity( ent );
 }
 
 

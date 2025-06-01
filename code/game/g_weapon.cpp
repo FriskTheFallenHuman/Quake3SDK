@@ -80,7 +80,7 @@ bool CheckGauntletAttack( gentity_t * ent ) {
 
 	VectorMA( muzzle, 32, forward, end );
 
-	trap_Trace( &tr, muzzle, NULL, NULL, end, ent->s.number, MASK_SHOT );
+	gameLocal->Trace( &tr, muzzle, NULL, NULL, end, ent->s.number, MASK_SHOT, false );
 	if ( tr.surfaceFlags & SURF_NOIMPACT ) {
 		return false;
 	}
@@ -180,7 +180,7 @@ void Bullet_Fire( gentity_t * ent, float spread, int damage ) {
 	passent = ent->s.number;
 	for ( i = 0; i < 10; i++ ) {
 
-		trap_Trace( &tr, muzzle, NULL, NULL, end, passent, MASK_SHOT );
+		gameLocal->Trace( &tr, muzzle, NULL, NULL, end, passent, MASK_SHOT, false );
 		if ( tr.surfaceFlags & SURF_NOIMPACT ) {
 			return;
 		}
@@ -273,7 +273,7 @@ bool ShotgunPellet( vec3_t start, vec3_t end, gentity_t * ent ) {
 	VectorCopy( start, tr_start );
 	VectorCopy( end, tr_end );
 	for ( i = 0; i < 10; i++ ) {
-		trap_Trace( &tr, tr_start, NULL, NULL, tr_end, passent, MASK_SHOT );
+		gameLocal->Trace( &tr, tr_start, NULL, NULL, tr_end, passent, MASK_SHOT, false );
 		traceEnt = &g_entities[ tr.entityNum ];
 
 		// send bullet impact
@@ -458,7 +458,7 @@ void weapon_railgun_fire( gentity_t * ent ) {
 	hits = 0;
 	passent = ent->s.number;
 	do {
-		trap_Trace( &trace, muzzle, NULL, NULL, end, passent, MASK_SHOT );
+		gameLocal->Trace( &trace, muzzle, NULL, NULL, end, passent, MASK_SHOT, false );
 		if ( trace.entityNum >= ENTITYNUM_MAX_NORMAL ) {
 			break;
 		}
@@ -501,14 +501,14 @@ void weapon_railgun_fire( gentity_t * ent ) {
 			break;		// we hit something solid enough to stop the beam
 		}
 		// unlink this entity, so the next trace will go past it
-		trap_UnlinkEntity( traceEnt );
+		gameLocal->UnlinkEntity( (sharedEntity_t *)traceEnt );
 		unlinkedEntities[unlinked] = traceEnt;
 		unlinked++;
 	} while ( unlinked < MAX_RAIL_HITS );
 
 	// link back in any entities we unlinked
 	for ( i = 0 ; i < unlinked ; i++ ) {
-		trap_LinkEntity( unlinkedEntities[i] );
+		gameLocal->LinkEntity( (sharedEntity_t *)unlinkedEntities[i] );
 	}
 
 	// the final trace endpos will be the terminal point of the rail trail
@@ -617,7 +617,7 @@ void Weapon_LightningFire( gentity_t * ent ) {
 	for ( i = 0; i < 10; i++ ) {
 		VectorMA( muzzle, LIGHTNING_RANGE, forward, end );
 
-		trap_Trace( &tr, muzzle, NULL, NULL, end, passent, MASK_SHOT );
+		gameLocal->Trace( &tr, muzzle, NULL, NULL, end, passent, MASK_SHOT, false );
 
 #ifdef MISSIONPACK
 		// if not the first trace (the lightning bounced of an invulnerability sphere)
@@ -909,7 +909,7 @@ static void KamikazeRadiusDamage( vec3_t origin, gentity_t * attacker, float dam
 		maxs[i] = origin[i] + radius;
 	}
 
-	numListedEntities = trap_EntitiesInBox( mins, maxs, entityList, MAX_GENTITIES );
+	numListedEntities = gameLocal->EntitiesInBox( mins, maxs, entityList, MAX_GENTITIES );
 
 	for ( e = 0 ; e < numListedEntities ; e++ ) {
 		ent = &g_entities[entityList[ e ]];
@@ -974,7 +974,7 @@ static void KamikazeShockWave( vec3_t origin, gentity_t * attacker, float damage
 		maxs[i] = origin[i] + radius;
 	}
 
-	numListedEntities = trap_EntitiesInBox( mins, maxs, entityList, MAX_GENTITIES );
+	numListedEntities = gameLocal->EntitiesInBox( mins, maxs, entityList, MAX_GENTITIES );
 
 	for ( e = 0 ; e < numListedEntities ; e++ ) {
 		ent = &g_entities[entityList[ e ]];
@@ -1109,7 +1109,7 @@ void G_StartKamikaze( gentity_t * ent ) {
 	explosion->count = 0;
 	VectorClear( explosion->movedir );
 
-	trap_LinkEntity( explosion );
+	gameLocal->LinkEntity( explosion );
 
 	if ( ent->client ) {
 		//

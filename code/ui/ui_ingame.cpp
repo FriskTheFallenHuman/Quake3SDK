@@ -74,7 +74,7 @@ static void InGame_RestartAction( bool result ) {
 	}
 
 	UI_PopMenu();
-	trap_Cmd_ExecuteText( EXEC_APPEND, "map_restart 0\n" );
+	uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "map_restart 0\n" );
 }
 
 
@@ -112,7 +112,7 @@ void InGame_Event( void * ptr, int notification ) {
 			break;
 
 		case ID_LEAVEARENA:
-			trap_Cmd_ExecuteText( EXEC_APPEND, "disconnect\n" );
+			uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "disconnect\n" );
 			break;
 
 		case ID_RESTART:
@@ -186,11 +186,11 @@ void InGame_MenuInit( void ) {
 	s_ingame.teamorders.string				= "TEAM ORDERS";
 	s_ingame.teamorders.color				= color_red;
 	s_ingame.teamorders.style				= UI_CENTER | UI_SMALLFONT;
-	if ( !( trap_Cvar_VariableValue( "g_gametype" ) >= GT_TEAM ) ) {
+	if ( !( uiLocal->Cvar_VariableValue( "g_gametype" ) >= GT_TEAM ) ) {
 		s_ingame.teamorders.generic.flags |= QMF_GRAYED;
 	} else {
-		trap_GetClientState( &cs );
-		trap_GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
+		uiLocal->GetClientState( &cs );
+		uiLocal->GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
 		team = atoi( Info_ValueForKey( info, "t" ) );
 		if ( team == TEAM_SPECTATOR ) {
 			s_ingame.teamorders.generic.flags |= QMF_GRAYED;
@@ -229,7 +229,7 @@ void InGame_MenuInit( void ) {
 	s_ingame.restart.string				= "RESTART ARENA";
 	s_ingame.restart.color				= color_red;
 	s_ingame.restart.style				= UI_CENTER | UI_SMALLFONT;
-	if ( !trap_Cvar_VariableValue( "sv_running" ) ) {
+	if ( !uiLocal->Cvar_VariableValue( "sv_running" ) ) {
 		s_ingame.restart.generic.flags |= QMF_GRAYED;
 	}
 
@@ -284,7 +284,7 @@ InGame_Cache
 =================
 */
 void InGame_Cache( void ) {
-	trap_R_RegisterShaderNoMip( INGAME_FRAME );
+	uiLocal->re_RegisterShaderNoMip( INGAME_FRAME );
 }
 
 

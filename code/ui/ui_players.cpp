@@ -75,7 +75,7 @@ tryagain:
 	}
 
 	if ( item->classname ) {
-		pi->weaponModel = trap_R_RegisterModel( item->world_model[0] );
+		pi->weaponModel = uiLocal->re_RegisterModel( item->world_model[0] );
 	}
 
 	if ( pi->weaponModel == 0 ) {
@@ -91,13 +91,13 @@ tryagain:
 		strcpy( path, item->world_model[0] );
 		COM_StripExtension( path, path );
 		strcat( path, "_barrel.md3" );
-		pi->barrelModel = trap_R_RegisterModel( path );
+		pi->barrelModel = uiLocal->re_RegisterModel( path );
 	}
 
 	strcpy( path, item->world_model[0] );
 	COM_StripExtension( path, path );
 	strcat( path, "_flash.md3" );
-	pi->flashModel = trap_R_RegisterModel( path );
+	pi->flashModel = uiLocal->re_RegisterModel( path );
 
 	switch ( weaponNum ) {
 		case WP_GAUNTLET:
@@ -295,7 +295,7 @@ static void UI_PositionEntityOnTag( refEntity_t * entity, const refEntity_t * pa
 	orientation_t	lerped;
 
 	// lerp the tag
-	trap_CM_LerpTag( &lerped, parentModel, parent->oldframe, parent->frame,
+	uiLocal->re_LerpTag( &lerped, parentModel, parent->oldframe, parent->frame,
 					 1.0 - parent->backlerp, tagName );
 
 	// FIXME: allow origin offsets along tag?
@@ -322,7 +322,7 @@ static void UI_PositionRotatedEntityOnTag( refEntity_t * entity, const refEntity
 	vec3_t			tempAxis[3];
 
 	// lerp the tag
-	trap_CM_LerpTag( &lerped, parentModel, parent->oldframe, parent->frame,
+	uiLocal->re_LerpTag( &lerped, parentModel, parent->oldframe, parent->frame,
 					 1.0 - parent->backlerp, tagName );
 
 	// FIXME: allow origin offsets along tag?
@@ -349,7 +349,7 @@ static void UI_SetLerpFrameAnimation( playerInfo_t * ci, lerpFrame_t * lf, int n
 	newAnimation &= ~ANIM_TOGGLEBIT;
 
 	if ( newAnimation < 0 || newAnimation >= MAX_ANIMATIONS ) {
-		trap_Error( va( "Bad animation number: %i", newAnimation ) );
+		UI_Error( "Bad animation number: %i", newAnimation );
 	}
 
 	anim = &ci->animations[ newAnimation ];
@@ -641,7 +641,7 @@ static void UI_PlayerFloatSprite( playerInfo_t * pi, vec3_t origin, qhandle_t sh
 	ent.customShader = shader;
 	ent.radius = 10;
 	ent.renderfx = 0;
-	trap_R_AddRefEntityToScene( &ent );
+	uiLocal->re_AddRefEntityToScene( &ent );
 }
 
 
@@ -714,7 +714,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t * pi, int t
 		pi->pendingWeapon = ( weapon_t )( -1 );
 		pi->weaponTimer = 0;
 		if ( pi->currentWeapon != pi->weapon ) {
-			trap_S_StartLocalSound( weaponChangeSound, CHAN_LOCAL );
+			uiLocal->S_StartLocalSound( weaponChangeSound, CHAN_LOCAL );
 		}
 	}
 
@@ -749,7 +749,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t * pi, int t
 
 	refdef.time = dp_realtime;
 
-	trap_R_ClearScene();
+	uiLocal->re_ClearScene();
 
 	// get the rotation information
 	UI_PlayerAngles( pi, legs.axis, torso.axis, head.axis );
@@ -772,7 +772,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t * pi, int t
 	legs.renderfx = renderfx;
 	VectorCopy( legs.origin, legs.oldorigin );
 
-	trap_R_AddRefEntityToScene( &legs );
+	uiLocal->re_AddRefEntityToScene( &legs );
 
 	if ( !legs.hModel ) {
 		return;
@@ -794,7 +794,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t * pi, int t
 
 	torso.renderfx = renderfx;
 
-	trap_R_AddRefEntityToScene( &torso );
+	uiLocal->re_AddRefEntityToScene( &torso );
 
 	//
 	// add the head
@@ -811,7 +811,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t * pi, int t
 
 	head.renderfx = renderfx;
 
-	trap_R_AddRefEntityToScene( &head );
+	uiLocal->re_AddRefEntityToScene( &head );
 
 	//
 	// add the gun
@@ -822,7 +822,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t * pi, int t
 		VectorCopy( origin, gun.lightingOrigin );
 		UI_PositionEntityOnTag( &gun, &torso, pi->torsoModel, "tag_weapon" );
 		gun.renderfx = renderfx;
-		trap_R_AddRefEntityToScene( &gun );
+		uiLocal->re_AddRefEntityToScene( &gun );
 	}
 
 	//
@@ -847,7 +847,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t * pi, int t
 
 		UI_PositionRotatedEntityOnTag( &barrel, &gun, pi->weaponModel, "tag_barrel" );
 
-		trap_R_AddRefEntityToScene( &barrel );
+		uiLocal->re_AddRefEntityToScene( &barrel );
 	}
 
 	//
@@ -860,12 +860,12 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t * pi, int t
 			VectorCopy( origin, flash.lightingOrigin );
 			UI_PositionEntityOnTag( &flash, &gun, pi->weaponModel, "tag_flash" );
 			flash.renderfx = renderfx;
-			trap_R_AddRefEntityToScene( &flash );
+			uiLocal->re_AddRefEntityToScene( &flash );
 		}
 
 		// make a dlight for the flash
 		if ( pi->flashDlightColor[0] || pi->flashDlightColor[1] || pi->flashDlightColor[2] ) {
-			trap_R_AddLightToScene( flash.origin, 200 + ( rand() & 31 ), pi->flashDlightColor[0],
+			uiLocal->re_AddLightToScene( flash.origin, 200 + ( rand() & 31 ), pi->flashDlightColor[0],
 									pi->flashDlightColor[1], pi->flashDlightColor[2] );
 		}
 	}
@@ -874,7 +874,7 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t * pi, int t
 	// add the chat icon
 	//
 	if ( pi->chat ) {
-		UI_PlayerFloatSprite( pi, origin, trap_R_RegisterShaderNoMip( "sprites/balloon3" ) );
+		UI_PlayerFloatSprite( pi, origin, uiLocal->re_RegisterShaderNoMip( "sprites/balloon3" ) );
 	}
 
 	//
@@ -883,14 +883,14 @@ void UI_DrawPlayer( float x, float y, float w, float h, playerInfo_t * pi, int t
 	origin[0] -= 100;	// + = behind, - = in front
 	origin[1] += 100;	// + = left, - = right
 	origin[2] += 100;	// + = above, - = below
-	trap_R_AddLightToScene( origin, 500, 1.0, 1.0, 1.0 );
+	uiLocal->re_AddLightToScene( origin, 500, 1.0, 1.0, 1.0 );
 
 	origin[0] -= 100;
 	origin[1] -= 100;
 	origin[2] -= 100;
-	trap_R_AddLightToScene( origin, 500, 1.0, 0.0, 0.0 );
+	uiLocal->re_AddLightToScene( origin, 500, 1.0, 0.0, 0.0 );
 
-	trap_R_RenderScene( &refdef );
+	uiLocal->re_RenderScene( &refdef );
 }
 
 
@@ -903,13 +903,13 @@ static bool UI_RegisterClientSkin( playerInfo_t * pi, const char * modelName, co
 	char		filename[MAX_QPATH];
 
 	Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower_%s.skin", modelName, skinName );
-	pi->legsSkin = trap_R_RegisterSkin( filename );
+	pi->legsSkin = uiLocal->re_RegisterSkin( filename );
 
 	Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper_%s.skin", modelName, skinName );
-	pi->torsoSkin = trap_R_RegisterSkin( filename );
+	pi->torsoSkin = uiLocal->re_RegisterSkin( filename );
 
 	Com_sprintf( filename, sizeof( filename ), "models/players/%s/head_%s.skin", modelName, skinName );
-	pi->headSkin = trap_R_RegisterSkin( filename );
+	pi->headSkin = uiLocal->re_RegisterSkin( filename );
 
 	if ( !pi->legsSkin || !pi->torsoSkin || !pi->headSkin ) {
 		return false;
@@ -937,7 +937,7 @@ static bool UI_ParseAnimationFile( const char * filename, animation_t * animatio
 	memset( animations, 0, sizeof( animation_t ) * MAX_ANIMATIONS );
 
 	// load the file
-	len = trap_FS_FOpenFile( filename, &f, FS_READ );
+	len = uiLocal->FS_FOpenFileByMode( filename, &f, FS_READ );
 	if ( len <= 0 ) {
 		return false;
 	}
@@ -945,9 +945,9 @@ static bool UI_ParseAnimationFile( const char * filename, animation_t * animatio
 		UI_Warning( "File %s too long\n", filename );
 		return false;
 	}
-	trap_FS_Read( text, len, f );
+	uiLocal->FS_Read2( text, len, f );
 	text[len] = 0;
-	trap_FS_FCloseFile( f );
+	uiLocal->FS_FCloseFile( f );
 
 	// parse the text
 	text_p = text;
@@ -1073,21 +1073,21 @@ bool UI_RegisterClientModelname( playerInfo_t * pi, const char * modelSkinName )
 	// load cmodels before models so filecache works
 
 	Com_sprintf( filename, sizeof( filename ), "models/players/%s/lower.md3", modelName );
-	pi->legsModel = trap_R_RegisterModel( filename );
+	pi->legsModel = uiLocal->re_RegisterModel( filename );
 	if ( !pi->legsModel ) {
 		UI_Warning( "Failed to load model file %s\n", filename );
 		return false;
 	}
 
 	Com_sprintf( filename, sizeof( filename ), "models/players/%s/upper.md3", modelName );
-	pi->torsoModel = trap_R_RegisterModel( filename );
+	pi->torsoModel = uiLocal->re_RegisterModel( filename );
 	if ( !pi->torsoModel ) {
 		UI_Warning( "Failed to load model file %s\n", filename );
 		return false;
 	}
 
 	Com_sprintf( filename, sizeof( filename ), "models/players/%s/head.md3", modelName );
-	pi->headModel = trap_R_RegisterModel( filename );
+	pi->headModel = uiLocal->re_RegisterModel( filename );
 	if ( !pi->headModel ) {
 		UI_Warning( "Failed to load model file %s\n", filename );
 		return false;

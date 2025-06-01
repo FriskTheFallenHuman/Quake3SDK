@@ -779,8 +779,8 @@ static void PM_WalkMove( void ) {
 
 	PM_Accelerate( wishdir, wishspeed, accelerate );
 
-	//trap_Print("velocity = %1.1f %1.1f %1.1f\n", pm->ps->velocity[0], pm->ps->velocity[1], pm->ps->velocity[2]);
-	//trap_Print("velocity1 = %1.1f\n", VectorLength(pm->ps->velocity));
+	//Com_Printf("velocity = %1.1f %1.1f %1.1f\n", pm->ps->velocity[0], pm->ps->velocity[1], pm->ps->velocity[2]);
+	//Com_Printf("velocity1 = %1.1f\n", VectorLength(pm->ps->velocity));
 
 	if ( ( pml.groundTrace.surfaceFlags & SURF_SLICK ) || pm->ps->pm_flags & PMF_TIME_KNOCKBACK ) {
 		pm->ps->velocity[2] -= pm->ps->gravity * pml.frametime;
@@ -806,7 +806,7 @@ static void PM_WalkMove( void ) {
 
 	PM_StepSlideMove( false );
 
-	//trap_Print("velocity2 = %1.1f\n", VectorLength(pm->ps->velocity));
+	//Com_Printf("velocity2 = %1.1f\n", VectorLength(pm->ps->velocity));
 
 }
 
@@ -1027,7 +1027,7 @@ static int PM_CorrectAllSolid( trace_t * trace ) {
 	vec3_t		point;
 
 	if ( pm->debugLevel ) {
-		trap_Print( "%i:allsolid\n", c_pmove );
+		Com_Printf( "%i:allsolid\n", c_pmove );
 	}
 
 	// jitter around
@@ -1074,7 +1074,7 @@ static void PM_GroundTraceMissed( void ) {
 	if ( pm->ps->groundEntityNum != ENTITYNUM_NONE ) {
 		// we just transitioned into freefall
 		if ( pm->debugLevel ) {
-			trap_Print( "%i:lift\n", c_pmove );
+			Com_Printf( "%i:lift\n", c_pmove );
 		}
 
 		// if they aren't in a jumping animation and the ground is a ways away, force into it
@@ -1134,7 +1134,7 @@ static void PM_GroundTrace( void ) {
 	// check if getting thrown off the ground
 	if ( pm->ps->velocity[2] > 0 && DotProduct( pm->ps->velocity, trace.plane.normal ) > 10 ) {
 		if ( pm->debugLevel ) {
-			trap_Print( "%i:kickoff\n", c_pmove );
+			Com_Printf( "%i:kickoff\n", c_pmove );
 		}
 		// go into jump animation
 		if ( pm->cmd.forwardmove >= 0 ) {
@@ -1154,7 +1154,7 @@ static void PM_GroundTrace( void ) {
 	// slopes that are too steep will not be considered onground
 	if ( trace.plane.normal[2] < MIN_WALK_NORMAL ) {
 		if ( pm->debugLevel ) {
-			trap_Print( "%i:steep\n", c_pmove );
+			Com_Printf( "%i:steep\n", c_pmove );
 		}
 		// FIXME: if they can't slide down the slope, let them
 		// walk (sharp crevices)
@@ -1176,7 +1176,7 @@ static void PM_GroundTrace( void ) {
 	if ( pm->ps->groundEntityNum == ENTITYNUM_NONE ) {
 		// just hit the ground
 		if ( pm->debugLevel ) {
-			trap_Print( "%i:Land\n", c_pmove );
+			Com_Printf( "%i:Land\n", c_pmove );
 		}
 
 		PM_CrashLand();

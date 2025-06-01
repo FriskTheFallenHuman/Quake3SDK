@@ -301,7 +301,7 @@ static void StartServer_MenuEvent( void * ptr, int event ) {
 			break;
 
 		case ID_STARTSERVERNEXT:
-			trap_Cvar_SetValue( "g_gameType", gametype_remap[s_startserver.gametype.curvalue] );
+			uiLocal->Cvar_SetValue( "g_gameType", gametype_remap[s_startserver.gametype.curvalue] );
 			UI_ServerOptionsMenu( s_startserver.multiplayer );
 			break;
 
@@ -332,14 +332,14 @@ static void StartServer_LevelshotDraw( void * self ) {
 	}
 
 	if ( b->generic.name && !b->shader ) {
-		b->shader = trap_R_RegisterShaderNoMip( b->generic.name );
+		b->shader = uiLocal->re_RegisterShaderNoMip( b->generic.name );
 		if ( !b->shader && b->errorpic ) {
-			b->shader = trap_R_RegisterShaderNoMip( b->errorpic );
+			b->shader = uiLocal->re_RegisterShaderNoMip( b->errorpic );
 		}
 	}
 
 	if ( b->focuspic && !b->focusshader ) {
-		b->focusshader = trap_R_RegisterShaderNoMip( b->focuspic );
+		b->focusshader = uiLocal->re_RegisterShaderNoMip( b->focuspic );
 	}
 
 	x = b->generic.x;
@@ -548,20 +548,20 @@ void StartServer_Cache( void ) {
 	bool		precache;
 	char			picname[64];
 
-	trap_R_RegisterShaderNoMip( GAMESERVER_BACK0 );
-	trap_R_RegisterShaderNoMip( GAMESERVER_BACK1 );
-	trap_R_RegisterShaderNoMip( GAMESERVER_NEXT0 );
-	trap_R_RegisterShaderNoMip( GAMESERVER_NEXT1 );
-	trap_R_RegisterShaderNoMip( GAMESERVER_FRAMEL );
-	trap_R_RegisterShaderNoMip( GAMESERVER_FRAMER );
-	trap_R_RegisterShaderNoMip( GAMESERVER_SELECT );
-	trap_R_RegisterShaderNoMip( GAMESERVER_SELECTED );
-	trap_R_RegisterShaderNoMip( GAMESERVER_UNKNOWNMAP );
-	trap_R_RegisterShaderNoMip( GAMESERVER_ARROWS );
-	trap_R_RegisterShaderNoMip( GAMESERVER_ARROWSL );
-	trap_R_RegisterShaderNoMip( GAMESERVER_ARROWSR );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_BACK0 );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_BACK1 );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_NEXT0 );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_NEXT1 );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_FRAMEL );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_FRAMER );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_SELECT );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_SELECTED );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_UNKNOWNMAP );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_ARROWS );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_ARROWSL );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_ARROWSR );
 
-	precache = trap_Cvar_VariableValue( "com_buildscript" ) > 1.0f ? true : false;
+	precache = uiLocal->Cvar_VariableValue( "com_buildscript" ) > 1.0f ? true : false;
 
 	s_startserver.nummaps = UI_GetNumArenas();
 
@@ -574,7 +574,7 @@ void StartServer_Cache( void ) {
 
 		if ( precache ) {
 			Com_sprintf( picname, sizeof( picname ), "levelshots/%s", s_startserver.maplist[i] );
-			trap_R_RegisterShaderNoMip( picname );
+			uiLocal->re_RegisterShaderNoMip( picname );
 		}
 	}
 
@@ -701,42 +701,42 @@ static void ServerOptions_Start( void ) {
 	switch ( s_serveroptions.gametype ) {
 		case GT_FFA:
 		default:
-			trap_Cvar_SetValue( "ui_ffa_fraglimit", fraglimit );
-			trap_Cvar_SetValue( "ui_ffa_timelimit", timelimit );
+			uiLocal->Cvar_SetValue( "ui_ffa_fraglimit", fraglimit );
+			uiLocal->Cvar_SetValue( "ui_ffa_timelimit", timelimit );
 			break;
 
 		case GT_TOURNAMENT:
-			trap_Cvar_SetValue( "ui_tourney_fraglimit", fraglimit );
-			trap_Cvar_SetValue( "ui_tourney_timelimit", timelimit );
+			uiLocal->Cvar_SetValue( "ui_tourney_fraglimit", fraglimit );
+			uiLocal->Cvar_SetValue( "ui_tourney_timelimit", timelimit );
 			break;
 
 		case GT_TEAM:
-			trap_Cvar_SetValue( "ui_team_fraglimit", fraglimit );
-			trap_Cvar_SetValue( "ui_team_timelimit", timelimit );
-			trap_Cvar_SetValue( "ui_team_friendlt", friendlyfire );
+			uiLocal->Cvar_SetValue( "ui_team_fraglimit", fraglimit );
+			uiLocal->Cvar_SetValue( "ui_team_timelimit", timelimit );
+			uiLocal->Cvar_SetValue( "ui_team_friendlt", friendlyfire );
 			break;
 
 		case GT_CTF:
-			trap_Cvar_SetValue( "ui_ctf_fraglimit", fraglimit );
-			trap_Cvar_SetValue( "ui_ctf_timelimit", timelimit );
-			trap_Cvar_SetValue( "ui_ctf_friendlt", friendlyfire );
+			uiLocal->Cvar_SetValue( "ui_ctf_fraglimit", fraglimit );
+			uiLocal->Cvar_SetValue( "ui_ctf_timelimit", timelimit );
+			uiLocal->Cvar_SetValue( "ui_ctf_friendlt", friendlyfire );
 			break;
 	}
 
-	trap_Cvar_SetValue( "sv_maxclients", Com_Clamp( 0, 12, maxclients ) );
-	trap_Cvar_SetValue( "dedicated", Com_Clamp( 0, 2, dedicated ) );
-	trap_Cvar_SetValue ( "timelimit", Com_Clamp( 0, timelimit, timelimit ) );
-	trap_Cvar_SetValue ( "fraglimit", Com_Clamp( 0, fraglimit, fraglimit ) );
-	trap_Cvar_SetValue ( "capturelimit", Com_Clamp( 0, flaglimit, flaglimit ) );
-	trap_Cvar_SetValue( "g_friendlyfire", friendlyfire );
-	trap_Cvar_SetValue( "sv_pure", pure );
-	trap_Cvar_Set( "sv_hostname", s_serveroptions.hostname.field.buffer );
+	uiLocal->Cvar_SetValue( "sv_maxclients", Com_Clamp( 0, 12, maxclients ) );
+	uiLocal->Cvar_SetValue( "dedicated", Com_Clamp( 0, 2, dedicated ) );
+	uiLocal->Cvar_SetValue ( "timelimit", Com_Clamp( 0, timelimit, timelimit ) );
+	uiLocal->Cvar_SetValue ( "fraglimit", Com_Clamp( 0, fraglimit, fraglimit ) );
+	uiLocal->Cvar_SetValue ( "capturelimit", Com_Clamp( 0, flaglimit, flaglimit ) );
+	uiLocal->Cvar_SetValue( "g_friendlyfire", friendlyfire );
+	uiLocal->Cvar_SetValue( "sv_pure", pure );
+	uiLocal->Cvar_Set( "sv_hostname", s_serveroptions.hostname.field.buffer );
 
 	// the wait commands will allow the dedicated to take effect
-	trap_Cmd_ExecuteText( EXEC_APPEND, va( "wait ; wait ; map %s\n", s_startserver.maplist[s_startserver.currentmap] ) );
+	uiLocal->Cbuf_ExecuteText( EXEC_APPEND, va( "wait ; wait ; map %s\n", s_startserver.maplist[s_startserver.currentmap] ) );
 
 	// add bots
-	trap_Cmd_ExecuteText( EXEC_APPEND, "wait 3\n" );
+	uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "wait 3\n" );
 	for ( n = 1; n < PLAYER_SLOTS; n++ ) {
 		if ( s_serveroptions.playerType[n].curvalue != 1 ) {
 			continue;
@@ -747,12 +747,12 @@ static void ServerOptions_Start( void ) {
 		if ( s_serveroptions.playerNameBuffers[n][0] == '-' ) {
 			continue;
 		}
-		trap_Cmd_ExecuteText( EXEC_APPEND, buf );
+		uiLocal->Cbuf_ExecuteText( EXEC_APPEND, buf );
 	}
 
 	// set player's team
 	if ( dedicated == 0 && s_serveroptions.gametype >= GT_TEAM ) {
-		trap_Cmd_ExecuteText( EXEC_APPEND, va( "wait 5; team %s\n", playerTeam_list[s_serveroptions.playerTeam[0].curvalue] ) );
+		uiLocal->Cbuf_ExecuteText( EXEC_APPEND, va( "wait 5; team %s\n", playerTeam_list[s_serveroptions.playerTeam[0].curvalue] ) );
 	}
 }
 
@@ -788,7 +788,7 @@ static void ServerOptions_InitPlayerItems( void ) {
 		// human
 		s_serveroptions.playerType[0].generic.flags |= QMF_INACTIVE;
 		s_serveroptions.playerType[0].curvalue = 0;
-		trap_Cvar_VariableStringBuffer( "name", s_serveroptions.playerNameBuffers[0], sizeof( s_serveroptions.playerNameBuffers[0] ) );
+		uiLocal->Cvar_VariableStringBuffer( "name", s_serveroptions.playerNameBuffers[0], sizeof( s_serveroptions.playerNameBuffers[0] ) );
 		Q_CleanStr( s_serveroptions.playerNameBuffers[0] );
 	}
 
@@ -962,30 +962,30 @@ static void ServerOptions_SetMenuItems( void ) {
 	switch ( s_serveroptions.gametype ) {
 		case GT_FFA:
 		default:
-			Com_sprintf( s_serveroptions.fraglimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_ffa_fraglimit" ) ) );
-			Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_ffa_timelimit" ) ) );
+			Com_sprintf( s_serveroptions.fraglimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, uiLocal->Cvar_VariableValue( "ui_ffa_fraglimit" ) ) );
+			Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, uiLocal->Cvar_VariableValue( "ui_ffa_timelimit" ) ) );
 			break;
 
 		case GT_TOURNAMENT:
-			Com_sprintf( s_serveroptions.fraglimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_tourney_fraglimit" ) ) );
-			Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_tourney_timelimit" ) ) );
+			Com_sprintf( s_serveroptions.fraglimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, uiLocal->Cvar_VariableValue( "ui_tourney_fraglimit" ) ) );
+			Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, uiLocal->Cvar_VariableValue( "ui_tourney_timelimit" ) ) );
 			break;
 
 		case GT_TEAM:
-			Com_sprintf( s_serveroptions.fraglimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_team_fraglimit" ) ) );
-			Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_team_timelimit" ) ) );
-			s_serveroptions.friendlyfire.curvalue = ( int )Com_Clamp( 0, 1, trap_Cvar_VariableValue( "ui_team_friendly" ) );
+			Com_sprintf( s_serveroptions.fraglimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, uiLocal->Cvar_VariableValue( "ui_team_fraglimit" ) ) );
+			Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, uiLocal->Cvar_VariableValue( "ui_team_timelimit" ) ) );
+			s_serveroptions.friendlyfire.curvalue = ( int )Com_Clamp( 0, 1, uiLocal->Cvar_VariableValue( "ui_team_friendly" ) );
 			break;
 
 		case GT_CTF:
-			Com_sprintf( s_serveroptions.flaglimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 100, trap_Cvar_VariableValue( "ui_ctf_capturelimit" ) ) );
-			Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, trap_Cvar_VariableValue( "ui_ctf_timelimit" ) ) );
-			s_serveroptions.friendlyfire.curvalue = ( int )Com_Clamp( 0, 1, trap_Cvar_VariableValue( "ui_ctf_friendly" ) );
+			Com_sprintf( s_serveroptions.flaglimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 100, uiLocal->Cvar_VariableValue( "ui_ctf_capturelimit" ) ) );
+			Com_sprintf( s_serveroptions.timelimit.field.buffer, 4, "%i", ( int )Com_Clamp( 0, 999, uiLocal->Cvar_VariableValue( "ui_ctf_timelimit" ) ) );
+			s_serveroptions.friendlyfire.curvalue = ( int )Com_Clamp( 0, 1, uiLocal->Cvar_VariableValue( "ui_ctf_friendly" ) );
 			break;
 	}
 
 	Q_strncpyz( s_serveroptions.hostname.field.buffer, UI_Cvar_VariableString( "sv_hostname" ), sizeof( s_serveroptions.hostname.field.buffer ) );
-	s_serveroptions.pure.curvalue = Com_Clamp( 0, 1, trap_Cvar_VariableValue( "sv_pure" ) );
+	s_serveroptions.pure.curvalue = Com_Clamp( 0, 1, uiLocal->Cvar_VariableValue( "sv_pure" ) );
 
 	// set the map pic
 	Com_sprintf( picname, 64, "levelshots/%s", s_startserver.maplist[s_startserver.currentmap] );
@@ -1056,7 +1056,7 @@ static void ServerOptions_MenuInit( bool multiplayer ) {
 
 	memset( &s_serveroptions, 0, sizeof( serveroptions_t ) );
 	s_serveroptions.multiplayer = multiplayer;
-	s_serveroptions.gametype = ( int )Com_Clamp( 0, 5, trap_Cvar_VariableValue( "g_gameType" ) );
+	s_serveroptions.gametype = ( int )Com_Clamp( 0, 5, uiLocal->Cvar_VariableValue( "g_gameType" ) );
 
 	ServerOptions_Cache();
 
@@ -1278,12 +1278,12 @@ ServerOptions_Cache
 =================
 */
 void ServerOptions_Cache( void ) {
-	trap_R_RegisterShaderNoMip( GAMESERVER_BACK0 );
-	trap_R_RegisterShaderNoMip( GAMESERVER_BACK1 );
-	trap_R_RegisterShaderNoMip( GAMESERVER_FIGHT0 );
-	trap_R_RegisterShaderNoMip( GAMESERVER_FIGHT1 );
-	trap_R_RegisterShaderNoMip( GAMESERVER_SELECT );
-	trap_R_RegisterShaderNoMip( GAMESERVER_UNKNOWNMAP );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_BACK0 );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_BACK1 );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_FIGHT0 );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_FIGHT1 );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_SELECT );
+	uiLocal->re_RegisterShaderNoMip( GAMESERVER_UNKNOWNMAP );
 }
 
 

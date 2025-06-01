@@ -149,7 +149,7 @@ void UI_RegisterCvars( void ) {
 	cvarTable_t	* cv;
 
 	for ( i = 0, cv = cvarTable ; i < cvarTableSize ; i++, cv++ ) {
-		trap_Cvar_Register( cv->vmCvar, cv->cvarName, cv->defaultString, cv->cvarFlags );
+		uiLocal->Cvar_Register( cv->vmCvar, cv->cvarName, cv->defaultString, cv->cvarFlags );
 	}
 }
 
@@ -163,6 +163,6 @@ void UI_UpdateCvars( void ) {
 	cvarTable_t	* cv;
 
 	for ( i = 0, cv = cvarTable ; i < cvarTableSize ; i++, cv++ ) {
-		trap_Cvar_Update( cv->vmCvar );
+		uiLocal->Cvar_Update( cv->vmCvar );
 	}
 }

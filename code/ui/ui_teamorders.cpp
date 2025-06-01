@@ -259,7 +259,7 @@ static void UI_TeamOrdersMenu_ListEvent( void * ptr, int event ) {
 		Com_sprintf( message, sizeof( message ), teamMessages[selection], teamOrdersMenuInfo.botNames[teamOrdersMenuInfo.selectedBot] );
 	}
 
-	trap_Cmd_ExecuteText( EXEC_APPEND, va( "say_team \"%s\"\n", message ) );
+	uiLocal->Cbuf_ExecuteText( EXEC_APPEND, va( "say_team \"%s\"\n", message ) );
 	UI_PopMenu();
 }
 
@@ -282,17 +282,17 @@ static void UI_TeamOrdersMenu_BuildBotList( void ) {
 		teamOrdersMenuInfo.bots[n] = teamOrdersMenuInfo.botNames[n];
 	}
 
-	trap_GetClientState( &cs );
+	uiLocal->GetClientState( &cs );
 
 	Q_strncpyz( teamOrdersMenuInfo.botNames[0], "Everyone", 16 );
 	teamOrdersMenuInfo.numBots = 1;
 
-	trap_GetConfigString( CS_SERVERINFO, info, sizeof( info ) );
+	uiLocal->GetConfigString( CS_SERVERINFO, info, sizeof( info ) );
 	numPlayers = atoi( Info_ValueForKey( info, "sv_maxclients" ) );
 	teamOrdersMenuInfo.gametype = atoi( Info_ValueForKey( info, "g_gametype" ) );
 
 	for ( n = 0; n < numPlayers && teamOrdersMenuInfo.numBots < 9; n++ ) {
-		trap_GetConfigString( CS_PLAYERS + n, info, MAX_INFO_STRING );
+		uiLocal->GetConfigString( CS_PLAYERS + n, info, MAX_INFO_STRING );
 
 		playerTeam = TEAM_SPECTATOR; // bk001204 = possible uninit use
 
@@ -382,9 +382,9 @@ UI_TeamOrdersMenu_Cache
 =================
 */
 void UI_TeamOrdersMenu_Cache( void ) {
-	trap_R_RegisterShaderNoMip( ART_FRAME );
-	trap_R_RegisterShaderNoMip( ART_BACK0 );
-	trap_R_RegisterShaderNoMip( ART_BACK1 );
+	uiLocal->re_RegisterShaderNoMip( ART_FRAME );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK0 );
+	uiLocal->re_RegisterShaderNoMip( ART_BACK1 );
 }
 
 
@@ -410,15 +410,15 @@ void UI_TeamOrdersMenu_f( void ) {
 	int		team;
 
 	// make sure it's a team game
-	trap_GetConfigString( CS_SERVERINFO, info, sizeof( info ) );
+	uiLocal->GetConfigString( CS_SERVERINFO, info, sizeof( info ) );
 	teamOrdersMenuInfo.gametype = atoi( Info_ValueForKey( info, "g_gametype" ) );
 	if ( teamOrdersMenuInfo.gametype < GT_TEAM ) {
 		return;
 	}
 
 	// not available to spectators
-	trap_GetClientState( &cs );
-	trap_GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
+	uiLocal->GetClientState( &cs );
+	uiLocal->GetConfigString( CS_PLAYERS + cs.clientNum, info, MAX_INFO_STRING );
 	team = atoi( Info_ValueForKey( info, "t" ) );
 	if ( team == TEAM_SPECTATOR ) {
 		return;

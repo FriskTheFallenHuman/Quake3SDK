@@ -38,7 +38,7 @@ void QDECL UI_Printf( const char * msg, ... ) {
 	Q_vsnprintf( text, sizeof( text ), msg, argptr );
 	va_end( argptr );
 
-	trap_Print( text );
+	uiLocal->Print( text );
 }
 
 void QDECL UI_Warning( const char * msg, ... ) {
@@ -49,7 +49,7 @@ void QDECL UI_Warning( const char * msg, ... ) {
 	Q_vsnprintf( text, sizeof( text ), msg, argptr );
 	va_end( argptr );
 
-	trap_Warning( text );
+	uiLocal->Warning( text );
 }
 
 void QDECL UI_Error( const char * msg, ... ) {
@@ -61,7 +61,7 @@ void QDECL UI_Error( const char * msg, ... ) {
 	va_end( argptr );
 	text[sizeof( text ) - 1] = 0;
 
-	trap_Error( text );
+	uiLocal->Error( ERR_DROP, text );
 }
 
 #ifndef UI_HARD_LINKED
@@ -126,7 +126,7 @@ UI_StartDemoLoop
 =================
 */
 void UI_StartDemoLoop( void ) {
-	trap_Cmd_ExecuteText( EXEC_APPEND, "d1\n" );
+	uiLocal->Cbuf_ExecuteText( EXEC_APPEND, "d1\n" );
 }
 
 /*
@@ -148,7 +148,7 @@ void UI_PushMenu( menuframework_s *menu ) {
 
 	if ( i == uis.menusp ) {
 		if ( uis.menusp >= MAX_MENUDEPTH ) {
-			trap_Error( "UI_PushMenu: menu stack overflow" );
+			UI_Error( "UI_PushMenu: menu stack overflow" );
 		}
 
 		uis.stack[uis.menusp++] = menu;
@@ -162,7 +162,7 @@ void UI_PushMenu( menuframework_s *menu ) {
 
 	m_entersound = true;
 
-	trap_Key_SetCatcher( KEYCATCH_UI );
+	uiLocal->Key_SetCatcher( KEYCATCH_UI );
 
 	// force first available item to have focus
 	for ( i = 0; i < menu->nitems; i++ ) {
@@ -183,12 +183,12 @@ UI_PopMenu
 =================
 */
 void UI_PopMenu( void ) {
-	trap_S_StartLocalSound( menu_out_sound, CHAN_LOCAL_SOUND );
+	uiLocal->S_StartLocalSound( menu_out_sound, CHAN_LOCAL_SOUND );
 
 	uis.menusp--;
 
 	if ( uis.menusp < 0 ) {
-		trap_Error( "UI_PopMenu: menu stack underflow" );
+		UI_Error( "UI_PopMenu: menu stack underflow" );
 	}
 
 	if ( uis.menusp ) {
@@ -203,9 +203,9 @@ void UI_ForceMenuOff( void ) {
 	uis.menusp     = 0;
 	uis.activemenu = NULL;
 
-	trap_Key_SetCatcher( trap_Key_GetCatcher() & ~KEYCATCH_UI );
-	trap_Key_ClearStates();
-	trap_Cvar_Set( "cl_paused", "0" );
+	uiLocal->Key_SetCatcher( uiLocal->Key_GetCatcher() & ~KEYCATCH_UI );
+	uiLocal->Key_ClearStates();
+	uiLocal->Cvar_Set( "cl_paused", "0" );
 }
 
 /*
@@ -398,7 +398,7 @@ static void UI_DrawBannerString2( int x, int y, const char * str, vec4_t color )
 	float	fheight;
 
 	// draw the colored text
-	trap_R_SetColor( color );
+	uiLocal->re_SetColor( color );
 
 	ax = x * uis.scale + uis.bias;
 	ay = y * uis.scale;
@@ -416,13 +416,13 @@ static void UI_DrawBannerString2( int x, int y, const char * str, vec4_t color )
 			fheight = ( float )PROPB_HEIGHT / 256.0f;
 			aw = ( float )propMapB[ch][2] * uis.scale;
 			ah = ( float )PROPB_HEIGHT * uis.scale;
-			trap_R_DrawStretchPic( ax, ay, aw, ah, fcol, frow, fcol + fwidth, frow + fheight, uis.charsetPropB );
+			uiLocal->re_DrawStretchPic( ax, ay, aw, ah, fcol, frow, fcol + fwidth, frow + fheight, uis.charsetPropB );
 			ax += ( aw + ( float )PROPB_GAP_WIDTH * uis.scale );
 		}
 		s++;
 	}
 
-	trap_R_SetColor( NULL );
+	uiLocal->re_SetColor( NULL );
 }
 
 void UI_DrawBannerString( int x, int y, const char * str, int style, vec4_t color ) {
@@ -504,7 +504,7 @@ static void UI_DrawProportionalString2( int x, int y, const char * str, vec4_t c
 	float	fheight;
 
 	// draw the colored text
-	trap_R_SetColor( color );
+	uiLocal->re_SetColor( color );
 
 	ax = x * uis.scale + uis.bias;
 	ay = y * uis.scale;
@@ -521,14 +521,14 @@ static void UI_DrawProportionalString2( int x, int y, const char * str, vec4_t c
 			fheight = ( float )PROP_HEIGHT / 256.0f;
 			aw = ( float )propMap[ch][2] * uis.scale * sizeScale;
 			ah = ( float )PROP_HEIGHT * uis.scale * sizeScale;
-			trap_R_DrawStretchPic( ax, ay, aw, ah, fcol, frow, fcol + fwidth, frow + fheight, charset );
+			uiLocal->re_DrawStretchPic( ax, ay, aw, ah, fcol, frow, fcol + fwidth, frow + fheight, charset );
 		}
 
 		ax += ( aw + ( float )PROP_GAP_WIDTH * uis.scale * sizeScale );
 		s++;
 	}
 
-	trap_R_SetColor( NULL );
+	uiLocal->re_SetColor( NULL );
 }
 
 /*
@@ -691,7 +691,7 @@ static void UI_DrawString2( int x, int y, const char * str, vec4_t color, int ch
 	}
 
 	// draw the colored text
-	trap_R_SetColor( color );
+	uiLocal->re_SetColor( color );
 
 	ax = x * uis.scale + uis.bias;
 	ay = y * uis.scale;
@@ -704,7 +704,7 @@ static void UI_DrawString2( int x, int y, const char * str, vec4_t color, int ch
 			if ( !forceColor ) {
 				memcpy( tempcolor, g_color_table[ColorIndex( s[1] )], sizeof( tempcolor ) );
 				tempcolor[3] = color[3];
-				trap_R_SetColor( tempcolor );
+				uiLocal->re_SetColor( tempcolor );
 			}
 			s += 2;
 			continue;
@@ -714,14 +714,14 @@ static void UI_DrawString2( int x, int y, const char * str, vec4_t color, int ch
 		if ( ch != ' ' ) {
 			frow = ( ch >> 4 ) * 0.0625;
 			fcol = ( ch & 15 ) * 0.0625;
-			trap_R_DrawStretchPic( ax, ay, aw, ah, fcol, frow, fcol + 0.0625, frow + 0.0625, uis.charset );
+			uiLocal->re_DrawStretchPic( ax, ay, aw, ah, fcol, frow, fcol + 0.0625, frow + 0.0625, uis.charset );
 		}
 
 		ax += aw;
 		s++;
 	}
 
-	trap_R_SetColor( NULL );
+	uiLocal->re_SetColor( NULL );
 }
 
 /*
@@ -810,7 +810,7 @@ void UI_DrawChar( int x, int y, int ch, int style, vec4_t color ) {
 }
 
 bool UI_IsFullscreen( void ) {
-	if ( uis.activemenu && ( trap_Key_GetCatcher() & KEYCATCH_UI ) ) {
+	if ( uis.activemenu && ( uiLocal->Key_GetCatcher() & KEYCATCH_UI ) ) {
 		return uis.activemenu->fullscreen;
 	}
 
@@ -830,7 +830,7 @@ void UI_SetActiveMenu( uiMenuCommand_t menu ) {
 			UI_MainMenu();
 			return;
 		case UIMENU_INGAME:
-			trap_Cvar_Set( "cl_paused", "1" );
+			uiLocal->Cvar_Set( "cl_paused", "1" );
 			UI_InGameMenu();
 			return;
 
@@ -868,7 +868,7 @@ void UI_KeyEvent( int key, int down ) {
 	}
 
 	if ( ( s > 0 ) && ( s != menu_null_sound ) ) {
-		trap_S_StartLocalSound( s, CHAN_LOCAL_SOUND );
+		uiLocal->S_StartLocalSound( s, CHAN_LOCAL_SOUND );
 	}
 }
 
@@ -922,7 +922,7 @@ void UI_MouseEvent( int dx, int dy ) {
 			( ( menucommon_s * )( uis.activemenu->items[uis.activemenu->cursor_prev] ) )->flags &= ~QMF_HASMOUSEFOCUS;
 
 			if ( !( ( ( menucommon_s * )( uis.activemenu->items[uis.activemenu->cursor] ) )->flags & QMF_SILENT ) ) {
-				trap_S_StartLocalSound( menu_move_sound, CHAN_LOCAL_SOUND );
+				uiLocal->S_StartLocalSound( menu_move_sound, CHAN_LOCAL_SOUND );
 			}
 		}
 
@@ -939,7 +939,7 @@ void UI_MouseEvent( int dx, int dy ) {
 char * UI_Argv( int arg ) {
 	static char	buffer[MAX_STRING_CHARS];
 
-	trap_Argv( arg, buffer, sizeof( buffer ) );
+	uiLocal->Cmd_ArgvBuffer( arg, buffer, sizeof( buffer ) );
 
 	return buffer;
 }
@@ -948,7 +948,7 @@ char * UI_Argv( int arg ) {
 char * UI_Cvar_VariableString( const char * var_name ) {
 	static char	buffer[MAX_STRING_CHARS];
 
-	trap_Cvar_VariableStringBuffer( var_name, buffer, sizeof( buffer ) );
+	uiLocal->Cvar_VariableStringBuffer( var_name, buffer, sizeof( buffer ) );
 
 	return buffer;
 }
@@ -1038,7 +1038,7 @@ void UI_Init( void ) {
 	UI_InitGameinfo();
 
 	// cache redundant calulations
-	trap_GetGlconfig( &uis.glconfig );
+	uiLocal->CL_GetGlconfig( &uis.glconfig );
 
 	// for 640x480 virtualized screen
 	uis.scale = uis.glconfig.vidHeight * ( 1.0 / 480.0 );
@@ -1075,9 +1075,9 @@ void UI_AdjustFrom640( float * x, float * y, float * w, float * h ) {
 void UI_DrawNamedPic( float x, float y, float width, float height, const char * picname ) {
 	qhandle_t	hShader;
 
-	hShader = trap_R_RegisterShaderNoMip( picname );
+	hShader = uiLocal->re_RegisterShaderNoMip( picname );
 	UI_AdjustFrom640( &x, &y, &width, &height );
-	trap_R_DrawStretchPic( x, y, width, height, 0, 0, 1, 1, hShader );
+	uiLocal->re_DrawStretchPic( x, y, width, height, 0, 0, 1, 1, hShader );
 }
 
 void UI_DrawHandlePic( float x, float y, float w, float h, qhandle_t hShader ) {
@@ -1105,7 +1105,7 @@ void UI_DrawHandlePic( float x, float y, float w, float h, qhandle_t hShader ) {
 	}
 
 	UI_AdjustFrom640( &x, &y, &w, &h );
-	trap_R_DrawStretchPic( x, y, w, h, s0, t0, s1, t1, hShader );
+	uiLocal->re_DrawStretchPic( x, y, w, h, s0, t0, s1, t1, hShader );
 }
 
 /*
@@ -1116,12 +1116,12 @@ Coordinates are 640*480 virtual values
 =================
 */
 void UI_FillRect( float x, float y, float width, float height, const float * color ) {
-	trap_R_SetColor( color );
+	uiLocal->re_SetColor( color );
 
 	UI_AdjustFrom640( &x, &y, &width, &height );
-	trap_R_DrawStretchPic( x, y, width, height, 0, 0, 0, 0, uis.whiteShader );
+	uiLocal->re_DrawStretchPic( x, y, width, height, 0, 0, 0, 0, uis.whiteShader );
 
-	trap_R_SetColor( NULL );
+	uiLocal->re_SetColor( NULL );
 }
 
 /*
@@ -1132,24 +1132,24 @@ Coordinates are 640*480 virtual values
 =================
 */
 void UI_DrawRect( float x, float y, float width, float height, const float * color ) {
-	trap_R_SetColor( color );
+	uiLocal->re_SetColor( color );
 
 	UI_AdjustFrom640( &x, &y, &width, &height );
 
-	trap_R_DrawStretchPic( x, y, width, 1, 0, 0, 0, 0, uis.whiteShader );
-	trap_R_DrawStretchPic( x, y, 1, height, 0, 0, 0, 0, uis.whiteShader );
-	trap_R_DrawStretchPic( x, y + height - 1, width, 1, 0, 0, 0, 0, uis.whiteShader );
-	trap_R_DrawStretchPic( x + width - 1, y, 1, height, 0, 0, 0, 0, uis.whiteShader );
+	uiLocal->re_DrawStretchPic( x, y, width, 1, 0, 0, 0, 0, uis.whiteShader );
+	uiLocal->re_DrawStretchPic( x, y, 1, height, 0, 0, 0, 0, uis.whiteShader );
+	uiLocal->re_DrawStretchPic( x, y + height - 1, width, 1, 0, 0, 0, 0, uis.whiteShader );
+	uiLocal->re_DrawStretchPic( x + width - 1, y, 1, height, 0, 0, 0, 0, uis.whiteShader );
 
-	trap_R_SetColor( NULL );
+	uiLocal->re_SetColor( NULL );
 }
 
 void UI_SetColor( const float * rgba ) {
-	trap_R_SetColor( rgba );
+	uiLocal->re_SetColor( rgba );
 }
 
 void UI_UpdateScreen( void ) {
-	trap_UpdateScreen();
+	uiLocal->SCR_UpdateScreen();
 }
 
 /*
@@ -1161,7 +1161,7 @@ void UI_Refresh( int realtime ) {
 	uis.frametime = realtime - uis.realtime;
 	uis.realtime  = realtime;
 
-	if ( !( trap_Key_GetCatcher() & KEYCATCH_UI ) ) {
+	if ( !( uiLocal->Key_GetCatcher() & KEYCATCH_UI ) ) {
 		return;
 	}
 
@@ -1204,7 +1204,7 @@ void UI_Refresh( int realtime ) {
 	// menu has been drawn, to avoid delay while
 	// caching images
 	if ( m_entersound ) {
-		trap_S_StartLocalSound( menu_in_sound, CHAN_LOCAL_SOUND );
+		uiLocal->S_StartLocalSound( menu_in_sound, CHAN_LOCAL_SOUND );
 		m_entersound = false;
 	}
 }

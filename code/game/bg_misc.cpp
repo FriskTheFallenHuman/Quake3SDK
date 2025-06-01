@@ -24,6 +24,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 #include "../qcommon/q_shared.h"
 #include "bg_public.h"
+#ifdef QAGAME
+#include "g_local.h"
+#elif UI_EXPORTS
+#include "../ui/ui_local.h"
+#else
+#include "../cgame/cg_local.h"
+#endif
 
 /*QUAKED item_***** ( 0 0 0 ) (-16 -16 -16) (16 16 16) suspended
 DO NOT USE THIS CLASS, IT JUST HOLDS GENERAL INFORMATION.
@@ -1279,7 +1286,7 @@ bool BG_CanItemBeGrabbed( int gametype, const entityState_t * ent, const playerS
 		default:
 #ifndef Q3_VM
 #ifndef NDEBUG // bk0001204
-			trap_Warning( "BG_CanItemBeGrabbed: unknown enum %d\n", item->giType );
+			Com_Warning( "BG_CanItemBeGrabbed: unknown enum %d\n", item->giType );
 #endif
 #endif
 			break;
@@ -1491,13 +1498,18 @@ void BG_AddPredictableEventToPlayerstate( int newEvent, int eventParm, playerSta
 #ifdef _DEBUG
 	{
 		char buf[256];
-		void		trap_Cvar_VariableStringBuffer( const char * var_name, char * buffer, int bufsize );
-		trap_Cvar_VariableStringBuffer( "showevents", buf, sizeof( buf ) );
+#ifdef QAGAME
+		gameLocal->Cvar_VariableStringBuffer( "showevents", buf, sizeof( buf ) );
+#elif UI_EXPORTS
+		uiLocal->Cvar_VariableStringBuffer("showevents", buf, sizeof(buf));
+#else
+		cgameLocal->Cvar_VariableStringBuffer( "showevents", buf, sizeof( buf ) );
+#endif
 		if ( atof( buf ) != 0 ) {
 #ifdef QAGAME
-			trap_Warning( " game event svt %5d -> %5d: num = %20s parm %d\n", ps->pmove_framecount/*ps->commandTime*/, ps->eventSequence, eventnames[newEvent], eventParm );
+			Com_Warning( " game event svt %5d -> %5d: num = %20s parm %d\n", ps->pmove_framecount/*ps->commandTime*/, ps->eventSequence, eventnames[newEvent], eventParm );
 #else
-			trap_Warning( "Cgame event svt %5d -> %5d: num = %20s parm %d\n", ps->pmove_framecount/*ps->commandTime*/, ps->eventSequence, eventnames[newEvent], eventParm );
+			Com_Warning( "Cgame event svt %5d -> %5d: num = %20s parm %d\n", ps->pmove_framecount/*ps->commandTime*/, ps->eventSequence, eventnames[newEvent], eventParm );
 #endif
 		}
 	}
